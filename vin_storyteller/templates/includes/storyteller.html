@@ -1,0 +1,67 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css">
+<div class="vst" data-endpoint="/api/method/vin_storyteller.api.tell">
+	<header class="vst-head">
+		<p class="vst-kicker">3000GT &middot; Stealth &middot; GTO</p>
+		<h2 class="vst-title">VIN Storyteller</h2>
+		<p class="vst-lede">Learn the story of your vehicle: what number off the line it was, its original colour, interior and more, straight from the factory production record.</p>
+	</header>
+
+	<form class="vst-form" novalidate>
+		<label for="vst-vin">Your vehicle's VIN</label>
+		<div class="vst-row">
+			<input id="vst-vin" name="vin" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
+				spellcheck="false" maxlength="17" aria-describedby="vst-hint" required>
+			<button type="submit">Tell its story</button>
+		</div>
+		<p id="vst-hint" class="vst-hint">17 characters. VINs never contain the letters I, O or Q.</p>
+	</form>
+
+	<p class="vst-status" role="status" aria-live="polite"></p>
+
+	<section class="vst-result" tabindex="-1" aria-labelledby="vst-name" hidden>
+		<p class="vst-kicker">Your car</p>
+		<h3 id="vst-name" class="vst-name"></h3>
+		<p class="vst-built"></p>
+		<ul class="vst-badges" aria-label="Rarity" hidden></ul>
+
+		<ul class="vst-stats">
+			<li><span class="vst-n" data-field="in_year"></span><span class="vst-l" data-field="in_year_label"></span></li>
+			<li><span class="vst-n" data-field="in_model"></span><span class="vst-l" data-field="in_model_label"></span></li>
+			<li><span class="vst-n" data-field="in_colour"></span><span class="vst-l" data-field="in_colour_label"></span></li>
+			<li><span class="vst-n" data-field="among_identical"></span><span class="vst-l">among identical cars (same year, model, colours and equipment)</span></li>
+			<li><span class="vst-n" data-field="built_in_period"></span><span class="vst-l">built in the same production period</span></li>
+			<li><span class="vst-n" data-field="built_in_month"></span><span class="vst-l">built in the same production month</span></li>
+		</ul>
+
+		<p class="vst-timeline"></p>
+
+		<table class="vst-spec">
+			<caption>Factory specification</caption>
+			<tbody></tbody>
+		</table>
+		<p class="vst-provenance"></p>
+
+		<section class="vst-history" aria-labelledby="vst-history-h" hidden>
+			<h4 id="vst-history-h">History</h4>
+			<ol class="vst-history-list"></ol>
+		</section>
+
+		<p class="vst-note">Mitsubishi appears to have used multiple codes for the same colours / equipment, so until we define all of these codes, the identical-car count may show as lower than it really is. If any field shows as MISSING, please email <a href="mailto:storyteller@3shub.com">storyteller@3shub.com</a> with your VIN and the code so you can help us decode Mitsubishi's codes.</p>
+	</section>
+
+	<details class="vst-disclaimer">
+		<summary>Disclaimer</summary>
+		<p>The following information is based entirely on the production database exported from CAPS.</p>
+		<p>Up to approximately 3500 vehicles appear to be missing from the 1991 model years, mostly before September of 1991 with serial numbers under 004400. It is unknown whether data for these vehicles was lost, or if the vehicles were never produced.</p>
+		<p>Approximately 550 vehicles appear to be missing from the 1995 model year, which are all presumed to be Stealth R/T Twin Turbo's, since no data for any 1995 R/T Twin Turbo's is present.</p>
+		<p>In 1997 it appears that approximately 550 vehicles are missing which would've likely been produced between the first production period of November in 1996 and the third production period of January 1997, but no assumptions can be made as to what trim levels they are.</p>
+		<p>Serial numbers 000001 thru 000100 are typically reserved for vehicles which were crash tested or used for promotional purposes.</p>
+		<p>This missing information means that while the data provided here is very accurate, it may not be perfect.</p>
+	</details>
+
+	<p class="vst-source">The VIN Storyteller is open source under the AGPL-3.0:
+		<a href="https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller" rel="noopener">source on GitHub</a>.</p>
+</div>
+<script src="/assets/vin_storyteller/js/storyteller-core.js" defer></script>
+<script src="/assets/vin_storyteller/js/storyteller.js" defer></script>

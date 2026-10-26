@@ -7,6 +7,7 @@
 	const core = globalThis.VinStorytellerCore;
 	const MESSAGES = {
 		invalid: "Please enter a valid 17 character VIN. VINs never contain the letters I, O or Q.",
+		name: "Please enter your name. Every story told is logged with the name given.",
 		busy: "Reading the production record…",
 		failed: "The storyteller is unavailable right now. Please try again later.",
 		limited: (limit) => `You've used your ${limit} lookups for this hour. Please try again in an hour.`,
@@ -134,12 +135,12 @@
 		result.scrollIntoView({ behavior: matchMedia(REDUCED_MOTION).matches ? "auto" : "smooth", block: "start" });
 	}
 
-	async function tell(root, vin) {
+	async function tell(root, vin, name) {
 		root.querySelector(".vst-result").hidden = true;
 		setStatus(root, MESSAGES.busy, "busy");
 		setBusy(root, true);
 		try {
-			const url = `${root.dataset.endpoint}?vin=${encodeURIComponent(vin)}`;
+			const url = `${root.dataset.endpoint}?vin=${encodeURIComponent(vin)}&name=${encodeURIComponent(name)}`;
 			const response = await fetch(url, { headers: { Accept: "application/json" } });
 			if (response.status === HTTP_TOO_MANY_REQUESTS) {
 				setStatus(root, MESSAGES.limited(Number(root.dataset.limit) || DEFAULT_LIMIT), "error");
@@ -179,7 +180,16 @@
 				return;
 			}
 			input.removeAttribute("aria-invalid");
-			tell(root, vin).catch(() => setStatus(root, MESSAGES.failed, "error"));
+			const visitor = form.querySelector("input[name=name]");
+			const name = core.normalizeName(visitor.value);
+			if (!name) {
+				visitor.setAttribute("aria-invalid", "true");
+				setStatus(root, MESSAGES.name, "error");
+				visitor.focus();
+				return;
+			}
+			visitor.removeAttribute("aria-invalid");
+			tell(root, vin, name).catch(() => setStatus(root, MESSAGES.failed, "error"));
 		});
 	}
 

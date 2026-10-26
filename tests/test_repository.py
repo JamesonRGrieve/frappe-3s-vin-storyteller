@@ -145,3 +145,15 @@ def test_paramstyles():
 	assert PARAMSTYLES == {"format": "%s", "qmark": "?"}
 	with pytest.raises(KeyError):
 		ProductionRecords(None, paramstyle="named")
+
+
+def test_record_story_logs_vin_name_hour_and_time(connection):
+	from datetime import datetime
+
+	from vin_storyteller.repository import ProductionRecords
+
+	ProductionRecords(connection, "qmark").record_story(
+		"JA3AM84J3NY000004", "Trevor Macken", datetime(2026, 10, 26, 15, 42, 7, 123456)
+	)
+	rows = connection.execute("SELECT VIN, Name, DateHour, Time FROM StoriesTold").fetchall()
+	assert rows == [("JA3AM84J3NY000004", "Trevor Macken", "2026-10-26 15:00:00", "2026-10-26 15:42:07")]

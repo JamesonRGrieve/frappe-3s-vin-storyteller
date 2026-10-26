@@ -16,7 +16,8 @@ Enter a VIN and it tells you:
 - where its production record came from (its *provenance*) and its later history on file: auctions,
   photos, sales, registrations, service records and articles, linked out.
 
-It stores nothing about visitors: no VINs, names or IP addresses.
+Visitors give their name, and every story told is logged to `StoriesTold` (VIN, name, hour and time), as on the
+original storyteller, so uses can be audited for errors. Each visitor gets 3 lookups an hour.
 
 ## Architecture
 
@@ -35,8 +36,9 @@ ERPNext), not in the Frappe site's database.
 
 ## API
 
-`GET /api/method/vin_storyteller.api.tell?vin=<VIN>`. Guests may call it, up to 30 times an hour per client
-IP. Frappe wraps the body in `{"message": …}`:
+`GET /api/method/vin_storyteller.api.tell?vin=<VIN>&name=<visitor's name>`. Guests may call it 3 times an hour
+per client (Cloudflare's `CF-Connecting-IP`, else Frappe's request IP); a malformed VIN doesn't count, and a
+well-formed VIN without a name is refused (`invalid`) before it counts. Frappe wraps the body in `{"message": …}`:
 
 | `status` | Meaning | Other fields |
 |---|---|---|
@@ -97,7 +99,7 @@ read smaller than it really was. The page says so.
 1. **Install the app** on the site (`bench get-app https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller`,
    then `bench --site <site> install-app vin_storyteller`), or through your deployment pipeline's app list.
 2. **Load the production record** into its own database on a MariaDB server the site can reach, and create a
-   database user with `SELECT` only for the site.
+   database user for the site with `SELECT` and `INSERT` (the app inserts only into `StoriesTold`).
 3. **Migrate the schema**: `bench --site <site> vin-storyteller-migrate`. The command needs a user allowed to
    `ALTER` and `CREATE`, given only through the environment (`VIN_STORYTELLER_DB_ADMIN_USER`,
    `VIN_STORYTELLER_DB_ADMIN_PASSWORD`), never in site config or on the command line.

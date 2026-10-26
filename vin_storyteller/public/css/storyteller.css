@@ -34,6 +34,24 @@
 .vst-lede { margin: 0 0 28px; color: var(--vst-soft); max-width: 60ch; }
 
 .vst-label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 10px; }
+.vst-visitor {
+	display: block;
+	width: 100%;
+	max-width: 420px;
+	min-height: 52px;
+	margin-bottom: 20px;
+	padding: 12px 16px;
+	border-radius: 12px;
+	border: 1px solid rgba(203, 201, 198, 0.35);
+	background: rgba(255, 255, 255, 0.07);
+	color: var(--vst-text);
+	font-family: inherit;
+	font-size: 17px;
+	font-weight: 500;
+}
+.vst-visitor:hover { border-color: rgba(203, 201, 198, 0.55); }
+.vst-visitor:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; border-color: transparent; }
+.vst-visitor[aria-invalid="true"] { border-color: var(--vst-red-hi); }
 .vst-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
 .vst-field { position: relative; flex: 1 1 300px; min-width: 0; }
 .vst-field input {

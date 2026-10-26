@@ -17,7 +17,7 @@ from vin_storyteller.migrations import (
 	statements,
 )
 
-SHIPPED = ["0001_indexes", "0002_provenance_and_history"]
+SHIPPED = ["0001_indexes", "0002_provenance_and_history", "0003_stories_told"]
 
 
 def test_shipped_migrations_in_order():
@@ -109,3 +109,17 @@ class TestAdminCredentials:
 	def test_missing_is_an_error_naming_the_variables(self, environ):
 		with pytest.raises(MissingCredentials, match=ADMIN_USER_ENV):
 			admin_credentials(environ)
+
+
+def test_existing_stories_told_is_kept(caps_connection):
+	"""The CAPS-era database already has StoriesTold with years of history: 0003 leaves it untouched."""
+	caps_connection.execute(
+		"CREATE TABLE StoriesTold (ID INTEGER PRIMARY KEY, VIN VARCHAR(17) NOT NULL, Name VARCHAR(100) NOT NULL, "
+		"DateHour DATETIME NOT NULL, Time DATETIME NOT NULL)"
+	)
+	caps_connection.execute(
+		"INSERT INTO StoriesTold (VIN, Name, DateHour, Time) "
+		"VALUES ('JA3AN74K8RY020181', 'Jay Kim', '2026-04-01 23:00:00', '2026-04-01 23:13:46')"
+	)
+	migrate(caps_connection, "sqlite")
+	assert caps_connection.execute("SELECT Name FROM StoriesTold").fetchall() == [("Jay Kim",)]

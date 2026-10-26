@@ -8,6 +8,8 @@
 	</header>
 
 	<form class="vst-form" novalidate>
+		<label class="vst-label" for="vst-visitor">Your name</label>
+		<input id="vst-visitor" class="vst-visitor" name="name" type="text" autocomplete="name" maxlength="100" required>
 		<label class="vst-label" for="vst-vin">Your vehicle's VIN</label>
 		<div class="vst-row">
 			<div class="vst-field">
@@ -18,7 +20,7 @@
 			<button class="vst-submit" type="submit"><span class="vst-spinner" aria-hidden="true"></span><span class="vst-submit-label">Tell its story</span></button>
 		</div>
 		<p id="vst-check" class="vst-check" aria-live="polite"></p>
-		<p id="vst-hint" class="vst-hint">17 characters, on the plate at the base of the windshield (driver's side) or on your registration. Up to 3 lookups an hour.</p>
+		<p id="vst-hint" class="vst-hint">17 characters, on the plate at the base of the windshield (driver's side) or on your registration. Up to 3 lookups an hour; each is logged with your name and audited for errors.</p>
 	</form>
 
 	<p class="vst-status" role="status" aria-live="polite" hidden></p>

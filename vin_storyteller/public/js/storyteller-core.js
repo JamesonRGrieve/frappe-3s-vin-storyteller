@@ -29,6 +29,12 @@
 	const NOT_VIN_CHARACTER = /[^A-Z0-9]/;
 
 	const normalizeVin = (raw) => String(raw ?? "").replace(/\s+/g, "").toUpperCase();
+	const NAME_MAX = 100; // StoriesTold.Name
+	// The visitor's name as logged with their story: whitespace collapsed; "" when blank or too long.
+	const normalizeName = (raw) => {
+		const name = String(raw ?? "").trim().replace(/\s+/g, " ");
+		return name.length <= NAME_MAX ? name : "";
+	};
 	const isValidVin = (vin) => VIN_PATTERN.test(vin);
 	const isSafeUrl = (url) => typeof url === "string" && SAFE_URL.test(url);
 	const formatNumber = (n) => Number(n).toLocaleString(LOCALE);
@@ -80,6 +86,7 @@
 
 	globalThis.VinStorytellerCore = Object.freeze({
 		normalizeVin,
+		normalizeName,
 		isValidVin,
 		vinCheck,
 		isSafeUrl,

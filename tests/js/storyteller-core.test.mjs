@@ -104,3 +104,10 @@ test("vinCheck explains look-alike letters, other characters and overlong input"
 	assert.match(core.vinCheck("JA3AM84J3NY0123456").message, /more than 17/);
 	assert.equal(core.vinCheck("JA3AM84J3NY0123456").ready, false);
 });
+
+test("normalizeName collapses whitespace and refuses blank or overlong names", () => {
+	assert.equal(core.normalizeName("  Trevor   Macken "), "Trevor Macken");
+	assert.equal(core.normalizeName("   "), "");
+	assert.equal(core.normalizeName(null), "");
+	assert.equal(core.normalizeName("x".repeat(101)), "");
+});

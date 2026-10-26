@@ -34,7 +34,9 @@ production record, which lives in its own MariaDB database (not the Frappe site 
 
 ## Rules
 
-- Never store VINs or visitor data, and never write to the production record (read-only by design).
+- The production record itself is read-only to the app. The one write is the log of stories told
+  (`StoriesTold`: VIN, the visitor's name, hour, time), which the original storyteller kept for auditing; never
+  drop it (operator, 2026-10-26).
 - The story must match the original storyteller's counts: positions use `SerialNumber <` within the same
   model year / model line / identical spec, plus one.
 - The disclaimer text is the original's, verbatim.

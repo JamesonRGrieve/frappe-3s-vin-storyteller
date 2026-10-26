@@ -3,9 +3,10 @@
 
 Guests may call it, LOOKUPS_PER_WINDOW times an hour per client (client.client_address: Cloudflare's
 CF-Connecting-IP, since Frappe's request_ip is forgeable and, behind the reverse proxy, shared by every
-visitor). Only well-formed VINs count: a typo never reaches the database and never uses up a lookup. No VIN or
-visitor is stored beyond the counter's expiring cache key. The answer itself is built by answer.answer
-(Frappe-free and unit-tested); this module only wires in Frappe, the cache and PyMySQL.
+visitor). The visitor gives their name, and every counted lookup is logged to StoriesTold (VIN, name, hour, time)
+as the original storyteller did, so uses can be audited. Only a well-formed VIN with a name counts: a typo never
+reaches the database or uses up a lookup. The answer itself is built by answer.answer (Frappe-free and
+unit-tested); this module only wires in Frappe, the cache and PyMySQL.
 """
 
 from contextlib import closing, contextmanager
@@ -16,7 +17,7 @@ import pymysql
 from vin_storyteller.answer import UNAVAILABLE, RecordsUnavailable, answer
 from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.story import InvalidVin, normalize_vin
+from vin_storyteller.story import InvalidName, InvalidVin, normalize_name, normalize_vin
 
 LOOKUPS_PER_WINDOW = 3
 WINDOW_S = 60 * 60
@@ -26,11 +27,9 @@ DEFAULT_DB = "3s_production"
 DEFAULT_PORT = 3306
 
 
-@contextmanager
-def _records():
-	"""A read-only session on the production record, configured in site_config.json."""
+def _connect(**extra):
 	conf = frappe.conf
-	connection = pymysql.connect(
+	return pymysql.connect(
 		host=conf.get("vin_storyteller_db_host", "localhost"),
 		port=int(conf.get("vin_storyteller_db_port", DEFAULT_PORT)),
 		user=conf.get("vin_storyteller_db_user"),
@@ -39,10 +38,24 @@ def _records():
 		charset="utf8mb4",
 		connect_timeout=CONNECT_TIMEOUT_S,
 		read_timeout=READ_TIMEOUT_S,
-		init_command="SET SESSION TRANSACTION READ ONLY",
+		**extra,
 	)
-	with closing(connection):
+
+
+@contextmanager
+def _records():
+	"""A read-only session on the production record, configured in site_config.json."""
+	with closing(_connect(init_command="SET SESSION TRANSACTION READ ONLY")) as connection:
 		yield ProductionRecords(connection)
+
+
+def _record_story(vin: str, name: str) -> None:
+	"""Log the story told; a failure is logged and never costs the visitor their story."""
+	try:
+		with closing(_connect()) as connection:
+			ProductionRecords(connection).record_story(vin, name, frappe.utils.now_datetime())
+	except pymysql.MySQLError:
+		frappe.log_error(title="VIN Storyteller: could not log a story told")
 
 
 LIMITED = f"You've used your {LOOKUPS_PER_WINDOW} lookups for this hour. Please try again later."
@@ -58,14 +71,22 @@ def _count_lookup() -> None:
 		frappe.throw(LIMITED, frappe.RateLimitExceededError)
 
 
+NAME_REQUIRED = "Please enter your name. Every story told is logged with the name given."
+
+
 @frappe.whitelist(allow_guest=True, methods=["GET"])
-def tell(vin: str = "") -> dict:
+def tell(vin: str = "", name: str = "") -> dict:
 	try:
-		normalize_vin(vin)
+		normalized = normalize_vin(vin)
 	except InvalidVin:
-		pass  # answered as invalid below, without touching the database or the client's lookups
-	else:
+		normalized = None  # answered as invalid below, without touching the database or the client's lookups
+	if normalized:
+		try:
+			visitor = normalize_name(name)
+		except InvalidName:
+			return {"status": "invalid", "message": NAME_REQUIRED}
 		_count_lookup()
+		_record_story(normalized, visitor)
 	try:
 		return answer(vin, _records, (pymysql.MySQLError,))
 	except RecordsUnavailable:

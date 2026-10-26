@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Read-only queries against the factory production record (the `3s_production` database).
+"""Queries against the factory production record (the `3s_production` database): read-only lookups, plus the
+log of stories told (`record_story`).
 
 Every value is a bound parameter. The SQL sticks to what both MariaDB and SQLite run (SUBSTR, MIN,
 COUNT), so the same queries are tested against a real SQLite database and served from MariaDB.
@@ -8,6 +9,7 @@ COUNT), so the same queries are tested against a real SQLite database and served
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from vin_storyteller.story import (
 	MISSING,
@@ -140,3 +142,17 @@ class ProductionRecords:
 				self._count(identical, spec),
 			),
 		)
+
+	def record_story(self, vin: str, name: str, at: datetime) -> None:
+		"""Log a story told, as the original storyteller did: the VIN, the visitor's name, the hour and the time."""
+		cursor = self.connection.cursor()
+		try:
+			cursor.execute(
+				"INSERT INTO StoriesTold (VIN, Name, DateHour, Time) VALUES (%s, %s, %s, %s)".replace(
+					"%s", self.placeholder
+				),
+				(vin, name, at.replace(minute=0, second=0, microsecond=0), at.replace(microsecond=0)),
+			)
+		finally:
+			cursor.close()
+		self.connection.commit()

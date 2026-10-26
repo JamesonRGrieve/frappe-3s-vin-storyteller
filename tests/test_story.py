@@ -174,3 +174,17 @@ def test_one_of_one_is_rarest():
 def test_rarities_sorted_by_tier_then_total():
 	story = make_story(among_identical=Position(1, 40), in_colour=Position(1, 12), in_model=Position(1, 8))
 	assert [r.scope for r in story.rarities] == ["model", "colour", "spec"]
+
+
+class TestNormalizeName:
+	def test_collapses_whitespace(self):
+		from vin_storyteller.story import normalize_name
+
+		assert normalize_name("  Trevor   Macken \n") == "Trevor Macken"
+
+	@pytest.mark.parametrize("bad", ["", "   ", None, "x" * 101])
+	def test_rejects_blank_or_too_long(self, bad):
+		from vin_storyteller.story import InvalidName, normalize_name
+
+		with pytest.raises(InvalidName):
+			normalize_name(bad)

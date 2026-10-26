@@ -28,6 +28,21 @@ def normalize_vin(raw: str) -> str:
 	return vin
 
 
+NAME_MAX = 100  # StoriesTold.Name
+
+
+class InvalidName(ValueError):
+	"""No usable name: blank, or longer than StoriesTold.Name holds."""
+
+
+def normalize_name(raw: str | None) -> str:
+	"""The visitor's name as logged with their story (whitespace collapsed), or InvalidName."""
+	name = " ".join((raw or "").split())
+	if not name or len(name) > NAME_MAX:
+		raise InvalidName(name)
+	return name
+
+
 def full_year(two_digit_year: str) -> str:
 	return f"{CENTURY}{two_digit_year}"
 

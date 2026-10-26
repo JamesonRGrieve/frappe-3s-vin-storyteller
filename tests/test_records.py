@@ -62,3 +62,14 @@ def test_refuses_what_it_cannot_ground(connection, vin, provenance, reason):
 	with pytest.raises(RecordRefused, match=reason):
 		add_record(connection, vin, provenance, "qmark")
 	assert connection.execute("SELECT COUNT(*) FROM Production WHERE Provenance <> 'CAPS'").fetchone()[0] == 0
+
+
+def test_a_jdm_gto_is_recorded_by_its_chassis_number(connection):
+	added = add_record(connection, "z16a 0011452", "Mitsubishi recall 1153", "qmark")
+	assert (added.vin, added.model, added.model_code) == ("Z16A-0011452", "G6", "Z16A")
+	row = connection.execute(
+		"SELECT SerialNumber, ModelYear, DateOfManufacture, Provenance FROM Production WHERE VIN = 'Z16A-0011452'"
+	).fetchone()
+	assert row == ("0011452", "", "", "Mitsubishi recall 1153")
+	with pytest.raises(RecordRefused, match="already on record"):
+		add_record(connection, "Z16A-0011452", "Another source", "qmark")

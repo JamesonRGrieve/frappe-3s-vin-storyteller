@@ -117,14 +117,14 @@
 
 		result.querySelector(".vst-timeline").textContent = core.timelineText(story);
 		result.querySelector(".vst-spec tbody").replaceChildren(
-			specRow("Model year", story.model_year),
+			specRow("Model year", story.model_year || "Not known"),
 			specRow("Manufacturer", story.manufacturer),
 			specRow("Model", story.model),
 			specRow("Trim", story.trim || "—"),
 			specRow("Exterior colour", core.codedText(story.exterior)),
 			specRow("Interior colour", core.codedText(story.interior)),
 			specRow("Equipment", core.codedText(story.equipment)),
-			specRow("VIN", story.vin),
+			specRow(story.vin.length === 17 ? "VIN" : "Chassis number", story.vin),
 		);
 		result.querySelector(".vst-provenance").textContent = core.provenanceText(story.provenance);
 

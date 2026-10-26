@@ -15,6 +15,7 @@ from vin_storyteller.story import (
 	CHASSIS_NOT_ON_RECORD,
 	InvalidVin,
 	is_chassis_number,
+	normalize_chassis,
 	normalize_vin,
 	not_found_message,
 )
@@ -39,7 +40,15 @@ def answer(
 ) -> dict:
 	"""The API response body for `raw_vin`: status invalid | not_found | found (with the story)."""
 	if is_chassis_number(raw_vin):
-		return {"status": "not_found", "message": CHASSIS_NOT_ON_RECORD}
+		chassis = normalize_chassis(raw_vin)
+		try:
+			with open_records() as records:
+				story = records.story(chassis)
+		except database_errors as error:
+			raise RecordsUnavailable from error
+		if story is None:
+			return {"status": "not_found", "message": CHASSIS_NOT_ON_RECORD}
+		return {"status": "found", "story": story.as_dict()}
 	try:
 		vin = normalize_vin(raw_vin)
 	except InvalidVin:

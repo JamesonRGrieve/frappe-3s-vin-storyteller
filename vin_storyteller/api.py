@@ -17,7 +17,14 @@ import pymysql
 from vin_storyteller.answer import UNAVAILABLE, RecordsUnavailable, answer
 from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.story import InvalidName, InvalidVin, normalize_name, normalize_vin
+from vin_storyteller.story import (
+	InvalidName,
+	InvalidVin,
+	is_chassis_number,
+	normalize_chassis,
+	normalize_name,
+	normalize_vin,
+)
 
 LOOKUPS_PER_WINDOW = 3
 WINDOW_S = 60 * 60
@@ -77,7 +84,7 @@ NAME_REQUIRED = "Please enter your name. Every story told is logged with the nam
 @frappe.whitelist(allow_guest=True, methods=["GET"])
 def tell(vin: str = "", name: str = "") -> dict:
 	try:
-		normalized = normalize_vin(vin)
+		normalized = normalize_chassis(vin) if is_chassis_number(vin) else normalize_vin(vin)
 	except InvalidVin:
 		normalized = None  # answered as invalid below, without touching the database or the client's lookups
 	if normalized:

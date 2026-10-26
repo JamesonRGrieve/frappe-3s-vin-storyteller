@@ -128,14 +128,30 @@ def test_a_wrong_check_digit_is_called_a_typo(open_records):
 	assert "almost certainly mistyped" in text
 
 
-@pytest.mark.parametrize("chassis", ["Z16A-0011452", "z15a0200248", " Z16A-0006229 "])
-def test_jdm_chassis_number_is_recognised_without_touching_the_database(chassis):
+def test_jdm_chassis_number_not_on_record(open_records):
 	from vin_storyteller.story import CHASSIS_NOT_ON_RECORD
 
-	def opener():
-		raise AssertionError("a chassis number never opens the production record")
+	assert answer("Z16A-0011452", open_records, DB_ERRORS) == {
+		"status": "not_found",
+		"message": CHASSIS_NOT_ON_RECORD,
+	}
 
-	assert answer(chassis, opener, DB_ERRORS) == {"status": "not_found", "message": CHASSIS_NOT_ON_RECORD}
+
+@pytest.mark.parametrize("typed", ["Z16A-0011452", "z16a0011452", " Z16A 0011452 "])
+def test_jdm_chassis_number_on_record_tells_a_partial_gto_story(connection, typed):
+	from vin_storyteller.records import add_record
+
+	add_record(connection, "Z16A-0011452", "Mitsubishi recall 1153", "qmark")
+
+	@contextmanager
+	def opener():
+		yield ProductionRecords(connection, paramstyle="qmark")
+
+	reply = answer(typed, opener, DB_ERRORS)
+	assert reply["status"] == "found"
+	story = reply["story"]
+	assert story["vin"] == "Z16A-0011452" and story["partial"] and story["vehicle_name"] == "Mitsubishi GTO"
+	assert story["provenance"] == "Mitsubishi recall 1153" and story["rarities"] == []
 
 
 @pytest.mark.parametrize("not_chassis", ["Z17A-0011452", "Z16A-001145", "Z16A-00114521"])

@@ -85,14 +85,27 @@ def has_valid_check_digit(vin: str) -> bool:
 # service campaign SC059; card 327). None of them are in the production record yet.
 CHASSIS_PATTERN = re.compile(r"^Z1[56]A-?[0-9]{7}$")
 CHASSIS_NOT_ON_RECORD = (
-	"That's a Japanese-market Mitsubishi GTO chassis number. The production record covers the North American "
-	"3000GT and Stealth (17-character VINs), so JDM GTOs aren't in it yet; we're looking for their factory data."
+	"That's a Japanese-market Mitsubishi GTO chassis number, and it isn't on record. The production record covers "
+	"the North American 3000GT and Stealth (17-character VINs) and only a few GTOs so far; we're looking for their "
+	"factory data, so if you have your car's papers, please email storyteller@3shub.com."
 )
+
+
+CHASSIS_MODELS = {"Z15A": "G5", "Z16A": "G6"}  # chassis family -> Model key (migration 0004)
 
 
 def is_chassis_number(raw: str | None) -> bool:
 	"""A JDM GTO chassis number (Z15A-/Z16A- and seven digits, the dash optional)."""
 	return bool(CHASSIS_PATTERN.match("".join((raw or "").split()).upper()))
+
+
+def normalize_chassis(raw: str | None) -> str:
+	"""A GTO chassis number in canonical form ('Z16A-0011452'), or InvalidVin."""
+	compact = "".join((raw or "").split()).upper()
+	if not CHASSIS_PATTERN.match(compact):
+		raise InvalidVin(compact)
+	family, digits = compact[:4], compact[-7:]
+	return f"{family}-{digits}"
 
 
 # What a VIN that isn't on record can still tell us (positions 1-3, 10 and 12-17).

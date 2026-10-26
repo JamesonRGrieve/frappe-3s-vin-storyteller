@@ -88,13 +88,19 @@ non-1991–99 model year, or a VIN no CAPS car resembles. Such a car is told as 
 VIN, "not in Mitsubishi's factory export … on record from <source>"), and every position, total and rarity counts
 CAPS cars only.
 
+A Japanese-market GTO is added the same way by its chassis number (`Z15A-`/`Z16A-` and seven digits, stored in
+canonical `Z16A-0011452` form in the VIN column): its family gives the Model (`G5` / `G6`, migration 0004,
+Mitsubishi GTO with no trim), the seven digits are its serial, and model year, build date and codes stay empty.
+What a source says beyond that (a factory build date, a trim) goes into `VehicleHistory` with that source.
+
 ### Not-found answers
 
 A VIN without a record gets the most specific reason the VIN and the record give: not a JA3/JB3 VIN; not a
 1991–99 model year; a wrong check digit (all 236,589 CAPS VINs have a correct one, so this means a typo); a serial
 inside a stretch missing from the export (naming the cars either side and their build periods); before the
 year's first or after its last car on record; otherwise the original message. A Japanese-market GTO chassis
-number (`Z15A-`/`Z16A-` and seven digits) is recognised as such.
+number (`Z15A-`/`Z16A-` and seven digits) is looked up the same way and, when it isn't on record, answered as a
+JDM GTO not on record yet.
 
 ## Rarity
 

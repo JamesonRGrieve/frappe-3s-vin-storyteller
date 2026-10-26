@@ -13,7 +13,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from vin_storyteller.repository import PARAMSTYLES
-from vin_storyteller.story import CAPS, has_valid_check_digit, normalize_vin, year_code
+from vin_storyteller.story import (
+	CAPS,
+	CHASSIS_MODELS,
+	has_valid_check_digit,
+	is_chassis_number,
+	normalize_chassis,
+	normalize_vin,
+	year_code,
+)
 
 PROVENANCE_MAX = 30  # Production.Provenance
 
@@ -34,13 +42,16 @@ class AddedRecord:
 
 
 def add_record(connection, raw_vin: str, provenance: str, paramstyle: str = "format") -> AddedRecord:
-	"""Insert a non-CAPS production record for `raw_vin`, with `provenance` naming its source."""
-	vin = normalize_vin(raw_vin)
+	"""Insert a non-CAPS production record for `raw_vin` (a 17-character VIN, or a JDM GTO chassis number), with
+	`provenance` naming its source."""
 	provenance = " ".join((provenance or "").split())
 	if not provenance or provenance.upper() == CAPS or len(provenance) > PROVENANCE_MAX:
 		raise RecordRefused(
 			f"provenance must name the source in 1-{PROVENANCE_MAX} characters, and not be {CAPS}"
 		)
+	if is_chassis_number(raw_vin):
+		return _add_chassis(connection, normalize_chassis(raw_vin), provenance, PARAMSTYLES[paramstyle])
+	vin = normalize_vin(raw_vin)
 	year = year_code(vin)
 	if year is None:
 		raise RecordRefused(f"{vin}: position 10 isn't a 1991-1999 model year")
@@ -76,3 +87,24 @@ def add_record(connection, raw_vin: str, provenance: str, paramstyle: str = "for
 		cursor.close()
 	connection.commit()
 	return AddedRecord(vin, model, model_code, classification, year, provenance, pattern_year)
+
+
+def _add_chassis(connection, chassis: str, provenance: str, mark: str) -> AddedRecord:
+	"""A JDM GTO by chassis number: its family gives the Model; serial is the seven digits; nothing else is known."""
+	family = chassis[:4]
+	model = CHASSIS_MODELS[family]
+	cursor = connection.cursor()
+	try:
+		cursor.execute(f"SELECT 1 FROM Production WHERE VIN = {mark}", (chassis,))
+		if cursor.fetchone():
+			raise RecordRefused(f"{chassis} is already on record")
+		cursor.execute(
+			"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, "
+			"Interior, DateOfManufacture, ModelYear, Provenance) "
+			f"VALUES ({mark}, {mark}, {mark}, {mark}, '', '', '', '', '', '', {mark})",
+			(chassis[-7:], chassis, model, family, provenance),
+		)
+	finally:
+		cursor.close()
+	connection.commit()
+	return AddedRecord(chassis, model, family, "", "", provenance, "")

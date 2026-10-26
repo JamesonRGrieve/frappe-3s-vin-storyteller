@@ -17,7 +17,7 @@ from vin_storyteller.migrations import (
 	statements,
 )
 
-SHIPPED = ["0001_indexes", "0002_provenance_and_history", "0003_stories_told"]
+SHIPPED = ["0001_indexes", "0002_provenance_and_history", "0003_stories_told", "0004_gto_models"]
 
 
 def test_shipped_migrations_in_order():

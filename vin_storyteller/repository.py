@@ -130,7 +130,7 @@ class ProductionRecords:
 				vin=vin,
 				provenance=car.provenance,
 				history=self.history(vin),
-				model_year=full_year(car.model_year),
+				model_year=full_year(car.model_year) if car.model_year else "",
 				manufacturer=manufacturer or MISSING,
 				model=model_name or MISSING,
 				trim=trim or "",

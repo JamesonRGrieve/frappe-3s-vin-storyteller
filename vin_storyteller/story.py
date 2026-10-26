@@ -56,6 +56,93 @@ def describe_production_date(code: str) -> str:
 	return f"the {PERIOD_NAMES.get(period, 'Unknown')} production period of {month_name}, {full_year(year)}"
 
 
+# What a VIN that isn't on record can still tell us (positions 1-3, 10 and 12-17).
+MANUFACTURER_CODES = {
+	"JA3": "Mitsubishi",
+	"JB3": "Dodge",
+}  # every car in the CAPS export starts with one of these
+YEAR_CODES = {
+	"M": "91",
+	"N": "92",
+	"P": "93",
+	"R": "94",
+	"S": "95",
+	"T": "96",
+	"V": "97",
+	"W": "98",
+	"X": "99",
+}
+SPECIAL_SERIALS = 100  # 000001-000100: usually crash-test or promotional cars
+REPORT = "please email storyteller@3shub.com with your VIN so we can add it"
+
+
+@dataclass(frozen=True)
+class Neighbour:
+	"""The nearest car on record on one side of a missing serial, in the same model year."""
+
+	serial: str
+	built: str  # 'YYMMP'
+
+
+@dataclass(frozen=True)
+class Gap:
+	"""Where a missing VIN's serial falls among the model year's cars on record."""
+
+	before: Neighbour | None
+	after: Neighbour | None
+
+
+def year_code(vin: str) -> str | None:
+	"""The two-digit model year a VIN's 10th character encodes, if it is a 1991-1999 code."""
+	return YEAR_CODES.get(vin[9])
+
+
+def not_found_message(vin: str, gap: Gap | None) -> str | None:
+	"""Why a well-formed VIN has no production record, when the VIN or the record around it says; None otherwise."""
+	maker = MANUFACTURER_CODES.get(vin[:3])
+	if maker is None:
+		return (
+			f"That VIN starts with {vin[:3]}, so it wasn't issued for a North American Mitsubishi 3000GT or Dodge "
+			"Stealth: theirs start with JA3 (Mitsubishi) or JB3 (Dodge). A Japanese-market GTO carries a chassis "
+			"number instead of a VIN, and those aren't in the production record yet."
+		)
+	year = year_code(vin)
+	if year is None:
+		return (
+			f"The 10th character of that VIN, {vin[9]}, isn't a 1991–1999 model year code, so it isn't a 3000GT "
+			"or Stealth VIN. Please check it against the plate at the base of your windshield."
+		)
+	if gap is None:
+		return None
+	serial = vin[11:]
+	model_year = full_year(year)
+	if gap.before and gap.after:
+		return (
+			f"Serial {serial} isn't in the factory record for the {model_year} model year, but the cars either side "
+			f"of it are: serial {gap.before.serial} was built in {describe_production_date(gap.before.built)} and "
+			f"serial {gap.after.serial} in {describe_production_date(gap.after.built)}. That stretch is missing from "
+			f"the export Mitsubishi made, so your car is almost certainly genuine; {REPORT}."
+		)
+	if gap.after:
+		special = (
+			" Serial numbers 000001 to 000100 were usually crash-test or promotional cars."
+			if int(serial) <= SPECIAL_SERIALS
+			else ""
+		)
+		return (
+			f"Serial {serial} comes before the first {model_year} car in the factory record (serial "
+			f"{gap.after.serial}, built in {describe_production_date(gap.after.built)}), and the export is missing "
+			f"cars from the start of some model years.{special} If your VIN is right, {REPORT}."
+		)
+	if gap.before:
+		return (
+			f"Serial {serial} comes after the last {model_year} car in the factory record (serial "
+			f"{gap.before.serial}, built in {describe_production_date(gap.before.built)}). Please check the VIN; if "
+			f"it's right, {REPORT}."
+		)
+	return None
+
+
 def exterior_description(manufacturer: str, mitsubishi: str, dodge: str) -> str:
 	"""The colour name the car's own manufacturer used, or MISSING when it is not deciphered yet."""
 	if manufacturer == "Mitsubishi" and mitsubishi != MISSING:

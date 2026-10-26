@@ -72,3 +72,43 @@ def test_other_errors_are_not_swallowed(open_records):
 
 def test_not_found_message_keeps_the_original_wording():
 	assert "storyteller@3shub.com" in NOT_FOUND and "lost VIN" in NOT_FOUND
+
+
+def message(open_records, vin):
+	reply = answer(vin, open_records, DB_ERRORS)
+	assert reply["status"] == "not_found"
+	return reply["message"]
+
+
+def test_not_found_inside_a_gap_names_the_cars_either_side(open_records):
+	text = message(open_records, "JA3AM84J3NY000008")
+	assert "Serial 000008 isn't in the factory record for the 1992 model year" in text
+	assert "serial 000007 was built in the 2nd production period of March, 1992" in text
+	assert "serial 000009 in the 3rd production period of March, 1992" in text
+	assert "almost certainly genuine" in text and "storyteller@3shub.com" in text
+
+
+def test_not_found_after_the_last_car_of_the_year(open_records):
+	text = message(open_records, "JA3AM84J3NY000010")
+	assert "comes after the last 1992 car in the factory record (serial 000009" in text
+
+
+def test_not_found_before_the_first_car_mentions_crash_test_serials(open_records):
+	text = message(open_records, "JA3AM84J3MY000005")
+	assert "comes before the first 1991 car in the factory record (serial 000008" in text
+	assert "crash-test or promotional" in text
+
+
+@pytest.mark.parametrize(
+	("vin", "expected"),
+	[
+		("1HGCM82633A004352", "starts with 1HG"),
+		("JA3AM84J3AY000001", "isn't a 1991–1999 model year code"),
+	],
+)
+def test_not_found_explains_a_vin_that_cannot_be_a_3s(open_records, vin, expected):
+	assert expected in message(open_records, vin)
+
+
+def test_not_found_falls_back_to_the_original_message(open_records):
+	assert message(open_records, "JA3AM84J3NY999999") == NOT_FOUND

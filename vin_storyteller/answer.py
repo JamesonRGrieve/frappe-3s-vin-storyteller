@@ -11,7 +11,7 @@ from collections.abc import Callable
 from contextlib import AbstractContextManager
 
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.story import InvalidVin, normalize_vin
+from vin_storyteller.story import InvalidVin, normalize_vin, not_found_message
 
 INVALID = "Please enter a valid 17 character VIN. VINs never contain the letters I, O or Q."
 NOT_FOUND = (
@@ -39,8 +39,9 @@ def answer(
 	try:
 		with open_records() as records:
 			story = records.story(vin)
+			gap = records.gap(vin) if story is None else None
 	except database_errors as error:
 		raise RecordsUnavailable from error
 	if story is None:
-		return {"status": "not_found", "message": NOT_FOUND}
+		return {"status": "not_found", "message": not_found_message(vin, gap) or NOT_FOUND}
 	return {"status": "found", "story": story.as_dict()}

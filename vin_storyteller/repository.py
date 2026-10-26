@@ -14,13 +14,20 @@ from datetime import datetime
 from vin_storyteller.story import (
 	MISSING,
 	Coded,
+	Gap,
 	HistoryRecord,
+	Neighbour,
 	Position,
 	Story,
 	describe_production_date,
 	exterior_description,
 	full_year,
 	safe_url,
+	year_code,
+)
+
+SECOND_SERIES = (
+	"800000"  # 1995-96 also have an 8xxxxx VIN series (its own SerialNumber run); gaps stay within a series
 )
 
 PARAMSTYLES = {"format": "%s", "qmark": "?"}  # PyMySQL uses %s, sqlite3 uses ?
@@ -142,6 +149,28 @@ class ProductionRecords:
 				self._count(identical, spec),
 			),
 		)
+
+	def gap(self, vin: str) -> Gap | None:
+		"""The nearest cars on record either side of an unrecorded VIN's serial, in its model year and series."""
+		year = year_code(vin)
+		if year is None:
+			return None
+		serial = vin[11:]
+		series = ">= %s" if serial >= SECOND_SERIES else "< %s"
+		where = f"ModelYear = %s AND SUBSTR(VIN, 12, 6) {series}"
+		before = self._one(
+			f"SELECT SUBSTR(VIN, 12, 6), DateOfManufacture FROM Production WHERE {where} AND SUBSTR(VIN, 12, 6) < %s "
+			"ORDER BY SUBSTR(VIN, 12, 6) DESC LIMIT 1",
+			(year, SECOND_SERIES, serial),
+		)
+		after = self._one(
+			f"SELECT SUBSTR(VIN, 12, 6), DateOfManufacture FROM Production WHERE {where} AND SUBSTR(VIN, 12, 6) > %s "
+			"ORDER BY SUBSTR(VIN, 12, 6) LIMIT 1",
+			(year, SECOND_SERIES, serial),
+		)
+		if before is None and after is None:
+			return None
+		return Gap(before=Neighbour(*before) if before else None, after=Neighbour(*after) if after else None)
 
 	def record_story(self, vin: str, name: str, at: datetime) -> None:
 		"""Log a story told, as the original storyteller did: the VIN, the visitor's name, the hour and the time."""

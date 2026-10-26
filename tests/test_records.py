@@ -73,3 +73,18 @@ def test_a_jdm_gto_is_recorded_by_its_chassis_number(connection):
 	assert row == ("0011452", "", "", "Mitsubishi recall 1153")
 	with pytest.raises(RecordRefused, match="already on record"):
 		add_record(connection, "Z16A-0011452", "Another source", "qmark")
+
+
+def test_gap_neighbours_come_from_caps_only(connection):
+	"""A car added from another source (no build date) is never named as a missing VIN's neighbour."""
+	from vin_storyteller.story import Neighbour
+
+	add_record(
+		connection, GAP_VIN, "Auction record", "qmark"
+	)  # serial 000008, between CAPS 000007 and 000009
+	gap = ProductionRecords(connection, "qmark").gap(valid("JA3AM84J3NY000010"))
+	assert gap.before == Neighbour("000009", "92033")
+	gap = ProductionRecords(connection, "qmark").gap(
+		valid("JA3AM84J3NY000006")
+	)  # 000006 is a CAPS Dodge (1B3)
+	assert gap is not None

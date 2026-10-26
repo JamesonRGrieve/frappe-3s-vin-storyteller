@@ -192,16 +192,17 @@ class ProductionRecords:
 			return None
 		serial = vin[11:]
 		series = ">= %s" if serial >= SECOND_SERIES else "< %s"
-		where = f"ModelYear = %s AND SUBSTR(VIN, 12, 6) {series}"
+		# Neighbours come from the factory export only: a car added from another source has no build date.
+		where = f"ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) {series}"
 		before = self._one(
 			f"SELECT SUBSTR(VIN, 12, 6), DateOfManufacture FROM Production WHERE {where} AND SUBSTR(VIN, 12, 6) < %s "
 			"ORDER BY SUBSTR(VIN, 12, 6) DESC LIMIT 1",
-			(year, SECOND_SERIES, serial),
+			(year, CAPS, SECOND_SERIES, serial),
 		)
 		after = self._one(
 			f"SELECT SUBSTR(VIN, 12, 6), DateOfManufacture FROM Production WHERE {where} AND SUBSTR(VIN, 12, 6) > %s "
 			"ORDER BY SUBSTR(VIN, 12, 6) LIMIT 1",
-			(year, SECOND_SERIES, serial),
+			(year, CAPS, SECOND_SERIES, serial),
 		)
 		if before is None and after is None:
 			return None

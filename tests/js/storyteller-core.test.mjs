@@ -111,3 +111,18 @@ test("normalizeName collapses whitespace and refuses blank or overlong names", (
 	assert.equal(core.normalizeName(null), "");
 	assert.equal(core.normalizeName("x".repeat(101)), "");
 });
+
+test("JDM GTO chassis numbers are recognised, partial ones are left alone", () => {
+	assert.ok(core.isChassisNumber("Z16A-0011452"));
+	assert.ok(core.isChassisNumber(" z15a0200248 "));
+	assert.equal(core.isChassisNumber("Z17A-0011452"), false);
+	assert.deepEqual({ ...core.vinCheck("Z16A-0011452") }, { count: "JDM chassis", state: "ready", ready: true, message: "" });
+	assert.equal(core.vinCheck("Z16A-00").state, "typing");
+	assert.equal(core.vinCheck("Z16A-00").message, "");
+});
+
+test("a partial story (not in the factory export) says so and shows unknown codes", () => {
+	assert.equal(core.codedText({ code: "", description: "MISSING" }), "Not known");
+	assert.match(core.builtText({ partial: true, provenance: "Price label" }), /on record from Price label/);
+	assert.equal(core.builtText({ partial: false, built: "the 1st production period of May, 1996" }), "Built in the 1st production period of May, 1996.");
+});

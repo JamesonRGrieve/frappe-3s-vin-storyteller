@@ -94,7 +94,9 @@
 	function render(root, story) {
 		const result = root.querySelector(".vst-result");
 		result.querySelector(".vst-name").textContent = story.vehicle_name;
-		result.querySelector(".vst-built").textContent = `Built in ${story.built}.`;
+		result.querySelector(".vst-built").textContent = core.builtText(story);
+		result.querySelector(".vst-stats").hidden = Boolean(story.partial);
+		result.querySelector(".vst-timeline").hidden = Boolean(story.partial);
 		result.querySelector(".vst-vin-value").textContent = story.vin;
 
 		setText(result, "in_year", core.positionText(story.in_year));
@@ -173,7 +175,7 @@
 			const vin = core.normalizeVin(input.value);
 			input.value = vin;
 			showCheck(root, input);
-			if (!core.isValidVin(vin)) {
+			if (!core.isValidVin(vin) && !core.isChassisNumber(vin)) {
 				input.setAttribute("aria-invalid", "true");
 				setStatus(root, MESSAGES.invalid, "error");
 				input.focus();

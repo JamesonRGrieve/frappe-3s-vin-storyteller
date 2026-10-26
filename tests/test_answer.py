@@ -41,7 +41,7 @@ def test_invalid_vin_never_touches_the_database(vin):
 
 
 def test_not_found(open_records):
-	assert answer("JA3AM84J3NY999999", open_records, DB_ERRORS) == {
+	assert answer(valid("JA3AM84J3NY999999"), open_records, DB_ERRORS) == {
 		"status": "not_found",
 		"message": NOT_FOUND,
 	}
@@ -74,8 +74,15 @@ def test_not_found_message_keeps_the_original_wording():
 	assert "storyteller@3shub.com" in NOT_FOUND and "lost VIN" in NOT_FOUND
 
 
+def valid(vin):
+	"""`vin` with its correct check digit (the fixture's VINs are made up)."""
+	from vin_storyteller.story import check_digit
+
+	return vin[:8] + check_digit(vin) + vin[9:]
+
+
 def message(open_records, vin):
-	reply = answer(vin, open_records, DB_ERRORS)
+	reply = answer(valid(vin), open_records, DB_ERRORS)
 	assert reply["status"] == "not_found"
 	return reply["message"]
 
@@ -112,3 +119,28 @@ def test_not_found_explains_a_vin_that_cannot_be_a_3s(open_records, vin, expecte
 
 def test_not_found_falls_back_to_the_original_message(open_records):
 	assert message(open_records, "JA3AM84J3NY999999") == NOT_FOUND
+
+
+def test_a_wrong_check_digit_is_called_a_typo(open_records):
+	vin = valid("JA3AM84J3NY000008")
+	typo = vin[:8] + ("0" if vin[8] != "0" else "1") + vin[9:]
+	text = answer(typo, open_records, DB_ERRORS)["message"]
+	assert "almost certainly mistyped" in text
+
+
+@pytest.mark.parametrize("chassis", ["Z16A-0011452", "z15a0200248", " Z16A-0006229 "])
+def test_jdm_chassis_number_is_recognised_without_touching_the_database(chassis):
+	from vin_storyteller.story import CHASSIS_NOT_ON_RECORD
+
+	def opener():
+		raise AssertionError("a chassis number never opens the production record")
+
+	assert answer(chassis, opener, DB_ERRORS) == {"status": "not_found", "message": CHASSIS_NOT_ON_RECORD}
+
+
+@pytest.mark.parametrize("not_chassis", ["Z17A-0011452", "Z16A-001145", "Z16A-00114521"])
+def test_near_miss_chassis_numbers_stay_invalid(not_chassis):
+	def opener():
+		raise AssertionError("an invalid identifier never opens the production record")
+
+	assert answer(not_chassis, opener, DB_ERRORS) == {"status": "invalid", "message": INVALID}

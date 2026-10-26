@@ -11,7 +11,13 @@ from collections.abc import Callable
 from contextlib import AbstractContextManager
 
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.story import InvalidVin, normalize_vin, not_found_message
+from vin_storyteller.story import (
+	CHASSIS_NOT_ON_RECORD,
+	InvalidVin,
+	is_chassis_number,
+	normalize_vin,
+	not_found_message,
+)
 
 INVALID = "Please enter a valid 17 character VIN. VINs never contain the letters I, O or Q."
 NOT_FOUND = (
@@ -32,6 +38,8 @@ def answer(
 	database_errors: tuple[type[BaseException], ...],
 ) -> dict:
 	"""The API response body for `raw_vin`: status invalid | not_found | found (with the story)."""
+	if is_chassis_number(raw_vin):
+		return {"status": "not_found", "message": CHASSIS_NOT_ON_RECORD}
 	try:
 		vin = normalize_vin(raw_vin)
 	except InvalidVin:

@@ -188,3 +188,23 @@ class TestNormalizeName:
 
 		with pytest.raises(InvalidName):
 			normalize_name(bad)
+
+
+class TestCheckDigit:
+	@pytest.mark.parametrize(
+		"vin", ["JB3AN74K1SY008527", "JA3AN74K4VY005090", "JA3AM44H6VY002777", "1M8GDM9AXKP042788"]
+	)
+	def test_real_vins_validate(self, vin):
+		from vin_storyteller.story import has_valid_check_digit
+
+		assert has_valid_check_digit(vin)
+
+	def test_x_for_remainder_ten(self):
+		from vin_storyteller.story import check_digit
+
+		assert check_digit("1M8GDM9AXKP042788") == "X"
+
+	def test_a_changed_character_fails(self):
+		from vin_storyteller.story import has_valid_check_digit
+
+		assert not has_valid_check_digit("JB3AN74K1SY008528")

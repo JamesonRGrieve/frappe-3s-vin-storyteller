@@ -77,6 +77,25 @@ VALUES ('JA3AM84J3NY012345', 'auction', 'Sold on Bring a Trailer', 'https://brin
 Migrations are numbered files in [`vin_storyteller/sql/migrations/`](vin_storyteller/sql/migrations/). Each
 runs once, in order, and is recorded in `SchemaMigration`. Never edit one that has run; add the next number.
 
+### Cars the CAPS export is missing
+
+A real VIN proven by another source (a factory price label, a dealer or auction record) is added with
+`bench --site <site> vin-storyteller-add-record <VIN> "<source>"` (admin credentials from the environment, as for
+migrate). Only what the VIN establishes is stored: its model line comes from the CAPS cars sharing its first eight
+characters (its own model year, else the nearest), its build date and colour, interior and equipment codes stay
+empty, and `Provenance` names the source. The command refuses a VIN already on record, a wrong check digit, a
+non-1991–99 model year, or a VIN no CAPS car resembles. Such a car is told as a **partial story** (model, year,
+VIN, "not in Mitsubishi's factory export … on record from <source>"), and every position, total and rarity counts
+CAPS cars only.
+
+### Not-found answers
+
+A VIN without a record gets the most specific reason the VIN and the record give: not a JA3/JB3 VIN; not a
+1991–99 model year; a wrong check digit (all 236,589 CAPS VINs have a correct one, so this means a typo); a serial
+inside a stretch missing from the export (naming the cars either side and their build periods); before the
+year's first or after its last car on record; otherwise the original message. A Japanese-market GTO chassis
+number (`Z15A-`/`Z16A-` and seven digits) is recognised as such.
+
 ## Rarity
 
 A car is rated on three runs within its model year: its **exact specification** (model, trim, colour,

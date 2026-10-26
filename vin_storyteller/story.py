@@ -56,6 +56,45 @@ def describe_production_date(code: str) -> str:
 	return f"the {PERIOD_NAMES.get(period, 'Unknown')} production period of {month_name}, {full_year(year)}"
 
 
+CAPS = "CAPS"  # Production.Provenance of the factory export; only these rows count in positions and totals
+
+# ISO 3779 check digit (the VIN's 9th character): every one of the 236,589 CAPS VINs has a correct one, so a VIN
+# whose check digit fails was almost certainly mistyped.
+_VIN_VALUES = {
+	**{str(d): d for d in range(10)},
+	**dict(zip("ABCDEFGH", range(1, 9), strict=True)),
+	**dict(zip("JKLMN", range(1, 6), strict=True)),
+	"P": 7,
+	"R": 9,
+	**dict(zip("STUVWXYZ", range(2, 10), strict=True)),
+}
+_VIN_WEIGHTS = (8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2)
+
+
+def check_digit(vin: str) -> str:
+	"""The check digit a 17-character VIN should carry in position 9."""
+	remainder = sum(_VIN_VALUES[c] * w for c, w in zip(vin, _VIN_WEIGHTS, strict=True)) % 11
+	return "X" if remainder == 10 else str(remainder)
+
+
+def has_valid_check_digit(vin: str) -> bool:
+	return check_digit(vin) == vin[8]
+
+
+# Japanese-market GTOs carry a chassis number, not a 17-character VIN: Z15A- or Z16A- and seven digits (Mitsubishi
+# service campaign SC059; card 327). None of them are in the production record yet.
+CHASSIS_PATTERN = re.compile(r"^Z1[56]A-?[0-9]{7}$")
+CHASSIS_NOT_ON_RECORD = (
+	"That's a Japanese-market Mitsubishi GTO chassis number. The production record covers the North American "
+	"3000GT and Stealth (17-character VINs), so JDM GTOs aren't in it yet; we're looking for their factory data."
+)
+
+
+def is_chassis_number(raw: str | None) -> bool:
+	"""A JDM GTO chassis number (Z15A-/Z16A- and seven digits, the dash optional)."""
+	return bool(CHASSIS_PATTERN.match("".join((raw or "").split()).upper()))
+
+
 # What a VIN that isn't on record can still tell us (positions 1-3, 10 and 12-17).
 MANUFACTURER_CODES = {
 	"JA3": "Mitsubishi",
@@ -111,6 +150,12 @@ def not_found_message(vin: str, gap: Gap | None) -> str | None:
 		return (
 			f"The 10th character of that VIN, {vin[9]}, isn't a 1991–1999 model year code, so it isn't a 3000GT "
 			"or Stealth VIN. Please check it against the plate at the base of your windshield."
+		)
+	if not has_valid_check_digit(vin):
+		return (
+			"That VIN doesn't add up: its 9th character is a check digit calculated from the other 16, and it "
+			"doesn't match them, so one of the characters is almost certainly mistyped. Please check it against "
+			"the plate at the base of your windshield."
 		)
 	if gap is None:
 		return None
@@ -236,6 +281,9 @@ class Story:
 	in_model: Position
 	in_colour: Position
 	among_identical: Position
+	partial: bool = (
+		False  # on record from another source than CAPS: no build date, codes, positions or rarity
+	)
 
 	@property
 	def vehicle_name(self) -> str:
@@ -244,6 +292,8 @@ class Story:
 	@property
 	def rarities(self) -> list[Rarity]:
 		"""Every scope in which this car is rare, rarest first."""
+		if self.partial:
+			return []
 		runs = {
 			"spec": self.among_identical.total,
 			"colour": self.in_colour.total,

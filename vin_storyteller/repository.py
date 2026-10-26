@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from vin_storyteller.story import (
+	CAPS,
 	MISSING,
 	Coded,
 	Gap,
@@ -66,7 +67,12 @@ class ProductionRecords:
 		return rows[0] if rows else None
 
 	def _count(self, where: str, params: tuple) -> int:
-		return int(self._one(f"SELECT COUNT(*) FROM Production WHERE {where}", params)[0])
+		"""Cars in the factory export matching `where`: records from other sources never shift a CAPS count."""
+		return int(
+			self._one(
+				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND Provenance = %s", (*params, CAPS)
+			)[0]
+		)
 
 	def car(self, vin: str) -> Car | None:
 		row = self._one(
@@ -112,9 +118,38 @@ class ProductionRecords:
 		earlier = " AND SerialNumber < %s"
 
 		year_start = self._one(
-			"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s", (car.model_year,)
+			"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND Provenance = %s",
+			(car.model_year, CAPS),
 		)
-		model_start = self._one(f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line}", line)
+		model_start = self._one(
+			f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line} AND Provenance = %s",
+			(*line, CAPS),
+		)
+		if car.provenance != CAPS:
+			return Story(
+				vin=vin,
+				provenance=car.provenance,
+				history=self.history(vin),
+				model_year=full_year(car.model_year),
+				manufacturer=manufacturer or MISSING,
+				model=model_name or MISSING,
+				trim=trim or "",
+				exterior=Coded(car.exterior, MISSING),
+				interior=Coded(car.interior, MISSING),
+				equipment=Coded(car.equipment, MISSING),
+				built="",
+				built_in_period=0,
+				built_in_month=0,
+				year_started=describe_production_date(year_start[0]) if year_start and year_start[0] else "",
+				model_started=describe_production_date(model_start[0])
+				if model_start and model_start[0]
+				else "",
+				in_year=Position(0, 0),
+				in_model=Position(0, 0),
+				in_colour=Position(0, 0),
+				among_identical=Position(0, 0),
+				partial=True,
+			)
 
 		return Story(
 			vin=vin,

@@ -27,6 +27,9 @@
 	const VIN_LENGTH = 17;
 	const LOOK_ALIKES = /[IOQ]/;
 	const NOT_VIN_CHARACTER = /[^A-Z0-9]/;
+	// Japanese-market GTO chassis number (Z15A-/Z16A- and seven digits): not a VIN, and not in the record yet.
+	const CHASSIS = /^Z1[56]A-?[0-9]{7}$/;
+	const CHASSIS_SO_FAR = /^Z(1([56](A(-?[0-9]{0,7})?)?)?)?$/;
 
 	const normalizeVin = (raw) => String(raw ?? "").replace(/\s+/g, "").toUpperCase();
 	const NAME_MAX = 100; // StoriesTold.Name
@@ -36,17 +39,31 @@
 		return name.length <= NAME_MAX ? name : "";
 	};
 	const isValidVin = (vin) => VIN_PATTERN.test(vin);
+	const isChassisNumber = (raw) => CHASSIS.test(normalizeVin(raw));
 	const isSafeUrl = (url) => typeof url === "string" && SAFE_URL.test(url);
 	const formatNumber = (n) => Number(n).toLocaleString(LOCALE);
 	const positionText = (p) => `No. ${formatNumber(p.position)} of ${formatNumber(p.total)}`;
 	const UNDECODED = "MISSING"; // the record's placeholder for a code nobody has deciphered yet
-	const codedText = (c) => (c.description === UNDECODED ? `Not yet decoded · ${c.code}` : `${c.description} · ${c.code}`);
+	const codedText = (c) => {
+		if (!c.code) return "Not known"; // a car on record from another source than the factory export
+		return c.description === UNDECODED ? `Not yet decoded · ${c.code}` : `${c.description} · ${c.code}`;
+	};
+	// The "Built in …" line, or for a car that isn't in the factory export, where its record came from.
+	const builtText = (story) =>
+		story.partial
+			? `Not in Mitsubishi's factory export: this car is on record from ${story.provenance}, so its build date, ` +
+				"colours and equipment aren't known yet."
+			: `Built in ${story.built}.`;
 	const provenanceText = (p) => `Production record source: ${PROVENANCE_NAMES[p] || p}.`;
 
 	// Live feedback while typing: the count so far and, once something is wrong, why. `ready` means the VIN
 	// can be looked up; nothing here blocks submitting (the submit handler validates again).
 	function vinCheck(raw) {
 		const vin = normalizeVin(raw);
+		if (CHASSIS.test(vin)) return { count: "JDM chassis", state: "ready", ready: true, message: "" };
+		if (vin.length > 1 && CHASSIS_SO_FAR.test(vin)) {
+			return { count: "chassis?", state: "typing", ready: false, message: "" };
+		}
 		const count = `${vin.length} / ${VIN_LENGTH}`;
 		if (NOT_VIN_CHARACTER.test(vin)) return { count, state: "bad", ready: false, message: "Use letters and numbers only." };
 		if (LOOK_ALIKES.test(vin)) {
@@ -88,11 +105,13 @@
 		normalizeVin,
 		normalizeName,
 		isValidVin,
+		isChassisNumber,
 		vinCheck,
 		isSafeUrl,
 		formatNumber,
 		positionText,
 		codedText,
+		builtText,
 		provenanceText,
 		badgeParts,
 		historyParts,

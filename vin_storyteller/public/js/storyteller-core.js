@@ -24,14 +24,32 @@
 	};
 	const PROVENANCE_NAMES = { CAPS: "the factory production record (CAPS export)" };
 	const LOCALE = "en-CA";
+	const VIN_LENGTH = 17;
+	const LOOK_ALIKES = /[IOQ]/;
+	const NOT_VIN_CHARACTER = /[^A-Z0-9]/;
 
 	const normalizeVin = (raw) => String(raw ?? "").replace(/\s+/g, "").toUpperCase();
 	const isValidVin = (vin) => VIN_PATTERN.test(vin);
 	const isSafeUrl = (url) => typeof url === "string" && SAFE_URL.test(url);
 	const formatNumber = (n) => Number(n).toLocaleString(LOCALE);
 	const positionText = (p) => `No. ${formatNumber(p.position)} of ${formatNumber(p.total)}`;
-	const codedText = (c) => `${c.description} · ${c.code}`;
+	const UNDECODED = "MISSING"; // the record's placeholder for a code nobody has deciphered yet
+	const codedText = (c) => (c.description === UNDECODED ? `Not yet decoded · ${c.code}` : `${c.description} · ${c.code}`);
 	const provenanceText = (p) => `Production record source: ${PROVENANCE_NAMES[p] || p}.`;
+
+	// Live feedback while typing: the count so far and, once something is wrong, why. `ready` means the VIN
+	// can be looked up; nothing here blocks submitting (the submit handler validates again).
+	function vinCheck(raw) {
+		const vin = normalizeVin(raw);
+		const count = `${vin.length} / ${VIN_LENGTH}`;
+		if (NOT_VIN_CHARACTER.test(vin)) return { count, state: "bad", ready: false, message: "Use letters and numbers only." };
+		if (LOOK_ALIKES.test(vin)) {
+			return { count, state: "bad", ready: false, message: "VINs never contain I, O or Q. Did you mean 1 or 0?" };
+		}
+		if (vin.length > VIN_LENGTH) return { count, state: "bad", ready: false, message: `That's more than ${VIN_LENGTH} characters.` };
+		if (vin.length === VIN_LENGTH) return { count, state: "ready", ready: true, message: "" };
+		return { count, state: vin.length ? "typing" : "empty", ready: false, message: "" };
+	}
 
 	function badgeParts(rarity) {
 		return {
@@ -63,6 +81,7 @@
 	globalThis.VinStorytellerCore = Object.freeze({
 		normalizeVin,
 		isValidVin,
+		vinCheck,
 		isSafeUrl,
 		formatNumber,
 		positionText,

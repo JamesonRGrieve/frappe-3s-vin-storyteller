@@ -44,6 +44,7 @@ test("numbers and positions use Canadian English grouping", () => {
 
 test("codedText and provenanceText", () => {
 	assert.equal(core.codedText({ code: "T87", description: "Fiji Blue" }), "Fiji Blue · T87");
+	assert.equal(core.codedText({ code: "47E", description: "MISSING" }), "Not yet decoded · 47E");
 	assert.equal(core.provenanceText("CAPS"), "Production record source: the factory production record (CAPS export).");
 	assert.equal(core.provenanceText("owner"), "Production record source: owner.");
 });
@@ -88,4 +89,18 @@ test("timelineText tells when the year and the model began", () => {
 	});
 	assert.match(text, /^Production for the 1992 model year started in the 2nd production period of September, 1991/);
 	assert.match(text, /first 1992 Mitsubishi 3000GT VR-4 came off the line in the 3rd production period/);
+});
+
+test("vinCheck counts characters and is ready only at 17 valid characters", () => {
+	assert.deepEqual({ ...core.vinCheck("") }, { count: "0 / 17", state: "empty", ready: false, message: "" });
+	assert.deepEqual({ ...core.vinCheck("ja3am") }, { count: "5 / 17", state: "typing", ready: false, message: "" });
+	assert.deepEqual({ ...core.vinCheck(" ja3am84j3 ny012345") }, { count: "17 / 17", state: "ready", ready: true, message: "" });
+});
+
+test("vinCheck explains look-alike letters, other characters and overlong input", () => {
+	assert.match(core.vinCheck("JA3AMO").message, /never contain I, O or Q/);
+	assert.equal(core.vinCheck("JA3AMO").state, "bad");
+	assert.match(core.vinCheck("JA3-AM").message, /letters and numbers only/);
+	assert.match(core.vinCheck("JA3AM84J3NY0123456").message, /more than 17/);
+	assert.equal(core.vinCheck("JA3AM84J3NY0123456").ready, false);
 });

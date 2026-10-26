@@ -9,8 +9,12 @@
 		invalid: "Please enter a valid 17 character VIN. VINs never contain the letters I, O or Q.",
 		busy: "Reading the production record…",
 		failed: "The storyteller is unavailable right now. Please try again later.",
-		limited: "You've told a lot of stories in a short time. Please try again later.",
+		limited: (limit) => `You've used your ${limit} lookups for this hour. Please try again in an hour.`,
 	};
+	const BUTTON_LABEL = "Tell its story";
+	const BUSY_LABEL = "Reading the record…";
+	const DEFAULT_LIMIT = 3;
+	const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 	const HTTP_TOO_MANY_REQUESTS = 429;
 
 	function element(tag, className, text) {
@@ -18,6 +22,32 @@
 		if (className) node.className = className;
 		if (text !== undefined) node.textContent = text;
 		return node;
+	}
+
+	// The status line: hidden when empty; `tone` (busy | error | notice) picks its colour.
+	function setStatus(root, text, tone = "notice") {
+		const status = root.querySelector(".vst-status");
+		status.textContent = text;
+		status.dataset.tone = tone;
+		status.hidden = !text;
+	}
+
+	function setBusy(root, busy) {
+		const button = root.querySelector(".vst-submit");
+		button.disabled = busy;
+		button.setAttribute("aria-busy", String(busy));
+		button.querySelector(".vst-submit-label").textContent = busy ? BUSY_LABEL : BUTTON_LABEL;
+	}
+
+	// Live feedback while typing: the character count and, once something is wrong, why.
+	function showCheck(root, input) {
+		const check = core.vinCheck(input.value);
+		const count = root.querySelector(".vst-count");
+		count.textContent = check.count;
+		count.dataset.state = check.state;
+		root.querySelector(".vst-check").textContent = check.message;
+		if (check.state === "bad") input.setAttribute("aria-invalid", "true");
+		else input.removeAttribute("aria-invalid");
 	}
 
 	function setText(root, field, text) {
@@ -64,6 +94,7 @@
 		const result = root.querySelector(".vst-result");
 		result.querySelector(".vst-name").textContent = story.vehicle_name;
 		result.querySelector(".vst-built").textContent = `Built in ${story.built}.`;
+		result.querySelector(".vst-vin-value").textContent = story.vin;
 
 		setText(result, "in_year", core.positionText(story.in_year));
 		setText(result, "in_year_label", `built for the ${story.model_year} model year (any model or trim)`);
@@ -99,58 +130,56 @@
 		history.hidden = story.history.length === 0;
 
 		result.hidden = false;
-		result.focus();
+		result.focus({ preventScroll: true });
+		result.scrollIntoView({ behavior: matchMedia(REDUCED_MOTION).matches ? "auto" : "smooth", block: "start" });
 	}
 
 	async function tell(root, vin) {
-		const status = root.querySelector(".vst-status");
-		const result = root.querySelector(".vst-result");
-		const button = root.querySelector("button[type=submit]");
-		result.hidden = true;
-		status.textContent = MESSAGES.busy;
-		button.disabled = true;
+		root.querySelector(".vst-result").hidden = true;
+		setStatus(root, MESSAGES.busy, "busy");
+		setBusy(root, true);
 		try {
 			const url = `${root.dataset.endpoint}?vin=${encodeURIComponent(vin)}`;
 			const response = await fetch(url, { headers: { Accept: "application/json" } });
 			if (response.status === HTTP_TOO_MANY_REQUESTS) {
-				status.textContent = MESSAGES.limited;
+				setStatus(root, MESSAGES.limited(Number(root.dataset.limit) || DEFAULT_LIMIT), "error");
 				return;
 			}
 			if (!response.ok) {
-				status.textContent = MESSAGES.failed;
+				setStatus(root, MESSAGES.failed, "error");
 				return;
 			}
 			const { message: reply } = await response.json();
 			if (reply.status === "found") {
-				status.textContent = "";
+				setStatus(root, "");
 				render(root, reply.story);
 			} else {
-				status.textContent = reply.message || MESSAGES.failed;
+				setStatus(root, reply.message || MESSAGES.failed, reply.status === "not_found" ? "notice" : "error");
 			}
 		} catch {
-			status.textContent = MESSAGES.failed;
+			setStatus(root, MESSAGES.failed, "error");
 		} finally {
-			button.disabled = false;
+			setBusy(root, false);
 		}
 	}
 
 	function mount(root) {
 		const form = root.querySelector(".vst-form");
 		const input = form.querySelector("input[name=vin]");
+		input.addEventListener("input", () => showCheck(root, input));
 		form.addEventListener("submit", (event) => {
 			event.preventDefault();
 			const vin = core.normalizeVin(input.value);
 			input.value = vin;
+			showCheck(root, input);
 			if (!core.isValidVin(vin)) {
 				input.setAttribute("aria-invalid", "true");
-				root.querySelector(".vst-status").textContent = MESSAGES.invalid;
+				setStatus(root, MESSAGES.invalid, "error");
 				input.focus();
 				return;
 			}
 			input.removeAttribute("aria-invalid");
-			tell(root, vin).catch(() => {
-				root.querySelector(".vst-status").textContent = MESSAGES.failed;
-			});
+			tell(root, vin).catch(() => setStatus(root, MESSAGES.failed, "error"));
 		});
 	}
 

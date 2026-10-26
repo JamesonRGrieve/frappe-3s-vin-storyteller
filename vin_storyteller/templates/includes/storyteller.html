@@ -1,6 +1,6 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css">
-<div class="vst" data-endpoint="/api/method/vin_storyteller.api.tell">
+<div class="vst" data-endpoint="/api/method/vin_storyteller.api.tell" data-limit="3">
 	<header class="vst-head">
 		<p class="vst-kicker">3000GT &middot; Stealth &middot; GTO</p>
 		<h2 class="vst-title">VIN Storyteller</h2>
@@ -8,21 +8,26 @@
 	</header>
 
 	<form class="vst-form" novalidate>
-		<label for="vst-vin">Your vehicle's VIN</label>
+		<label class="vst-label" for="vst-vin">Your vehicle's VIN</label>
 		<div class="vst-row">
-			<input id="vst-vin" name="vin" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
-				spellcheck="false" maxlength="17" aria-describedby="vst-hint" required>
-			<button type="submit">Tell its story</button>
+			<div class="vst-field">
+				<input id="vst-vin" name="vin" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
+					spellcheck="false" maxlength="32" aria-describedby="vst-check vst-hint" required>
+				<span class="vst-count" data-state="empty" aria-hidden="true">0 / 17</span>
+			</div>
+			<button class="vst-submit" type="submit"><span class="vst-spinner" aria-hidden="true"></span><span class="vst-submit-label">Tell its story</span></button>
 		</div>
-		<p id="vst-hint" class="vst-hint">17 characters. VINs never contain the letters I, O or Q.</p>
+		<p id="vst-check" class="vst-check" aria-live="polite"></p>
+		<p id="vst-hint" class="vst-hint">17 characters, on the plate at the base of the windshield (driver's side) or on your registration. Up to 3 lookups an hour.</p>
 	</form>
 
-	<p class="vst-status" role="status" aria-live="polite"></p>
+	<p class="vst-status" role="status" aria-live="polite" hidden></p>
 
 	<section class="vst-result" tabindex="-1" aria-labelledby="vst-name" hidden>
 		<p class="vst-kicker">Your car</p>
 		<h3 id="vst-name" class="vst-name"></h3>
 		<p class="vst-built"></p>
+		<p class="vst-vin"><span class="vst-vin-label">VIN</span> <span class="vst-vin-value"></span></p>
 		<ul class="vst-badges" aria-label="Rarity" hidden></ul>
 
 		<ul class="vst-stats">
@@ -47,7 +52,7 @@
 			<ol class="vst-history-list"></ol>
 		</section>
 
-		<p class="vst-note">Mitsubishi appears to have used multiple codes for the same colours / equipment, so until we define all of these codes, the identical-car count may show as lower than it really is. If any field shows as MISSING, please email <a href="mailto:storyteller@3shub.com">storyteller@3shub.com</a> with your VIN and the code so you can help us decode Mitsubishi's codes.</p>
+		<p class="vst-note">Mitsubishi appears to have used multiple codes for the same colours / equipment, so until we define all of these codes, the identical-car count may show as lower than it really is. If any field shows as not yet decoded, please email <a href="mailto:storyteller@3shub.com">storyteller@3shub.com</a> with your VIN and the code so you can help us decode Mitsubishi's codes.</p>
 	</section>
 
 	<details class="vst-disclaimer">

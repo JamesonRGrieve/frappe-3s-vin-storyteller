@@ -14,7 +14,11 @@ production record, which lives in its own MariaDB database (not the Frappe site 
   parameterized, limited to what both MariaDB and SQLite run.
 - `vin_storyteller/answer.py`: `answer(vin, open_records, database_errors)`, the whole API answer, no
   Frappe. Database failures surface as `RecordsUnavailable`.
-- `vin_storyteller/api.py`: the only endpoint, `tell(vin)`, kept thin: guest, GET, rate-limited per IP;
+- Code pages (card 330): `ProductionRecords.code_page` / `code_index`, `answer.code_answer` / `index_answer`,
+  endpoints `api.code` / `api.codes` (guest GET, 120/hour per client apart from VIN lookups, cached 1 h, never
+  logged), `templates/includes/codes.html` + `public/js/codes.js`. Addressed by query (`?code=`, `&model=`) since the
+  public site router serves only exact Web Page routes; the path form is read too, for when it serves dynamic ones.
+- `vin_storyteller/api.py`: `tell(vin)` and the code endpoints, kept thin: guest, GET, rate-limited per IP;
   opens a read-only PyMySQL session from site-config keys `vin_storyteller_db_*` and calls `answer`; logs
   database failures, returns a generic message.
 - `vin_storyteller/templates/includes/storyteller.html`, `public/js/storyteller-core.js` (pure helpers on

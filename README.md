@@ -54,6 +54,37 @@ well-formed VIN without a name is refused (`invalid`) before it counts. Frappe w
 date, source, provenance}`; `url` is null unless it is a plain http(s) link), `rarities` (list of `{scope,
 total, tier, description}`, rarest first) and `rarest` (the top tier or null).
 
+## Code pages
+
+Every exterior paint, interior and option code in the factory records has its own page, with its production stats
+from the factory records only (CAPS 1999, CAPS 2004, ASA Japan 2008): the total; by model (3000GT / Stealth / GTO),
+model year and model line; the first and last build; for a paint, its interiors (and for an interior, its paints);
+and for an option code, what Mitsubishi's catalogue says it fits per grade and model year (ASA, so GTOs only).
+An option code means something per chassis model code (Z11A, Z15A, Z16A), so its page is per model code. Each
+kind has an index page too, and a story's exterior, interior and equipment rows link to their code pages.
+
+| Address | Page |
+|---|---|
+| `/storyteller/paint`, `/storyteller/interior`, `/storyteller/option` | the kind's index |
+| `/storyteller/paint?code=T87`, `/storyteller/interior?code=12A` | a paint's or interior's page |
+| `/storyteller/option?model=Z16A&code=302` | an option code's page |
+
+The pages are rendered in the browser from two guest GET endpoints, rate-limited together to 120 an hour per
+client (apart from the 3 VIN lookups), cached for an hour, and never logged to `StoriesTold`:
+
+- `GET /api/method/vin_storyteller.api.code?kind=paint|interior|option&code=<code>[&model=<model code>]`:
+  `status` `found` (with `page`: `kind`, `code`, `model_code`, `description`, `names`, `total`, `by_model`,
+  `by_year`, `by_line`, `first_built`, `last_built`, `pairings`, `fits`), `not_found`, `invalid` or `error`.
+- `GET /api/method/vin_storyteller.api.codes?kind=...`: `status` `found` with `codes` (`code`, `model_code`,
+  `description`, `total`, `by_model`), `invalid` or `error`.
+
+The page script also reads path addresses (`/storyteller/paint/T87`, `/storyteller/option/Z16A/302`) and writes
+links in that form when the page's `data-code-routes` is `path`; that needs a router that serves dynamic-route Web
+Pages (frappe-public-site-router doesn't yet), so the shipped default is `query`.
+
+Paint and interior pages, pairings and index rows carry an empty, hidden `.vst-swatch` with `data-swatch-kind`
+and `data-swatch-code` for a colour swatch to fill.
+
 ## Data model
 
 The CAPS dump provides `Production` (one row per car) and the lookup tables `Model`, `Exterior`,
@@ -185,6 +216,10 @@ read smaller than it really was. The page says so.
      "main_section_html": "{% include \"vin_storyteller/templates/includes/storyteller.html\" %}"
    }
    ```
+
+6. **The code pages.** Three more published Web Pages, `<prefix>/storyteller/paint`, `<prefix>/storyteller/interior`
+   and `<prefix>/storyteller/option`, each like the one above with
+   `{% include "vin_storyteller/templates/includes/codes.html" %}` as its `main_section_html`.
 
 ## Development
 

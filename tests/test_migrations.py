@@ -25,6 +25,7 @@ SHIPPED = [
 	"0005_factory_build_provenance",
 	"0006_code_labels",
 	"0007_export_models",
+	"0008_option_code_index",
 ]
 
 
@@ -88,6 +89,7 @@ def test_indexes_exist(caps_connection):
 		"idx_history_vin",
 		"idx_production_colours",
 		"idx_production_interior",
+		"idx_production_equipment",
 	} <= names
 
 

@@ -9,16 +9,21 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from contextlib import AbstractContextManager
+from dataclasses import asdict
 
 from vin_storyteller.repository import ProductionRecords
 from vin_storyteller.story import (
 	CHASSIS_NOT_ON_RECORD,
+	CODE_KINDS,
 	EXPORT_NOT_ON_RECORD,
+	InvalidCode,
 	InvalidVin,
 	is_chassis_number,
 	is_frame_number,
 	normalize_chassis,
+	normalize_code,
 	normalize_frame,
+	normalize_model_code,
 	normalize_vin,
 	not_found_message,
 )
@@ -69,3 +74,68 @@ def answer(
 	if story is None:
 		return {"status": "not_found", "message": not_found_message(vin, gap) or NOT_FOUND}
 	return {"status": "found", "story": story.as_dict()}
+
+
+# Per-code pages (card 330).
+CODE_INVALID = (
+	"That isn't a paint, interior or option code: codes are two to four letters and digits, and an option code "
+	"goes with its chassis model code (e.g. Z16A)."
+)
+CODE_NOT_FOUND = "No car in Mitsubishi's factory records carries that code."
+KINDS_INVALID = "There are code pages for paint, interior and option codes only."
+
+
+def code_request(
+	kind: str | None, raw_code: str | None, raw_model: str | None = None
+) -> tuple[str, str, str]:
+	"""(kind, code, model code) in canonical form, or InvalidCode. Only an option code takes a model code."""
+	if kind not in CODE_KINDS:
+		raise InvalidCode(kind)
+	code = normalize_code(kind, raw_code)
+	return kind, code, normalize_model_code(raw_model) if kind == "option" else ""
+
+
+def page_key(kind: str | None, raw_code: str | None, raw_model: str | None = None) -> str | None:
+	"""The cache key of a code page's answer, or None for a request that is no code page."""
+	try:
+		return ":".join(code_request(kind, raw_code, raw_model))
+	except InvalidCode:
+		return None
+
+
+def code_answer(
+	kind: str | None,
+	raw_code: str | None,
+	raw_model: str | None,
+	open_records: Callable[[], AbstractContextManager[ProductionRecords]],
+	database_errors: tuple[type[BaseException], ...],
+) -> dict:
+	"""The API response body for a code page: status invalid | not_found | found (with the page)."""
+	try:
+		kind, code, model_code = code_request(kind, raw_code, raw_model)
+	except InvalidCode:
+		return {"status": "invalid", "message": CODE_INVALID}
+	try:
+		with open_records() as records:
+			page = records.code_page(kind, code, model_code)
+	except database_errors as error:
+		raise RecordsUnavailable from error
+	if page is None:
+		return {"status": "not_found", "message": CODE_NOT_FOUND}
+	return {"status": "found", "page": page.as_dict()}
+
+
+def index_answer(
+	kind: str | None,
+	open_records: Callable[[], AbstractContextManager[ProductionRecords]],
+	database_errors: tuple[type[BaseException], ...],
+) -> dict:
+	"""The API response body for a kind's index: every code with its total and models."""
+	if kind not in CODE_KINDS:
+		return {"status": "invalid", "message": KINDS_INVALID}
+	try:
+		with open_records() as records:
+			entries = records.code_index(kind)
+	except database_errors as error:
+		raise RecordsUnavailable from error
+	return {"status": "found", "kind": kind, "codes": [asdict(e) for e in entries]}

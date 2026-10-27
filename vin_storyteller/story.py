@@ -368,6 +368,9 @@ class Story:
 		False  # on record from another source than CAPS: no build date, codes, positions or rarity
 	)
 	classification: Coded = Coded("", "")  # the factory grade code and Mitsubishi's description of it
+	model_code: str = (
+		""  # the chassis model code (Z11A, Z15A, Z16A): an option code means something per model code
+	)
 	equipment_items: tuple[Coded, ...] = ()  # what the equipment (option) code fits, item by item
 	breakdowns: tuple[Breakdown, ...] = ()  # across every model: same colour, same period, ...
 
@@ -398,3 +401,194 @@ class Story:
 			"rarities": [{**asdict(r), "description": r.description} for r in rarities],
 			"rarest": rarities[0].tier if rarities else None,
 		}
+
+
+# Per-code pages (card 330): a page for each exterior paint, interior and (per model code) option code, with its
+# production stats from the factory records.
+CODE_KINDS = ("paint", "interior", "option")
+# What CAPS writes instead of a code when it holds none for a car; never a code page of its own.
+PLACEHOLDER_CODES = {"paint": "EXT", "interior": "INT", "option": "EQU"}
+CODE_PATTERN = re.compile(r"^[A-Z0-9]{2,4}$")
+MODEL_CODE_PATTERN = re.compile(r"^[A-Z][0-9]{2}[A-Z]$")  # Z11A, Z15A, Z16A
+UNKNOWN_MODEL = "Other"  # a Model key with no Model name (none on the live record since 2026-10-27)
+
+
+class InvalidCode(ValueError):
+	"""Not a code page: an unknown kind, or a code or model code that cannot be one."""
+
+
+def normalize_code(kind: str, raw: str | None) -> str:
+	"""A paint / interior / option code in canonical form (upper case, no whitespace), or InvalidCode."""
+	code = "".join((raw or "").split()).upper()
+	if kind not in CODE_KINDS or not CODE_PATTERN.match(code) or code == PLACEHOLDER_CODES[kind]:
+		raise InvalidCode(code)
+	return code
+
+
+def normalize_model_code(raw: str | None) -> str:
+	"""A chassis model code (an option code's scope) in canonical form, or InvalidCode."""
+	code = "".join((raw or "").split()).upper()
+	if not MODEL_CODE_PATTERN.match(code):
+		raise InvalidCode(code)
+	return code
+
+
+def build_order(built: str) -> str:
+	"""A 'YYMMP' date as a sortable 'YYYYMMP' (2000's GTOs, built '00', sort after 1999)."""
+	return full_year(built[0:2]) + built[2:]
+
+
+BUILT_PATTERN = re.compile(r"^[0-9]{4}[1-3]$")
+
+
+def build_span(dates) -> tuple[str, str] | None:
+	"""The first and last of some 'YYMMP' build dates, in calendar order; None when none is a date."""
+	valid = sorted((d for d in dates if d and BUILT_PATTERN.match(d)), key=build_order)
+	return (valid[0], valid[-1]) if valid else None
+
+
+def model_name(model: str | None) -> str:
+	"""Model.Model as a breakdown name (3000GT, Stealth, GTO)."""
+	return model if model and model != MISSING else UNKNOWN_MODEL
+
+
+@dataclass(frozen=True)
+class YearCount:
+	model_year: str  # '1992'
+	count: int
+
+
+@dataclass(frozen=True)
+class LineCount:
+	"""A model line (Model key and chassis model code) and its cars."""
+
+	manufacturer: str
+	model: str
+	trim: str
+	model_code: str
+	count: int
+
+	@property
+	def name(self) -> str:
+		return (
+			" ".join(p for p in (self.manufacturer, self.model, self.trim) if p and p != MISSING)
+			or UNKNOWN_MODEL
+		)
+
+
+@dataclass(frozen=True)
+class LineRow:
+	"""One row of a code's production: cars of one model line built for one model year."""
+
+	model_year: str  # 'YY'
+	manufacturer: str | None
+	model: str | None
+	trim: str | None
+	model_code: str
+	count: int
+
+
+@dataclass(frozen=True)
+class Tally:
+	total: int
+	by_model: tuple[ModelCount, ...]  # largest first
+	by_year: tuple[YearCount, ...]  # in model-year order
+	by_line: tuple[LineCount, ...]  # largest first
+
+
+def tally(rows) -> Tally:
+	"""A code's production by model, by model year and by model line, from its LineRows."""
+	models: dict[str, int] = {}
+	years: dict[str, int] = {}
+	lines: dict[tuple, int] = {}
+	for row in rows:
+		models[model_name(row.model)] = models.get(model_name(row.model), 0) + row.count
+		year = full_year(row.model_year) if row.model_year else ""
+		years[year] = years.get(year, 0) + row.count
+		line = (row.manufacturer or "", row.model or "", row.trim or "", row.model_code)
+		lines[line] = lines.get(line, 0) + row.count
+	return Tally(
+		total=sum(models.values()),
+		by_model=tuple(
+			sorted((ModelCount(m, n) for m, n in models.items()), key=lambda c: (-c.count, c.model))
+		),
+		by_year=tuple(YearCount(y, n) for y, n in sorted(years.items())),
+		by_line=tuple(
+			sorted(
+				(LineCount(*line, n) for line, n in lines.items()),
+				key=lambda c: (-c.count, c.name, c.model_code),
+			)
+		),
+	)
+
+
+@dataclass(frozen=True)
+class Pairing:
+	"""The other colour code a paint or interior was built with, and how many cars."""
+
+	code: str  # "" when the record holds none (EXT / INT)
+	description: str
+	count: int
+
+
+@dataclass(frozen=True)
+class OptionFit:
+	"""What an option code fits for one grade and model year, per Mitsubishi's catalogue (ASA: GTOs only)."""
+
+	classification: Coded
+	model_year: str  # '1992'
+	items: tuple[Coded, ...]
+	cars: int  # factory-record cars of this grade and model year with the code
+	source: str
+
+
+@dataclass(frozen=True)
+class MakerName:
+	manufacturer: str
+	name: str
+
+
+def paint_names(mitsubishi: str | None, dodge: str | None) -> tuple[str, tuple[MakerName, ...]]:
+	"""A paint's description (Mitsubishi's name, else Dodge's, else MISSING) and its names per manufacturer."""
+	names = tuple(
+		MakerName(maker, name)
+		for maker, name in (("Mitsubishi", mitsubishi), ("Dodge", dodge))
+		if name and name != MISSING
+	)
+	return (names[0].name if names else MISSING), names
+
+
+@dataclass(frozen=True)
+class CodePage:
+	"""A paint, interior or option code and its production in the factory records."""
+
+	kind: str  # a CODE_KINDS value
+	code: str
+	model_code: str  # an option code's chassis model code; "" for paint and interior
+	description: str  # MISSING while undeciphered
+	names: tuple[MakerName, ...]  # a paint's name per manufacturer, where known
+	total: int
+	by_model: tuple[ModelCount, ...]
+	by_year: tuple[YearCount, ...]
+	by_line: tuple[LineCount, ...]
+	first_built: str  # 'the 1st production period of ...'
+	last_built: str
+	pairings: tuple[Pairing, ...] = ()  # paint: its interiors; interior: its paints
+	fits: tuple[OptionFit, ...] = ()  # option: what it fits, per grade and model year
+
+	def as_dict(self) -> dict:
+		return {
+			**asdict(self),
+			"by_line": [{**asdict(line), "name": line.name} for line in self.by_line],
+		}
+
+
+@dataclass(frozen=True)
+class CodeIndexEntry:
+	"""A code on a kind's index page: its total and models."""
+
+	code: str
+	model_code: str
+	description: str
+	total: int
+	by_model: tuple[ModelCount, ...]

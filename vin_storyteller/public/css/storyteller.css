@@ -205,6 +205,24 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 @keyframes vst-shine { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
 @keyframes vst-pulse { 50% { box-shadow: 0 0 0 2px var(--vst-morocco), 0 0 70px 0 rgba(175, 31, 65, 0.95); } }
 
+/* Per-code pages (card 330) */
+.vst-code-nav { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: -8px 0 24px; font-weight: 700; }
+.vst-code-nav a { text-decoration: none; border-bottom: 2px solid transparent; }
+.vst-code-nav a[aria-current="page"] { color: var(--vst-text); border-bottom-color: var(--vst-red); }
+.vst-code-page, .vst-code-index { margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--vst-line); }
+.vst-code-heading { display: flex; align-items: center; gap: 14px; }
+/* Swatch hook: card 329 fills .vst-swatch[data-swatch-kind][data-swatch-code] and removes `hidden`. */
+.vst-swatch { flex: none; display: inline-block; width: 1.4em; height: 1.4em; border-radius: 50%; border: 1px solid var(--vst-line); vertical-align: middle; }
+.vst-code-heading .vst-swatch { width: 48px; height: 48px; }
+.vst-code-cell { display: inline-flex; align-items: center; gap: 8px; }
+.vst-code-table th[scope="row"] { width: auto; color: var(--vst-text); }
+.vst-code-table thead th { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--vst-fiji-hi); border-top: 0; }
+.vst-code-table td { font-variant-numeric: tabular-nums; }
+.vst-code-models { margin-bottom: 24px; }
+.vst-code-fits-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.vst-code-fits .vst-note { margin-bottom: 12px; }
+.vst-code-link { text-decoration: underline; text-underline-offset: 3px; }
+
 .vst-disclaimer { margin-top: 28px; border-top: 1px solid var(--vst-line); padding-top: 16px; font-size: 14px; color: var(--vst-soft); }
 .vst-disclaimer summary { cursor: pointer; font-weight: 700; color: var(--vst-text); }
 .vst-source { margin: 16px 0 0; font-size: 13px; color: var(--vst-soft); }

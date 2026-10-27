@@ -54,7 +54,8 @@
 	const VERTEX = `
 attribute vec2 aPos;
 varying vec2 vUv;
-void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }`;
+// Drawn upside down so that readPixels (bottom row first) yields the image top row first; vUv keeps y up.
+void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos.x, -aPos.y, 0.0, 1.0); }`;
 
 	const FRAGMENT = `
 precision highp float;
@@ -194,9 +195,9 @@ void main() {
 			if (uUvMap > 0.5) d *= vec2(0.45, 1.9);
 			float disc = 1.0 - smoothstep(0.18, 0.34, length(d));
 			vec3 fn = normalize(n0 + vec3((hash2(cell + 7.3) - 0.5) * 0.9, 0.0));
-			float glint = pow(max(dot(fn, hv), 0.0), 80.0 + 160.0 * r.y);
+			float glint = pow(max(dot(fn, hv), 0.0), 40.0 + 60.0 * r.y); // broad enough to fade, not pop, as the light moves
 			vec3 tint = mix(uFlake, uFlake * (0.4 + 1.2 * spectrum), pearl);
-			sparkle += tint * glint * present * disc * strength * (layer == 0 ? 1.8 : 2.4);
+			sparkle += tint * glint * present * disc * strength * (layer == 0 ? 1.1 : 1.4);
 		}
 		// Clearcoat: a crisp highlight over the peel, a soft lobe round it, and a dim sky reflection.
 		float gloss = uSurface.x;
@@ -239,8 +240,8 @@ void main() {
 	function createRenderer() {
 		const canvas = document.createElement("canvas");
 		const gl =
-			canvas.getContext("webgl", { preserveDrawingBuffer: true, antialias: false, premultipliedAlpha: false }) ||
-			canvas.getContext("experimental-webgl", { preserveDrawingBuffer: true });
+			canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false }) ||
+			canvas.getContext("experimental-webgl", { antialias: false, premultipliedAlpha: false });
 		if (!gl) return null;
 		const vs = compile(gl, gl.VERTEX_SHADER, VERTEX);
 		const fs = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT);
@@ -308,8 +309,13 @@ void main() {
 		gl.uniform1f(u.uSeed, v.seed);
 		gl.uniform1f(u.uUvMap, v.uvMap);
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-		// WebGL draws from the bottom-left; the 2D copy reads from the top-left.
-		record.context.drawImage(canvas, 0, canvas.height - size.height, size.width, size.height, 0, 0, size.width, size.height);
+		// Every swatch shares this one WebGL canvas, so its pixels are read back before the next swatch draws.
+		// drawImage(webglCanvas) may hand back the last presented frame instead of this draw on some mobile GPUs
+		// (each chip then showed its neighbour's colour, swapping as they redrew); readPixels returns this draw.
+		const bytes = size.width * size.height * 4;
+		if (!record.pixels || record.pixels.data.length !== bytes) record.pixels = new ImageData(size.width, size.height);
+		gl.readPixels(0, 0, size.width, size.height, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(record.pixels.data.buffer));
+		record.context.putImageData(record.pixels, 0, 0);
 	}
 
 	function fallBack(record) {

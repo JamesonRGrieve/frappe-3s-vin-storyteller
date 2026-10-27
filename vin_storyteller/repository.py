@@ -42,6 +42,7 @@ FACTORY = "Provenance IN (" + ", ".join(["%s"] * len(FACTORY_PROVENANCES)) + ")"
 _GTO_MODELS = "(" + ", ".join(f"'{m}'" for m in CHASSIS_MODELS.values()) + ")"
 MARKETS = {False: f"Model NOT IN {_GTO_MODELS}", True: f"Model IN {_GTO_MODELS}"}
 LANGUAGE = "en"
+OTHER_MODELS = "Other"  # breakdown name for the record's other Nagoya-built cars (Model XX)
 
 
 @dataclass(frozen=True)
@@ -103,12 +104,16 @@ class ProductionRecords:
 	def _breakdown(self, scope: str, where: str, params: tuple) -> Breakdown:
 		"""Factory-record cars of every model and market matching `where`, by model (3000GT, Stealth, GTO)."""
 		rows = self._rows(
-			"SELECT m.Model, COUNT(*) FROM Production p JOIN Model m ON m.ModelCode = p.Model "
+			"SELECT m.Model, COUNT(*) FROM Production p LEFT JOIN Model m ON m.ModelCode = p.Model "
 			f"WHERE ({where}) AND p.{FACTORY} GROUP BY m.Model",
 			(*params, *FACTORY_PROVENANCES),
 		)
+		merged: dict[str, int] = {}
+		for model, n in rows:  # the 1999 export holds every Nagoya-built car; the rest have no Model name
+			name = model if model and model != MISSING else OTHER_MODELS
+			merged[name] = merged.get(name, 0) + int(n)
 		counts = tuple(
-			sorted((ModelCount(model, int(n)) for model, n in rows), key=lambda c: (-c.count, c.model))
+			sorted((ModelCount(m, n) for m, n in merged.items()), key=lambda c: (-c.count, c.model))
 		)
 		return Breakdown(scope, sum(c.count for c in counts), counts)
 

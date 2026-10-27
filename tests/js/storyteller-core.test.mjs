@@ -169,3 +169,9 @@ test("equipmentItemsText lists what an option code fits", () => {
 		["CD AUTO CHANGER · J50", "Not yet decoded · ZZ1"],
 	);
 });
+
+test("the record's other Nagoya-built cars are named as such", () => {
+	assert.equal(core.modelCountText({ model: "Other", count: 2400 }), "2,400 other Nagoya-built cars");
+	assert.equal(core.modelCountText({ model: "Other", count: 1 }), "1 other Nagoya-built car");
+	assert.equal(core.breakdownParts({ total: 3, description: "x", by_model: [{ model: "Other", count: 3 }] }).models, "");
+});

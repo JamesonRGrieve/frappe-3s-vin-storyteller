@@ -62,13 +62,27 @@ def test_breakdowns_span_every_model(connection, records):
 		ModelCount("GTO", 1),
 		ModelCount("Stealth", 1),
 	)
-	# Every 12A car of a known model: six 3000GTs (1992's five and 1991's), one Stealth and the GTO; the fixture's
-	# unknown model code (ZZ) names no model, so it isn't counted.
+	# Every 12A car: six 3000GTs (1992's five and 1991's), one Stealth, the GTO, and the fixture's car whose model
+	# has no name, counted as the record's other Nagoya-built cars.
 	assert by_scope["interior"].by_model == (
 		ModelCount("3000GT", 6),
 		ModelCount("GTO", 1),
+		ModelCount("Other", 1),
 		ModelCount("Stealth", 1),
 	)
+
+
+def test_model_xx_cars_count_as_other_nagoya_built_cars(connection, records):
+	"""The 1999 export holds every Nagoya-built car; Model XX is named MISSING and is counted as Other."""
+	connection.execute("INSERT INTO Model VALUES ('XX', 'MISSING', 'MISSING', 'MISSING')")
+	connection.execute(
+		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
+		"DateOfManufacture, ModelYear, Provenance) VALUES ('NY900001', 'JA3AP47H0NY900001', 'XX', 'F16A', 'TRHEL2M', "
+		"'A00', 'T87', '12A', '92032', '92', 'CAPS 1999')"
+	)
+	by_scope = {b.scope: b for b in records.story("JA3AM84J3NY000004").breakdowns}
+	assert ModelCount("Other", 1) in by_scope["period"].by_model
+	assert all(c.model != "MISSING" for b in by_scope.values() for c in b.by_model)
 
 
 def test_breakdowns_skip_colours_not_on_record(connection, records):

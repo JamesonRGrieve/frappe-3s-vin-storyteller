@@ -61,8 +61,11 @@
 				"colours and equipment aren't known yet."
 			: `Built in ${story.built}.`;
 	const provenanceText = (p) => `Production record source: ${PROVENANCE_NAMES[p] || p}.`;
-	const modelCountText = (c) =>
-		`${formatNumber(c.count)} ${c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`}`;
+	const OTHER_MODELS = "Other"; // the record's other Nagoya-built cars (no Model name)
+	const modelCountText = (c) => {
+		if (c.model === OTHER_MODELS) return `${formatNumber(c.count)} other Nagoya-built ${c.count === 1 ? "car" : "cars"}`;
+		return `${formatNumber(c.count)} ${c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`}`;
+	};
 	// "and"-joined list: "a", "a and b", "a, b and c".
 	const listText = (items) =>
 		items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
@@ -70,7 +73,9 @@
 	function breakdownParts(b) {
 		let models = "";
 		if (b.by_model.length > 1) models = `of which ${listText(b.by_model.map(modelCountText))}`;
-		else if (b.by_model.length === 1 && b.total > 1) models = `all ${MODEL_PLURALS[b.by_model[0].model] || b.by_model[0].model}`;
+		else if (b.by_model.length === 1 && b.total > 1 && b.by_model[0].model !== OTHER_MODELS) {
+			models = `all ${MODEL_PLURALS[b.by_model[0].model] || b.by_model[0].model}`;
+		}
 		return { total: formatNumber(b.total), label: `${b.total === 1 ? "car" : "cars"} ${b.description}`, models };
 	}
 	// What the equipment code fits, item by item, for the spec table.

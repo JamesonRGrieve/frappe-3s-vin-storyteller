@@ -249,3 +249,36 @@ test("the swatch data carries its script's version", () => {
 	assert.equal(core.versionedUrl("/assets/x.json", "abc1234"), "/assets/x.json?v=abc1234");
 	assert.equal(core.versionedUrl("/assets/x.json", ""), "/assets/x.json");
 });
+
+test("paintSwatch draws a Dodge car in Dodge's published value; a code page draws a Stealth-only code in Dodge's", () => {
+	const b34 = { hex: "#4B69A1", source: "https://m", dodge_hex: "#0E2888", dodge_source: "https://d", finish: "pearl", models: ["3000GT", "Stealth"] };
+	assert.equal(core.toHex(core.paintSwatch(b34, "", "Mitsubishi").base), "#4B69A1");
+	const dodge = core.paintSwatch(b34, "", "Dodge");
+	assert.equal(core.toHex(dodge.base), "#0E2888");
+	assert.equal(dodge.source, "https://d");
+	assert.equal(core.toHex(core.paintSwatch(b34, "").base), "#4B69A1");
+	assert.equal(core.toHex(core.paintSwatch({ ...b34, models: ["Stealth"] }, "").base), "#0E2888");
+	// No Dodge value: a Dodge car keeps the one published value.
+	assert.equal(core.toHex(core.paintSwatch({ hex: "#F9FBFD", finish: "solid" }, "", "Dodge").base), "#F9FBFD");
+});
+
+test("a derived paint is drawn but captioned as an approximate colour", () => {
+	const s = core.paintSwatch({ hex: "#F9FBFD", finish: "solid", name: "Patrol-car White", approximate: true, source: "https://x" }, "");
+	assert.equal(s.status, "derived");
+	assert.equal(core.shaderMode(s), core.MODES.paint);
+	assert.equal(core.captionParts(s, "W9X").detail, "Solid · approximate colour");
+	assert.equal(core.captionParts(core.paintSwatch({ hex: "#F9FBFD", finish: "solid", name: "W" }, ""), "W32").detail, "Solid");
+});
+
+test("an interior's colour word comes from its description, else the table, a letter-inferred one said to be likely", () => {
+	const fromTable = core.interiorSwatch({ material: "cloth", confidence: "decided", basis: "b", colour: "Charcoal", colour_confidence: "letter" }, "");
+	assert.equal(fromTable.status, "named");
+	assert.equal(core.toHex(fromTable.base), "#3A3B3E");
+	assert.equal(core.captionParts(fromTable, "05H").detail, "Charcoal (likely) cloth · representative shade");
+	const catalogue = core.interiorSwatch({ material: "unknown", colour: "Tan", colour_confidence: "catalogue" }, "");
+	assert.equal(core.captionParts(catalogue, "13T").detail, "Tan · Trim material not on file · representative shade");
+	const described = core.interiorSwatch({ material: "leather", colour: "Charcoal", colour_confidence: "letter" }, "Red Leather, Power Seats");
+	assert.equal(core.toHex(described.base), "#7E1F24");
+	assert.equal(described.colour, "");
+	assert.equal(core.interiorSwatch({ material: "cloth" }, "").status, "missing");
+});

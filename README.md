@@ -57,19 +57,27 @@ Any page served by the ERP can use them:
 the name, code and finish or material. Elements present when the script loads are drawn; for markup added later
 call `VinSwatch.mountAll(root)`, or draw one element with
 `VinSwatch.render(element, {kind, code, description, caption})`, which resolves to the swatch model (`status`
-`sourced`/`missing` for paint, `named`/`missing` for interiors, `name`, `finish` or `material`, `confidence`,
+`sourced`/`derived`/`missing` for paint, `named`/`missing` for interiors, `name`, `finish` or `material`, `confidence`,
 `basis`). `VinSwatchCore.captionParts(model, code)` gives the caption text for your own markup.
 
 The code tables (`public/data/swatches.json`) are rebuilt with
-`python -m vin_storyteller.swatches paint_codes.tsv paint_hex.tsv interior_codes.tsv vin_storyteller/public/data/swatches.json`:
+`python -m vin_storyteller.swatches paint_codes.tsv paint_hex.tsv interior_codes.tsv vin_storyteller/public/data/swatches.json paint_aliases.tsv interior_colours.tsv`
+(the inputs live in `~/3shub-docs/storyteller_codes`, with their PROVENANCE):
 
 - **Paint:** a colour is a published value with its source URL, or it is missing and drawn as a neutral panel
-  marked "colour not on file"; never a guess.
+  marked "colour not on file". Where Mitsubishi and Dodge publish different values for one code, both ship and a
+  Dodge car is drawn in Dodge's (`render(..., { make })`, `data-make`); a code page draws a Stealth-only code in
+  Dodge's, any other in Mitsubishi's. A code with no published value or name may be `derived` from evidence that
+  names its colour (BA4/HA8 = B34/H28 on the 1993 Stealth R/T grades; W9X = the white/black patrol-car GTOs); it
+  is captioned "approximate colour" and records its derivation (operator, 2026-10-27).
 - **Interior material:** the description if it says leather or cloth; else, for GTOs, Mitsubishi's leather option
   K03 on every car with the code (or on none); else the code's last letter, when at least 90% of the decided cars
   sharing it agree (marked *likely*). Each entry records its basis.
-- **Interior colour:** no trim colour values exist yet, so a swatch takes a generic shade for the colour word in
-  its description (labelled "representative shade"), or the neutral panel.
+- **Interior colour:** no trim colour values exist, so a swatch takes a generic shade for a colour word (labelled
+  "representative shade"): the description's, else the table's (`interior_colours.tsv`): *named* (a recorded
+  description), *catalogue* (the colour ASA's parts catalogue gives the trim parts specific to the code), or
+  *letter* (the US trim letter: H/W charcoal, T tan, U and A red, D ivory; shown as *likely*). Otherwise the
+  neutral panel.
 
 ## API
 

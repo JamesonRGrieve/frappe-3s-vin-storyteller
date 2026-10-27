@@ -247,7 +247,7 @@
 	const swatchesShown = (story) => Boolean(story.exterior?.code || story.interior?.code);
 	// What each swatch draws: its kind, the car's code and the record's description for it.
 	const swatchRequests = (story) => [
-		{ kind: "paint", code: story.exterior?.code || "", description: story.exterior?.description || "" },
+		{ kind: "paint", code: story.exterior?.code || "", description: story.exterior?.description || "", make: story.manufacturer || "" },
 		{ kind: "interior", code: story.interior?.code || "", description: story.interior?.description || "" },
 	];
 

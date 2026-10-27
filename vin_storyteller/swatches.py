@@ -5,13 +5,21 @@ Pure logic, no Frappe. Builds `public/data/swatches.json` (served as
 /assets/vin_storyteller/data/swatches.json and read by `public/js/swatch.js`) from the extracted code lists
 (`paint_codes.tsv`, `interior_codes.tsv`) and the researched colour values (`paint_hex.tsv`):
 
-    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON [PAINT_ALIASES]
+    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON [PAINT_ALIASES [INTERIOR_COLOURS]]
 
 Rules (operator, 2026-10-27):
 - Only 3000GTs, Stealths and GTOs: a code used only by the record's other Nagoya-built cars (the deleted
   Diamantes) is left out, and the `other_nagoya` column is otherwise ignored. EXT / INT are the record's
   "not recorded" placeholders, not codes.
-- A paint colour is a published value with its source URL, or it is missing; never a guess.
+- A paint colour is a published value with its source URL, or it is missing; never a guess. Where Mitsubishi
+  and Dodge publish different values for one code, both ship (`hex`, `dodge_hex`) and a Dodge Stealth is drawn
+  in Dodge's (operator: by the car's brand).
+- A code with no published value or name may be `derived` from evidence that names its colour (operator: derive
+  from the colour name): the same paint on another grade (BA4 = B34 on the R/T), or a colour word in the
+  catalogue (W9X, the white/black patrol-car GTOs). It carries `approximate: true` and the derivation.
+- Interior colour (`interior_colours.tsv`): a colour word per code, named (a recorded description), from the
+  catalogue (the colour of the trim parts specific to the code), or from the US trim letter; drawn as a
+  representative shade for the word, never as a factory value.
 - Interior material: an explicit description wins; then, for GTOs, Mitsubishi's leather option K03 on the
   car; then, as evidence rather than a rule, the code's suffix letter when the decided codes sharing it
   agree. Each decision records how it was made.
@@ -111,6 +119,10 @@ def paint_table(
 		flake = normalize_hex(found.get("flake_hex"))
 		source = (found.get("source_url") or "").strip()
 		sourced = bool(base) and bool(SAFE_URL.match(source))
+		derivation = (found.get("derivation") or "").strip()
+		dodge_hex = normalize_hex(found.get("dodge_hex"))
+		dodge_source = (found.get("dodge_source_url") or "").strip()
+		has_dodge = sourced and bool(dodge_hex) and bool(SAFE_URL.match(dodge_source))
 		table[code] = {
 			"name": name,
 			"mitsubishi_name": mitsubishi,
@@ -119,10 +131,14 @@ def paint_table(
 			"hex": base if sourced else "",
 			"flake_hex": flake if sourced else "",
 			"source": source if sourced else "",
-			"status": "sourced" if sourced else "missing",
+			"status": ("derived" if derivation else "sourced") if sourced else "missing",
 			"notes": (found.get("notes") or "").strip(),
 			**_usage(row),
 		}
+		if has_dodge:
+			table[code].update(dodge_hex=dodge_hex, dodge_source=dodge_source)
+		if sourced and derivation:
+			table[code].update(approximate=True, derivation=derivation)
 	return table
 
 
@@ -224,9 +240,31 @@ def infer_from_letter(code: str, evidence: Mapping[str, dict]) -> dict:
 	}
 
 
-def interior_table(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
-	"""code -> description, material (leather | cloth | unknown), confidence, basis, usage."""
+COLOUR_CONFIDENCES = frozenset({"named", "catalogue", "letter"})
+
+
+def interior_colours(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
+	"""code -> colour word, how it was found (named | catalogue | letter) and the evidence."""
+	colours: dict[str, dict] = {}
+	for row in rows:
+		code = (row.get("code") or "").strip().upper()
+		word = (row.get("colour") or "").strip()
+		confidence = (row.get("confidence") or "").strip().lower()
+		if code and word and confidence in COLOUR_CONFIDENCES:
+			colours[code] = {
+				"colour": word,
+				"colour_confidence": confidence,
+				"colour_basis": (row.get("basis") or "").strip(),
+			}
+	return colours
+
+
+def interior_table(
+	rows: Iterable[Mapping[str, str]], colour_rows: Iterable[Mapping[str, str]] = ()
+) -> dict[str, dict]:
+	"""code -> description, material (leather | cloth | unknown), confidence, basis, colour word, usage."""
 	rows = [row for row in rows if in_scope(row)]
+	colours = interior_colours(colour_rows)
 	decided: dict[str, tuple[dict, int]] = {}
 	for row in rows:
 		decision = decide_material(row)
@@ -240,7 +278,12 @@ def interior_table(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
 	for row in rows:
 		code = row["code"].strip().upper()
 		decision = decided[code][0] if code in decided else infer_from_letter(code, evidence)
-		table[code] = {"description": known(row.get("description")), **decision, **_usage(row)}
+		table[code] = {
+			"description": known(row.get("description")),
+			**decision,
+			**colours.get(code, {}),
+			**_usage(row),
+		}
 	return table
 
 
@@ -257,6 +300,8 @@ def apply_aliases(paint: dict[str, dict], alias_rows: Iterable[Mapping[str, str]
 			entry.update(
 				hex=source["hex"], flake_hex=source["flake_hex"], source=source["source"], status="sourced"
 			)
+			if "dodge_hex" in source:
+				entry.update(dodge_hex=source["dodge_hex"], dodge_source=source["dodge_source"])
 			entry["finish"] = entry["finish"] or source["finish"]
 			entry["notes"] = (
 				f"Same paint as {target}: Mitsubishi's ASA USA gives the same cars both codes; colour from {target}'s "
@@ -270,6 +315,7 @@ def build(
 	paint_hex: str | Path,
 	interior_codes: str | Path,
 	paint_aliases: str | Path | None = None,
+	interior_colour_rows: str | Path | None = None,
 ) -> dict:
 	paint = paint_table(read_tsv(paint_codes), read_tsv(paint_hex))
 	if paint_aliases:
@@ -277,19 +323,22 @@ def build(
 	return {
 		"version": 1,
 		"about": (
-			"Paint: published colour values with their source URL, or missing (shown as 'colour not on file'). "
-			"Interior: leather or cloth, with the basis for each. 3000GT, Stealth and GTO codes only."
+			"Paint: published colour values with their source URL (Mitsubishi's, and Dodge's where it differs), "
+			"approximate values derived from named evidence, or missing (shown as 'colour not on file'). "
+			"Interior: leather or cloth, and a colour word, each with its basis. 3000GT, Stealth and GTO codes only."
 		),
 		"paint": paint,
-		"interior": interior_table(read_tsv(interior_codes)),
+		"interior": interior_table(
+			read_tsv(interior_codes), read_tsv(interior_colour_rows) if interior_colour_rows else ()
+		),
 	}
 
 
 def main(argv: list[str]) -> int:
-	if len(argv) not in (4, 5):
+	if len(argv) not in (4, 5, 6):
 		print(__doc__, file=sys.stderr)
 		return 2
-	data = build(*argv[:3], *argv[4:5])
+	data = build(*argv[:3], *argv[4:6])
 	Path(argv[3]).write_text(
 		json.dumps(data, indent="\t", sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
 	)

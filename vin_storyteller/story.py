@@ -64,7 +64,8 @@ CAPS_2004 = (
 )
 ASA_JAPAN = "ASA Japan 2008"  # every Japanese-market GTO, from Mitsubishi's ASA Japan EPC (2008-02-22)
 ASA_GENERAL = "ASA General 2008"  # export-market 3000GTs (UK and others), from Mitsubishi's ASA General EPC
-FACTORY_PROVENANCES = (CAPS, CAPS_2004, ASA_JAPAN, ASA_GENERAL)
+ASA_USA = "ASA USA 2007"  # US 3000GTs only ASA USA (2007-12-28) holds: one car, JA3AN74K2SY018786 (operator 2026-10-27)
+FACTORY_PROVENANCES = (CAPS, CAPS_2004, ASA_JAPAN, ASA_GENERAL, ASA_USA)
 
 # ISO 3779 check digit (the VIN's 9th character): every one of the 151,454 CAPS 1999 VINs has a correct one, so a VIN
 # whose check digit fails was almost certainly mistyped.

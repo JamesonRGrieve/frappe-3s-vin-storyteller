@@ -99,19 +99,31 @@
 		return mix(base, { r: 1, g: 1, b: 1 }, 0.45);
 	}
 
-	// One paint swatch from the shipped table entry for its code and the story's description (which may be
-	// newer than the table). `status` is "sourced" only with a published hex; otherwise the swatch is the
-	// neutral "colour not on file" panel and never a guess.
-	function paintSwatch(entry, description) {
+	// Which published value to draw: where Mitsubishi and Dodge publish different values for one code, a Dodge
+	// car is drawn in Dodge's (operator 2026-10-27: by the car's brand). With no car (a code page), a code only
+	// Stealths wore is Dodge's; any other is Mitsubishi's.
+	function paintValue(entry, make) {
+		const dodge = parseHex(entry?.dodge_hex);
+		const stealthOnly = Array.isArray(entry?.models) && entry.models.length === 1 && entry.models[0] === "Stealth";
+		if (dodge && (make === "Dodge" || (!make && stealthOnly))) return { base: dodge, source: entry.dodge_source || "" };
+		return { base: parseHex(entry?.hex), source: entry?.source || "" };
+	}
+
+	// One paint swatch from the shipped table entry for its code, the story's description (which may be newer
+	// than the table) and the car's make. `status` is "sourced" with a published hex, "derived" with an
+	// approximate value derived from named evidence (it says so); otherwise the swatch is the neutral
+	// "colour not on file" panel and never a guess.
+	function paintSwatch(entry, description, make = "") {
 		const named = description && description !== "MISSING" ? description : "";
 		const name = named || entry?.name || "";
 		const finish = finishFromName(named) || entry?.finish || finishFromName(name) || "solid";
-		const base = parseHex(entry?.hex);
+		const { base, source } = paintValue(entry, make);
 		if (!base) {
 			return { kind: "paint", status: "missing", name, finish, label: NOT_ON_FILE, base: parseHex(NEUTRAL), flake: null, params: null };
 		}
 		const flake = parseHex(entry.flake_hex) || derivedFlake(base, finish);
-		return { kind: "paint", status: "sourced", name, finish, label: name, base, flake, params: FINISHES[finish] || FINISHES.solid, source: entry.source || "" };
+		const status = entry.approximate ? "derived" : "sourced";
+		return { kind: "paint", status, approximate: Boolean(entry.approximate), name, finish, label: name, base, flake, params: FINISHES[finish] || FINISHES.solid, source };
 	}
 
 	// Interior material. An explicit "Leather" / "Cloth" in the description wins; then the shipped table's
@@ -153,18 +165,24 @@
 		cloth: Object.freeze({ gloss: 0.05, peel: 0.8 }),
 		unknown: Object.freeze({ gloss: 0.2, peel: 0.3 }),
 	});
+	// The colour word comes from the description when it names one, else from the shipped table (named, from
+	// the catalogue's trim parts, or from the US trim letter); a letter-inferred colour is said to be likely.
 	function interiorSwatch(entry, description) {
 		const named = description && description !== "MISSING" ? description : entry?.description || "";
 		const { material, confidence, basis } = interiorMaterial(entry, named);
-		const tone = interiorTone(named);
+		const ownTone = interiorTone(named);
+		const tone = ownTone || interiorTone(entry?.colour);
+		const colourConfidence = ownTone ? "named" : tone ? entry.colour_confidence || "" : "";
 		return {
 			kind: "interior",
 			status: tone ? "named" : "missing",
 			material,
 			confidence,
 			basis,
+			colour: ownTone ? "" : tone ? entry.colour : "",
+			colourConfidence,
 			name: named,
-			label: tone ? named : NOT_ON_FILE,
+			label: tone ? named || entry.colour : NOT_ON_FILE,
 			base: parseHex(tone ? tone.hex : NEUTRAL),
 			params: MATERIAL_PARAMS[material],
 		};
@@ -173,7 +191,7 @@
 	// Shader mode per swatch: 0 paint, 1 perforated leather, 2 cloth weave, 3 plain (nothing on file).
 	const MODES = Object.freeze({ paint: 0, leather: 1, cloth: 2, plain: 3 });
 	function shaderMode(swatch) {
-		if (swatch.kind === "paint") return swatch.status === "sourced" ? MODES.paint : MODES.plain;
+		if (swatch.kind === "paint") return swatch.status === "missing" ? MODES.plain : MODES.paint;
 		return MODES[swatch.material] ?? MODES.plain;
 	}
 	// Uniform values for one swatch: colours in linear light, finish parameters as numbers.
@@ -258,15 +276,21 @@
 	function captionParts(swatch, code) {
 		const coded = (text) => (code ? `${text} · ${code}` : text);
 		if (swatch.kind === "paint") {
-			if (swatch.status !== "sourced") {
+			if (swatch.status === "missing") {
 				return { title: coded(swatch.name || "Paint"), detail: code ? NOT_ON_FILE : "No colour on record" };
 			}
-			return { title: coded(swatch.name || "Paint"), detail: FINISH_NAMES[swatch.finish] || "" };
+			const finish = FINISH_NAMES[swatch.finish] || "";
+			return { title: coded(swatch.name || "Paint"), detail: swatch.approximate ? [finish, "approximate colour"].filter(Boolean).join(" · ") : finish };
 		}
 		// An inferred material (from the code's suffix letter) is said to be likely, not stated as fact.
 		const material = MATERIAL_NAMES[swatch.material] + (swatch.confidence === "inferred" ? " (likely)" : "");
 		if (swatch.status !== "named") {
 			return { title: coded(swatch.name && swatch.name !== "MISSING" ? swatch.name : "Interior"), detail: code ? `${material} · ${NOT_ON_FILE}` : "No interior on record" };
+		}
+		if (swatch.colour) {
+			const colour = swatch.colour + (swatch.colourConfidence === "letter" ? " (likely)" : "");
+			const what = swatch.material === "unknown" ? `${colour} · ${material}` : `${colour} ${material.toLowerCase()}`;
+			return { title: coded(swatch.name && swatch.name !== swatch.colour ? swatch.name : "Interior"), detail: `${what} · representative shade` };
 		}
 		return { title: coded(swatch.name), detail: `${material} · representative shade` };
 	}
@@ -291,6 +315,7 @@
 		INTERIOR_TONES,
 		interiorTone,
 		interiorSwatch,
+		paintValue,
 		MODES,
 		shaderMode,
 		versionOf,

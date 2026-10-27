@@ -182,17 +182,26 @@ def test_shipped_table_is_well_formed():
 	assert data["paint"] and data["interior"]
 	for code, entry in data["paint"].items():
 		assert re.fullmatch(r"[A-Z0-9]{3}", code)
-		assert entry["status"] in {"sourced", "missing"}
-		if entry["status"] == "sourced":
+		assert entry["status"] in {"sourced", "derived", "missing"}
+		if entry["status"] != "missing":
 			assert re.fullmatch(r"#[0-9A-F]{6}", entry["hex"]), code
 			assert re.match(r"https?://", entry["source"]), code
-		else:
+		if entry["status"] == "derived":
+			assert entry["approximate"] is True and entry["derivation"], code
+		if "dodge_hex" in entry:
+			assert re.fullmatch(r"#[0-9A-F]{6}", entry["dodge_hex"]), code
+			assert re.match(r"https?://", entry["dodge_source"]), code
+		if entry["status"] == "missing":
 			assert entry["hex"] == "" and entry["flake_hex"] == "", code
 		assert entry["finish"] in {"", "solid", "metallic", "pearl"}
 		assert entry["models"], code
 	for code, entry in data["interior"].items():
 		assert entry["material"] in {"leather", "cloth", "unknown"}, code
 		assert entry["basis"], code
+		if "colour" in entry:
+			assert entry["colour_confidence"] in {"named", "catalogue", "letter"} and entry["colour_basis"], (
+				code
+			)
 
 
 def test_an_alias_takes_its_paint_codes_published_value():
@@ -274,3 +283,88 @@ def test_us_evidence_does_not_vote_in_the_suffix_letter_rule():
 	table = interior_table(rows)
 	assert table["21D"]["material"] == "leather" and table["21D"]["confidence"] == "decided"
 	assert table["05D"]["material"] == "cloth"  # still from 08D's description, not outvoted by 21D
+
+
+BRAND_HEX_COLUMNS = HEX_COLUMNS + "\tdodge_hex\tdodge_source_url\tderivation"
+
+
+def test_dodge_values_ship_beside_mitsubishis_and_derived_values_say_so(tmp_path):
+	codes = write(
+		tmp_path,
+		"paint_codes.tsv",
+		PAINT_COLUMNS,
+		[
+			paint_row("B34", "Danube Blue Mica", "Dark Blue Pearl", gt=10, stealth=5),
+			paint_row("BA4", "MISSING", "MISSING", stealth=3),
+			paint_row("W9X", "", "", gto=2),
+		],
+	)
+	b34 = ["B34", "", "", "pearl", "#4B69A1", "", "https://example.com/m-b34", "", "sourced", ""]
+	researched = write(
+		tmp_path,
+		"paint_hex.tsv",
+		BRAND_HEX_COLUMNS,
+		[
+			[*b34, "#0e2888", "https://example.com/d-b34", ""],
+			[
+				"BA4",
+				"Danube Blue Mica",
+				"Dark Blue Pearl",
+				"pearl",
+				"#4B69A1",
+				"",
+				"https://example.com/m-b34",
+				"",
+				"derived",
+				"",
+				"#0E2888",
+				"https://example.com/d-b34",
+				"B34 on the R/T grades",
+			],
+			["W9X", "", "", "solid", "#F9FBFD", "", "", "", "derived", "", "", "", "patrol car"],
+		],
+	)
+	table = swatches.paint_table(swatches.read_tsv(codes), swatches.read_tsv(researched))
+	assert table["B34"]["hex"] == "#4B69A1" and table["B34"]["dodge_hex"] == "#0E2888"
+	assert table["B34"]["dodge_source"] == "https://example.com/d-b34" and "approximate" not in table["B34"]
+	assert table["BA4"]["status"] == "derived" and table["BA4"]["approximate"] is True
+	assert table["BA4"]["derivation"] == "B34 on the R/T grades" and table["BA4"]["dodge_hex"] == "#0E2888"
+	# A derivation still needs a value with a source URL behind it.
+	assert table["W9X"]["status"] == "missing" and table["W9X"]["hex"] == ""
+
+
+def test_an_alias_takes_the_dodge_value_too():
+	paint = {
+		"TA7": {"status": "missing", "hex": "", "flake_hex": "", "source": "", "finish": "", "notes": ""},
+		"T87": {
+			"status": "sourced",
+			"hex": "#4F8EBF",
+			"flake_hex": "",
+			"source": "https://e/m",
+			"finish": "metallic",
+			"dodge_hex": "#112888",
+			"dodge_source": "https://e/d",
+		},
+	}
+	swatches.apply_aliases(paint, [{"caps_code": "TA7", "paint_code": "T87"}])
+	assert (paint["TA7"]["hex"], paint["TA7"]["dodge_hex"]) == ("#4F8EBF", "#112888")
+
+
+def test_interior_colour_words_carry_how_they_were_found(tmp_path):
+	interiors = write(
+		tmp_path,
+		"interior_codes.tsv",
+		INTERIOR_COLUMNS,
+		[interior_row("05H", "MISSING", stealth=4), interior_row("31X", "MISSING", other=9)],
+	)
+	colours = write(
+		tmp_path,
+		"interior_colours.tsv",
+		"code\tcolour\tconfidence\tbasis",
+		[["05H", "Charcoal", "letter", "US trim letter H"], ["31X", "Gray", "guess", "no"]],
+	)
+	table = swatches.interior_table(swatches.read_tsv(interiors), swatches.read_tsv(colours))
+	assert table["05H"]["colour"] == "Charcoal" and table["05H"]["colour_confidence"] == "letter"
+	assert table["05H"]["colour_basis"] == "US trim letter H"
+	assert "31X" not in table  # other Nagoya-built only
+	assert swatches.interior_colours([{"code": "01A", "colour": "Red", "confidence": "guess"}]) == {}

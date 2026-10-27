@@ -1,5 +1,5 @@
 {
-	"about": "Paint: published colour values with their source URL, or missing (shown as 'colour not on file'). Interior: leather or cloth, with the basis for each. 3000GT, Stealth and GTO codes only.",
+	"about": "Paint: published colour values with their source URL (Mitsubishi's, and Dodge's where it differs), approximate values derived from named evidence, or missing (shown as 'colour not on file'). Interior: leather or cloth, and a colour word, each with its basis. 3000GT, Stealth and GTO codes only.",
 	"interior": {
 		"01E": {
 			"basis": "no decided code ends in E",
@@ -91,6 +91,9 @@
 		},
 		"03A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 03A are listed RED/D-GRY",
+			"colour_confidence": "catalogue",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -116,6 +119,9 @@
 		},
 		"03H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 6,073 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 03H are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -143,6 +149,9 @@
 		},
 		"04A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 04A are listed RED/D-GRY",
+			"colour_confidence": "catalogue",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -168,6 +177,9 @@
 		},
 		"04H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 9,239 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 04H are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -184,6 +196,9 @@
 		},
 		"04U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 04U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -208,6 +223,9 @@
 		},
 		"05A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -222,6 +240,9 @@
 		},
 		"05D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -236,6 +257,9 @@
 		},
 		"05H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -250,6 +274,9 @@
 		},
 		"06A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -264,6 +291,9 @@
 		},
 		"06D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -290,6 +320,9 @@
 		},
 		"06H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -341,6 +374,9 @@
 		},
 		"07A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -355,6 +391,9 @@
 		},
 		"07D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -369,6 +408,9 @@
 		},
 		"07H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -408,6 +450,9 @@
 		},
 		"08A": {
 			"basis": "description \"Red Cloth, Power Seats\"",
+			"colour": "Red",
+			"colour_basis": "3s_production Interior description (Red Cloth, Power Seats)",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "Red Cloth, Power Seats",
 			"material": "cloth",
@@ -422,6 +467,9 @@
 		},
 		"08D": {
 			"basis": "description \"White Cloth, Power Seats\"",
+			"colour": "Ivory",
+			"colour_basis": "3s_production Interior description (White Cloth, Power Seats)",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "White Cloth, Power Seats",
 			"material": "cloth",
@@ -436,6 +484,9 @@
 		},
 		"08H": {
 			"basis": "description \"Charcoal Cloth, Power Seats\"",
+			"colour": "Charcoal",
+			"colour_basis": "3s_production Interior description (Charcoal Cloth, Power Seats)",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "Charcoal Cloth, Power Seats",
 			"material": "cloth",
@@ -450,6 +501,9 @@
 		},
 		"09A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 09A are listed RED/D-GRY",
+			"colour_confidence": "catalogue",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -463,6 +517,9 @@
 		},
 		"09H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 09H are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -477,6 +534,9 @@
 		},
 		"09U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 09U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -489,6 +549,9 @@
 		},
 		"10A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 10A are listed RED/D-GRY",
+			"colour_confidence": "catalogue",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -503,6 +566,9 @@
 		},
 		"10H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 10H are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -577,6 +643,9 @@
 		},
 		"13H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 37 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA Japan GTO catalogue A018K450A: the trim parts specific to 13H are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -601,6 +670,9 @@
 		},
 		"13T": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,920 US 3000GTs with this code",
+			"colour": "Tan",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 13T are listed L-BEIGE",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -615,6 +687,9 @@
 		},
 		"13U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 65 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 13U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -627,6 +702,9 @@
 		},
 		"13W": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 3,017 US 3000GTs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 13W are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -666,6 +744,9 @@
 		},
 		"14H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 50 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA Japan GTO catalogue A018K450A: the trim parts specific to 14H are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -690,6 +771,9 @@
 		},
 		"14T": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 7,199 US 3000GTs with this code",
+			"colour": "Tan",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 14T are listed L-BEIGE",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -704,6 +788,9 @@
 		},
 		"14U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 119 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 14U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -716,6 +803,9 @@
 		},
 		"14W": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 9,310 US 3000GTs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "legacy 3sgto.org storyteller Interior table: (Mitsubishi) Charcoal Leather",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -743,6 +833,9 @@
 		},
 		"15A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -755,6 +848,9 @@
 		},
 		"15D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -767,6 +863,9 @@
 		},
 		"15H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -779,6 +878,9 @@
 		},
 		"15T": {
 			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"colour": "Tan",
+			"colour_basis": "US trim letter T: every named or catalogued US T interior is tan",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -793,6 +895,9 @@
 		},
 		"15U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"colour": "Red",
+			"colour_basis": "US trim letter U: every named or catalogued US U interior is red",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -807,6 +912,9 @@
 		},
 		"16A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -819,6 +927,9 @@
 		},
 		"16D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -831,6 +942,9 @@
 		},
 		"16H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -843,6 +957,9 @@
 		},
 		"16T": {
 			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"colour": "Tan",
+			"colour_basis": "US trim letter T: every named or catalogued US T interior is tan",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -857,6 +974,9 @@
 		},
 		"16U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"colour": "Red",
+			"colour_basis": "US trim letter U: every named or catalogued US U interior is red",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -871,6 +991,9 @@
 		},
 		"17A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -883,6 +1006,9 @@
 		},
 		"17H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -895,6 +1021,9 @@
 		},
 		"17T": {
 			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"colour": "Tan",
+			"colour_basis": "US trim letter T: every named or catalogued US T interior is tan",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -909,6 +1038,9 @@
 		},
 		"17U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"colour": "Red",
+			"colour_basis": "US trim letter U: every named or catalogued US U interior is red",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -923,6 +1055,9 @@
 		},
 		"17W": {
 			"basis": "suffix letter W: 8,680 of 8,809 decided cars ending W are leather (18W); against: 33W, 34W",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter W: every named or catalogued US W interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -937,6 +1072,9 @@
 		},
 		"18A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -949,6 +1087,9 @@
 		},
 		"18D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -961,6 +1102,9 @@
 		},
 		"18H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -973,6 +1117,9 @@
 		},
 		"18T": {
 			"basis": "description \"Tan Leather, Power Seats\"",
+			"colour": "Tan",
+			"colour_basis": "3s_production Interior description (Tan Leather, Power Seats)",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "Tan Leather, Power Seats",
 			"material": "leather",
@@ -987,6 +1134,9 @@
 		},
 		"18U": {
 			"basis": "description \"Red Leather, Power Seats\"",
+			"colour": "Red",
+			"colour_basis": "3s_production Interior description (Red Leather, Power Seats)",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "Red Leather, Power Seats",
 			"material": "leather",
@@ -1001,6 +1151,9 @@
 		},
 		"18W": {
 			"basis": "description \"Charcoal Leather, Power Seats\"",
+			"colour": "Charcoal",
+			"colour_basis": "3s_production Interior description (Charcoal Leather, Power Seats)",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "Charcoal Leather, Power Seats",
 			"material": "leather",
@@ -1015,6 +1168,9 @@
 		},
 		"19A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1027,6 +1183,9 @@
 		},
 		"19H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1039,6 +1198,9 @@
 		},
 		"19T": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2 US 3000GTs with this code",
+			"colour": "Tan",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 19T are listed L-BEIGE",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1051,6 +1213,9 @@
 		},
 		"19U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 19U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1063,6 +1228,9 @@
 		},
 		"19W": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 10 US 3000GTs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 19W are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1078,6 +1246,9 @@
 		},
 		"20A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1090,6 +1261,9 @@
 		},
 		"20H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1102,6 +1276,9 @@
 		},
 		"20T": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"colour": "Tan",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 20T are listed L-BEIGE",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1114,6 +1291,9 @@
 		},
 		"20W": {
 			"basis": "suffix letter W: 8,680 of 8,809 decided cars ending W are leather (18W); against: 33W, 34W",
+			"colour": "Charcoal",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 20W are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -1128,6 +1308,9 @@
 		},
 		"21A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,980 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1141,6 +1324,9 @@
 		},
 		"21D": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,391 US 3000GTs with this code",
+			"colour": "Ivory",
+			"colour_basis": "legacy 3sgto.org storyteller Interior table: (Mitsubishi) Ivory Leather",
+			"colour_confidence": "named",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1165,6 +1351,9 @@
 		},
 		"21H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 4 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -1178,6 +1367,9 @@
 		},
 		"22A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,222 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1191,6 +1383,9 @@
 		},
 		"22D": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,492 US 3000GTs with this code",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1215,6 +1410,9 @@
 		},
 		"22H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 2 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -1228,6 +1426,9 @@
 		},
 		"23A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1240,6 +1441,9 @@
 		},
 		"23D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1252,6 +1456,9 @@
 		},
 		"23U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 298 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 23U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1265,6 +1472,9 @@
 		},
 		"24A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1277,6 +1487,9 @@
 		},
 		"24D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1289,6 +1502,9 @@
 		},
 		"24U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,021 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 24U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1302,6 +1518,9 @@
 		},
 		"25A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1314,6 +1533,9 @@
 		},
 		"25D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1326,6 +1548,9 @@
 		},
 		"26A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1338,6 +1563,9 @@
 		},
 		"26D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1350,6 +1578,9 @@
 		},
 		"27A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1362,6 +1593,9 @@
 		},
 		"28A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1374,6 +1608,9 @@
 		},
 		"29H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1386,6 +1623,9 @@
 		},
 		"29U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 29U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1398,6 +1638,9 @@
 		},
 		"30U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "ASA USA 3000GT catalogues (BUM8K009A, B528K409A): the trim parts specific to 30U are listed M-RED",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1434,6 +1677,9 @@
 		},
 		"33W": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 43 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA Japan GTO catalogue A018K450A: the trim parts specific to 33W are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -1446,6 +1692,9 @@
 		},
 		"34W": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 86 GTOs with this code",
+			"colour": "Charcoal",
+			"colour_basis": "ASA Japan GTO catalogue A018K450A: the trim parts specific to 34W are listed D-GRAY",
+			"colour_confidence": "catalogue",
 			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
@@ -1458,6 +1707,9 @@
 		},
 		"36A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1470,6 +1722,9 @@
 		},
 		"36D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1482,6 +1737,9 @@
 		},
 		"37A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1494,6 +1752,9 @@
 		},
 		"37D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1506,6 +1767,9 @@
 		},
 		"37H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1518,6 +1782,9 @@
 		},
 		"38H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1530,6 +1797,9 @@
 		},
 		"39H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1542,6 +1812,9 @@
 		},
 		"41A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,623 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1554,6 +1827,9 @@
 		},
 		"41D": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,862 US 3000GTs with this code",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1566,6 +1842,9 @@
 		},
 		"42A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,039 US 3000GTs with this code",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1578,6 +1857,9 @@
 		},
 		"42D": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,033 US 3000GTs with this code",
+			"colour": "Ivory",
+			"colour_basis": "US trim letter D: every named or catalogued US D interior is ivory",
+			"colour_confidence": "letter",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1640,6 +1922,9 @@
 		},
 		"50H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1700,6 +1985,9 @@
 		},
 		"55A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1712,6 +2000,9 @@
 		},
 		"55H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1724,6 +2015,9 @@
 		},
 		"56A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1736,6 +2030,9 @@
 		},
 		"57A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1798,6 +2095,9 @@
 		},
 		"58A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1810,6 +2110,9 @@
 		},
 		"58H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"colour": "Charcoal",
+			"colour_basis": "US trim letter H: every named or catalogued US H interior is charcoal",
+			"colour_confidence": "letter",
 			"confidence": "inferred",
 			"description": "",
 			"material": "cloth",
@@ -1822,6 +2125,9 @@
 		},
 		"60A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1834,6 +2140,9 @@
 		},
 		"61A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"colour": "Red",
+			"colour_basis": "US trim letter A: every named or catalogued US A interior is red",
+			"colour_confidence": "letter",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -2300,7 +2609,9 @@
 			"status": "sourced"
 		},
 		"B34": {
+			"dodge_hex": "#0E2888",
 			"dodge_name": "Dark Blue Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#4B69A1",
@@ -2341,21 +2652,25 @@
 			"status": "sourced"
 		},
 		"BA4": {
-			"dodge_name": "",
-			"finish": "",
+			"approximate": true,
+			"derivation": "Same paint as B34 on the R/T grades: in CAPS 1999 every 1993 Stealth in BA4 is an R/T or R/T Turbo (MNPM/MRPM/MNGF) and every one in B34 a base or ES (MNHE/MNXM/MRHE), built in the same months. Colour from B34's published values (operator 2026-10-27: derive from the colour name).",
+			"dodge_hex": "#0E2888",
+			"dodge_name": "Dark Blue Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/",
+			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#4B69A1",
+			"mitsubishi_name": "Danube Blue Mica",
 			"model_years": [
 				"93"
 			],
 			"models": [
 				"Stealth"
 			],
-			"name": "",
+			"name": "Danube Blue Mica",
 			"notes": "No name and no published hex/RGB found for BA4.",
-			"source": "",
-			"status": "missing"
+			"source": "https://www.paintscratch.com/colors/mitsubishi/mariana-blue-pearl-b34/",
+			"status": "derived"
 		},
 		"G13": {
 			"dodge_name": "",
@@ -2378,7 +2693,9 @@
 			"status": "sourced"
 		},
 		"G84": {
+			"dodge_hex": "#075F35",
 			"dodge_name": "Emerald Green Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#588059",
@@ -2402,7 +2719,9 @@
 			"status": "sourced"
 		},
 		"GA4": {
+			"dodge_hex": "#075F35",
 			"dodge_name": "Emerald Green Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#588059",
@@ -2422,7 +2741,9 @@
 			"status": "sourced"
 		},
 		"H28": {
+			"dodge_hex": "#A1A7A3",
 			"dodge_name": "Dark Silver Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/dark-silver-pearl-h28pad/",
 			"finish": "metallic",
 			"flake_hex": "",
 			"hex": "#D0C8BA",
@@ -2498,21 +2819,25 @@
 			"status": "sourced"
 		},
 		"HA8": {
-			"dodge_name": "",
-			"finish": "",
+			"approximate": true,
+			"derivation": "Same paint as H28 on the R/T grades: in CAPS 1999 every 1993 Stealth in HA8 is an R/T or R/T Turbo and every one in H28 a base or ES, built in the same months. Colour from H28's published values (operator 2026-10-27: derive from the colour name).",
+			"dodge_hex": "#A1A7A3",
+			"dodge_name": "Dark Silver Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/dark-silver-pearl-h28pad/",
+			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#D0C8BA",
+			"mitsubishi_name": "Gentile Silver Metallic",
 			"model_years": [
 				"93"
 			],
 			"models": [
 				"Stealth"
 			],
-			"name": "",
+			"name": "Gentile Silver Metallic",
 			"notes": "No name and no published hex/RGB found for HA8.",
-			"source": "",
-			"status": "missing"
+			"source": "https://www.paintscratch.com/colors/mitsubishi/gentile-silver-metallic-h28/",
+			"status": "derived"
 		},
 		"HA9": {
 			"dodge_name": "",
@@ -2534,7 +2859,9 @@
 			"status": "sourced"
 		},
 		"L79": {
+			"dodge_hex": "#526208",
 			"dodge_name": "Selva Olive Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/olive-pearl-l79pfn/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#2C4C32",
@@ -2572,7 +2899,9 @@
 			"status": "sourced"
 		},
 		"P82": {
+			"dodge_hex": "#896D80",
 			"dodge_name": "Orchid Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/orchid-metallic-p82pha/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#BD8FB2",
@@ -2591,7 +2920,9 @@
 			"status": "sourced"
 		},
 		"R25": {
+			"dodge_hex": "#7C0208",
 			"dodge_name": "Covert Red Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/kutani-red-pearl-r25prg/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#AF1F41",
@@ -2612,7 +2943,9 @@
 			"status": "sourced"
 		},
 		"R38": {
+			"dodge_hex": "#E12A11",
 			"dodge_name": "Fire Storm",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/scarlet-red-r38prh/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#DA2318",
@@ -2632,7 +2965,9 @@
 			"status": "sourced"
 		},
 		"R71": {
+			"dodge_hex": "#CF1E0D",
 			"dodge_name": "Fire Storm",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/red-r71pe7/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#E42B1B",
@@ -2659,7 +2994,9 @@
 			"status": "sourced"
 		},
 		"RA1": {
+			"dodge_hex": "#CF1E0D",
 			"dodge_name": "",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/red-r71pe7/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#E42B1B",
@@ -2678,7 +3015,9 @@
 			"status": "sourced"
 		},
 		"RA5": {
+			"dodge_hex": "#7C0208",
 			"dodge_name": "",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/kutani-red-pearl-r25prg/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#AF1F41",
@@ -2699,7 +3038,9 @@
 			"status": "sourced"
 		},
 		"RA8": {
+			"dodge_hex": "#E12A11",
 			"dodge_name": "Firestorm Red",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/scarlet-red-r38prh/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#DA2318",
@@ -2760,7 +3101,9 @@
 			"status": "sourced"
 		},
 		"T72": {
+			"dodge_hex": "#27A393",
 			"dodge_name": "Strata Blue Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/bright-turquoise-metallic-t72pq4/",
 			"finish": "metallic",
 			"flake_hex": "",
 			"hex": "#30CAC8",
@@ -2778,7 +3121,9 @@
 			"status": "sourced"
 		},
 		"T87": {
+			"dodge_hex": "#112888",
 			"dodge_name": "Mystic Blue Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/",
 			"finish": "metallic",
 			"flake_hex": "",
 			"hex": "#4F8EBF",
@@ -2798,7 +3143,9 @@
 			"status": "sourced"
 		},
 		"TA2": {
+			"dodge_hex": "#27A393",
 			"dodge_name": "",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/bright-turquoise-metallic-t72pq4/",
 			"finish": "metallic",
 			"flake_hex": "",
 			"hex": "#30CAC8",
@@ -2817,7 +3164,9 @@
 			"status": "sourced"
 		},
 		"TA7": {
+			"dodge_hex": "#112888",
 			"dodge_name": "Mystic Blue Metallic",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/",
 			"finish": "metallic",
 			"flake_hex": "",
 			"hex": "#4F8EBF",
@@ -2856,7 +3205,9 @@
 			"status": "sourced"
 		},
 		"W29": {
+			"dodge_hex": "#C1CACA",
 			"dodge_name": "Grayish White Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/grayish-white-tri-coat-pearl-w29pmw/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#DEE1E6",
@@ -2877,21 +3228,23 @@
 			"status": "sourced"
 		},
 		"W2D": {
+			"approximate": true,
+			"derivation": "One pre-production 1991 3000GT VR-4 (serial 000054, built April 1990); W codes are Mitsubishi's white family. Approximated by W32's published solid white (operator 2026-10-27).",
 			"dodge_name": "",
-			"finish": "",
+			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#F9FBFD",
+			"mitsubishi_name": "White (name not published)",
 			"model_years": [
 				"91"
 			],
 			"models": [
 				"3000GT"
 			],
-			"name": "",
+			"name": "White (name not published)",
 			"notes": "No name and no published hex/RGB found for W2D. (PaintScratch has Dodge 'white-dw2dt1639' - Chrysler DW2/T1639, unrelated.)",
-			"source": "",
-			"status": "missing"
+			"source": "https://www.paintscratch.com/colors/dodge/white-w32pwl/",
+			"status": "derived"
 		},
 		"W32": {
 			"dodge_name": "Brilliant White",
@@ -2914,7 +3267,9 @@
 			"status": "sourced"
 		},
 		"W75": {
+			"dodge_hex": "#DAE1D6",
 			"dodge_name": "Galaxy White Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/white-tri-coat-pearl-w75pwd/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#E5EDE3",
@@ -2940,11 +3295,13 @@
 			"status": "sourced"
 		},
 		"W9X": {
+			"approximate": true,
+			"derivation": "ASA Japan names the grade of all 27 W9X GTOs (MNGF9) 'WHITE/BLACK PATROL-CAR'. Body colour approximated by W32's published solid white (operator 2026-10-27: derive from the colour name).",
 			"dodge_name": "",
-			"finish": "",
+			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#F9FBFD",
+			"mitsubishi_name": "Patrol-car White (white/black)",
 			"model_years": [
 				"93",
 				"94",
@@ -2953,10 +3310,10 @@
 			"models": [
 				"GTO"
 			],
-			"name": "",
+			"name": "Patrol-car White (white/black)",
 			"notes": "No name and no published hex/RGB found for W9X.",
-			"source": "",
-			"status": "missing"
+			"source": "https://www.paintscratch.com/colors/dodge/white-w32pwl/",
+			"status": "derived"
 		},
 		"WA0": {
 			"dodge_name": "",
@@ -2978,7 +3335,9 @@
 			"status": "sourced"
 		},
 		"WA5": {
+			"dodge_hex": "#DAE1D6",
 			"dodge_name": "Galaxy White Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/white-tri-coat-pearl-w75pwd/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#E5EDE3",
@@ -2998,7 +3357,9 @@
 			"status": "sourced"
 		},
 		"WA9": {
+			"dodge_hex": "#C1CACA",
 			"dodge_name": "Pearl White",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/grayish-white-tri-coat-pearl-w29pmw/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#DEE1E6",
@@ -3058,7 +3419,9 @@
 			"status": "sourced"
 		},
 		"X94": {
+			"dodge_hex": "#0A110E",
 			"dodge_name": "Jet Black",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/lamp-black-x94px2/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#0D1315",
@@ -3101,7 +3464,9 @@
 			"status": "sourced"
 		},
 		"XA4": {
+			"dodge_hex": "#0A110E",
 			"dodge_name": "Jet Black",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/lamp-black-x94px2/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#0D1315",
@@ -3122,7 +3487,9 @@
 			"status": "sourced"
 		},
 		"Y99": {
+			"dodge_hex": "#F7F67F",
 			"dodge_name": "Champagne Yellow Pearl",
+			"dodge_source": "https://www.paintscratch.com/colors/dodge/champagne-yellow-tri-coat-pearl-y99py1/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#EEF0AE",

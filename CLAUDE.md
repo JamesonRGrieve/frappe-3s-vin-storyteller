@@ -26,14 +26,15 @@ production record, which lives in its own MariaDB database (not the Frappe site 
   innerHTML), `public/css/storyteller.css`: the page. The footer links the AGPL source on GitHub.
 - `public/js/swatch-core.js` (pure, `globalThis.VinSwatchCore`), `public/js/swatch.js` (`globalThis.VinSwatch`,
   WebGL + DOM), `public/css/swatch.css`, `public/data/swatches.json` (built by `vin_storyteller/swatches.py`): the
-  animated paint/interior swatches (README: Swatches). Paint colours are published values with a source URL or
-  missing, never guessed (operator, 2026-10-27).
+  animated paint/interior swatches (README: Swatches). Paint colours are published values with a source URL
+  (Dodge's for a Dodge car where it differs), approximate values derived from named evidence and captioned so, or
+  missing; never a bare guess (operator, 2026-10-27).
 - `vin_storyteller/migrations.py` + `sql/migrations/NNNN_*.sql`: versioned schema migrations, applied in
   order and recorded in `SchemaMigration`; `{autoincrement}` is the only dialect token. Run by
   `commands.py` (`bench --site <site> vin-storyteller-migrate`) with write credentials from the environment
   only. Never edit an applied migration; add the next number.
-- Schema: `Production` (one row per car; `Provenance` names the source: `CAPS 1999`, `CAPS 2004` and
-  `ASA Japan 2008` are the factory records) and `VehicleHistory` (post-factory records per VIN: type, title, URL, date, source,
+- Schema: `Production` (one row per car; `Provenance` names the source: `CAPS 1999`, `CAPS 2004`,
+  `ASA Japan 2008`, `ASA General 2008` and `ASA USA 2007` are the factory records, `story.FACTORY_PROVENANCES`) and `VehicleHistory` (post-factory records per VIN: type, title, URL, date, source,
   provenance). History URLs are shown only when they are plain http(s) links (`story.safe_url`, re-checked
   in the JS).
 - Rarity: `story.rarity_tier` maps a run's total to `one_of_one` (1) or `sub10`/`sub25`/`sub50`/`sub100`; a

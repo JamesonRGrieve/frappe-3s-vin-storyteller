@@ -6,7 +6,7 @@ import pytest
 
 from vin_storyteller.records import RecordRefused, add_record
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.story import ASA_JAPAN, MISSING, Coded, ModelCount, full_year
+from vin_storyteller.story import ASA_JAPAN, ASA_USA, MISSING, Coded, ModelCount, full_year
 
 # A JDM GTO from the ASA Japan catalogue, sharing the 1992 fixture cars' colour (T87) and interior (12A).
 GTO = "Z16A-0014160"
@@ -160,7 +160,9 @@ def test_the_last_gtos_are_2000_model_years():
 	assert full_year("00") == "2000" and full_year("99") == "1999"
 
 
-@pytest.mark.parametrize("provenance", ["ASA Japan 2008", "asa japan 2008", "CAPS 2004", "CAPS 1999", "CAPS"])
+@pytest.mark.parametrize(
+	"provenance", ["ASA Japan 2008", "asa japan 2008", "CAPS 2004", "CAPS 1999", "CAPS", "ASA USA 2007"]
+)
 def test_factory_build_names_are_reserved(connection, provenance):
 	with pytest.raises(RecordRefused, match="factory"):
 		add_record(connection, "Z16A-0011452", provenance, "qmark")
@@ -196,3 +198,17 @@ def test_a_paints_a_form_counts_with_it_in_breakdowns_and_pages(connection, reco
 	index = {e.code: e for e in records.code_index("paint")}
 	assert "TA7" not in index and index["T87"].total == page.total
 	assert story.in_colour == records.story("JA3AM84J3NY000004").in_colour  # positions stay exact
+
+
+def test_an_asa_usa_car_is_a_factory_record_counted_with_the_us_cars(connection, records):
+	"""JA3AN74K2SY018786 is in ASA USA 2007 but neither CAPS build: a full story, counted in its US year."""
+	before = records.story("JA3AM84J3NY000004").in_year.total
+	connection.execute(
+		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
+		"DateOfManufacture, ModelYear, Provenance) VALUES ('NY004601', 'JA3AN74K9NY004601', 'M1', 'Z16A', "
+		"'MJGFL2M', 'XA1', 'T87', '12A', '92033', '92', ?)",
+		(ASA_USA,),
+	)
+	story = records.story("JA3AN74K9NY004601")
+	assert not story.partial and story.provenance == ASA_USA
+	assert records.story("JA3AM84J3NY000004").in_year.total == before + 1

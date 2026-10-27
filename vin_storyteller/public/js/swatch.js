@@ -12,7 +12,8 @@
 //   Declarative: <div data-swatch="paint" data-code="W75" data-description="" data-caption></div>
 //                (data-swatch="interior" for trim). Elements present at DOMContentLoaded are mounted; call
 //                VinSwatch.mountAll(root) for markup added later.
-//   Scripted:    VinSwatch.render(element, { kind: "paint" | "interior", code, description, caption })
+//   Scripted:    VinSwatch.render(element, { kind: "paint" | "interior", code, description, make, caption })
+//                (make "Dodge" draws a paint in Dodge's published value where it differs; data-make declaratively)
 //                -> Promise of the swatch model (status, name, finish / material, label).
 //   VinSwatch.configure({ src }) points at another copy of swatches.json (before the first render).
 //   VinSwatch.unmount(element) stops drawing it.
@@ -414,10 +415,10 @@ void main() {
 		return node;
 	}
 
-	function swatchFor(data, kind, code, description) {
+	function swatchFor(data, kind, code, description, make) {
 		const key = String(code ?? "").trim().toUpperCase();
 		if (kind === "interior") return core.interiorSwatch(data.interior[key], description);
-		return core.paintSwatch(data.paint[key], description);
+		return core.paintSwatch(data.paint[key], description, make);
 	}
 
 	function unmount(target) {
@@ -429,9 +430,9 @@ void main() {
 
 	// Draw a swatch into `target` (its size comes from CSS: .vsw sets an aspect ratio). Replaces whatever the
 	// element held. Resolves to the swatch model so callers can write their own caption.
-	async function render(target, { kind = "paint", code = "", description = "", caption = false } = {}) {
+	async function render(target, { kind = "paint", code = "", description = "", make = "", caption = false } = {}) {
 		const data = await loadData();
-		const swatch = swatchFor(data, kind, code, description);
+		const swatch = swatchFor(data, kind, code, description, make);
 		unmount(target);
 		const parts = core.captionParts(swatch, String(code ?? "").trim().toUpperCase());
 		const canvas = element("canvas", "vsw-canvas");
@@ -478,6 +479,7 @@ void main() {
 					kind: node.dataset.swatch,
 					code: node.dataset.code || "",
 					description: node.dataset.description || "",
+					make: node.dataset.make || "",
 					caption: node.hasAttribute("data-caption"),
 				}),
 			),

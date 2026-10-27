@@ -311,3 +311,13 @@ test("a paint shown once for all its codes lists each in its caption", () => {
 	const s = core.paintSwatch({ hex: "#4F8EBF", finish: "metallic", name: "Fiji Blue Metallic", also_codes: ["TA7"], source: "https://x" }, "");
 	assert.equal(core.captionParts(s, "T87").title, "Fiji Blue Metallic · T87 / TA7");
 });
+
+test("one paint, both names: a car gets its brand's name, a page with no car gets both", () => {
+	const t87 = { hex: "#4F8EBF", finish: "metallic", name: "Fiji Blue Metallic", mitsubishi_name: "Fiji Blue Metallic", dodge_name: "Mystic Blue Metallic", also_codes: ["TA7"], source: "https://x" };
+	assert.equal(core.paintSwatch(t87, "").name, "Fiji Blue Metallic / Mystic Blue Metallic");
+	assert.equal(core.paintSwatch(t87, "", "Dodge").name, "Mystic Blue Metallic");
+	assert.equal(core.paintSwatch(t87, "", "Mitsubishi").name, "Fiji Blue Metallic");
+	assert.equal(core.captionParts(core.paintSwatch(t87, ""), "T87").title, "Fiji Blue Metallic / Mystic Blue Metallic · T87 / TA7");
+	assert.equal(core.paintName({ mitsubishi_name: "Lamp Black", dodge_name: "Lamp Black" }, ""), "Lamp Black");
+	assert.equal(core.paintName({ name: "Seattle Silver Metallic", mitsubishi_name: "Seattle Silver Metallic", dodge_name: "" }, "Dodge"), "Seattle Silver Metallic");
+});

@@ -115,9 +115,20 @@
 	// than the table) and the car's make. `status` is "sourced" with a published hex, "derived" with an
 	// approximate value derived from named evidence (it says so); otherwise the swatch is the neutral
 	// "colour not on file" panel and never a guess.
+	// The paint's name: a car's own brand's name (Dodge's for a Stealth); with no car, both brands' names when they
+	// differ, since one paint is one swatch (operator 2026-10-27: same colour, merged, both names).
+	function paintName(entry, make) {
+		const mitsubishi = entry?.mitsubishi_name || "";
+		const dodge = entry?.dodge_name || "";
+		if (make === "Dodge") return dodge || mitsubishi || entry?.name || "";
+		if (make === "Mitsubishi") return mitsubishi || dodge || entry?.name || "";
+		if (mitsubishi && dodge && mitsubishi !== dodge) return `${mitsubishi} / ${dodge}`;
+		return mitsubishi || dodge || entry?.name || "";
+	}
+
 	function paintSwatch(entry, description, make = "") {
 		const named = description && description !== "MISSING" ? description : "";
-		const name = named || entry?.name || "";
+		const name = named || paintName(entry, make);
 		const finish = finishFromName(named) || entry?.finish || finishFromName(name) || "solid";
 		const { base, source } = paintValue(entry, make);
 		if (!base) {
@@ -344,6 +355,7 @@
 		interiorTone,
 		interiorSwatch,
 		paintValue,
+		paintName,
 		MODES,
 		shaderMode,
 		versionOf,

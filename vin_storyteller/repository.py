@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from vin_storyteller.story import (
-	CAPS,
+	FACTORY_PROVENANCES,
 	MISSING,
 	Coded,
 	Gap,
@@ -79,7 +79,8 @@ class ProductionRecords:
 		"""Cars in the factory export matching `where`: records from other sources never shift a CAPS count."""
 		return int(
 			self._one(
-				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND Provenance = %s", (*params, CAPS)
+				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND Provenance IN (%s, %s)",
+				(*params, *FACTORY_PROVENANCES),
 			)[0]
 		)
 
@@ -127,14 +128,14 @@ class ProductionRecords:
 		earlier = " AND SerialNumber < %s"
 
 		year_start = self._one(
-			"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND Provenance = %s",
-			(car.model_year, CAPS),
+			"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND Provenance IN (%s, %s)",
+			(car.model_year, *FACTORY_PROVENANCES),
 		)
 		model_start = self._one(
-			f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line} AND Provenance = %s",
-			(*line, CAPS),
+			f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line} AND Provenance IN (%s, %s)",
+			(*line, *FACTORY_PROVENANCES),
 		)
-		if car.provenance != CAPS:
+		if car.provenance not in FACTORY_PROVENANCES:
 			return Story(
 				vin=vin,
 				provenance=car.provenance,
@@ -206,18 +207,18 @@ class ProductionRecords:
 		if serial >= SECOND_SERIES:
 			occupied = (
 				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
-				"WHERE ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) >= %s"
+				"WHERE ModelYear = %s AND Provenance IN (%s, %s) AND SUBSTR(VIN, 12, 6) >= %s"
 			)
-			params = (year, CAPS, SECOND_SERIES)
+			params = (year, *FACTORY_PROVENANCES, SECOND_SERIES)
 		else:
 			# 1995-96's 8xxxxx-VIN cars take their place in the main run by their SerialNumber's digits.
 			occupied = (
 				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
-				"WHERE ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) < %s "
+				"WHERE ModelYear = %s AND Provenance IN (%s, %s) AND SUBSTR(VIN, 12, 6) < %s "
 				"UNION ALL SELECT SUBSTR(SerialNumber, 3, 6) AS s, DateOfManufacture AS d FROM Production "
-				"WHERE ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) >= %s"
+				"WHERE ModelYear = %s AND Provenance IN (%s, %s) AND SUBSTR(VIN, 12, 6) >= %s"
 			)
-			params = (year, CAPS, SECOND_SERIES, year, CAPS, SECOND_SERIES)
+			params = (year, *FACTORY_PROVENANCES, SECOND_SERIES, year, *FACTORY_PROVENANCES, SECOND_SERIES)
 		before = self._one(
 			f"SELECT s, d FROM ({occupied}) AS run WHERE s < %s ORDER BY s DESC LIMIT 1", (*params, serial)
 		)

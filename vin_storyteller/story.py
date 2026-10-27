@@ -57,6 +57,9 @@ def describe_production_date(code: str) -> str:
 
 
 CAPS = "CAPS"  # Production.Provenance of the factory export; only these rows count in positions and totals
+# Factory production records: the original CAPS export and the cars only the 2004 CAPS build holds (the 1997
+# Nov 1996 - Jan 1997 block and the last two 1999s; operator 2026-10-27). These tell full stories and count.
+FACTORY_PROVENANCES = (CAPS, "CAPS 2004")
 
 # ISO 3779 check digit (the VIN's 9th character): every one of the 236,589 CAPS VINs has a correct one, so a VIN
 # whose check digit fails was almost certainly mistyped.

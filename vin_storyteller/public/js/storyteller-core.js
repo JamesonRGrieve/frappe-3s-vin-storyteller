@@ -22,7 +22,10 @@
 		article: "Article",
 		other: "Record",
 	};
-	const PROVENANCE_NAMES = { CAPS: "the factory production record (CAPS export)" };
+	const PROVENANCE_NAMES = {
+		CAPS: "the factory production record (CAPS export)",
+		"CAPS 2004": "the factory production record (the 2004 CAPS export, which holds cars the earlier one lost)",
+	};
 	const LOCALE = "en-CA";
 	const VIN_LENGTH = 17;
 	const LOOK_ALIKES = /[IOQ]/;

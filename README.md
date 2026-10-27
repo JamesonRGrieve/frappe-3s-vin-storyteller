@@ -79,6 +79,11 @@ runs once, in order, and is recorded in `SchemaMigration`. Never edit one that h
 
 ### Cars the CAPS export is missing
 
+`Provenance` `CAPS` is the original export; `CAPS 2004` marks cars only the 2004 CAPS build (WINCAPS, `PASEN/SHARYO`)
+holds: the 1997 Nov 1996 – Jan 1997 block and the last two 1999 SLs. Both are factory records: full stories, and
+they count in positions and totals. Every other provenance is a partial story outside the counts.
+
+
 A real VIN proven by another source (a factory price label, a dealer or auction record) is added with
 `bench --site <site> vin-storyteller-add-record <VIN> "<source>"` (admin credentials from the environment, as for
 migrate). Only what the VIN establishes is stored: its model line comes from the CAPS cars sharing its first eight

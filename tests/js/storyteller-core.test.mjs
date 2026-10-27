@@ -126,3 +126,9 @@ test("a partial story (not in the factory export) says so and shows unknown code
 	assert.match(core.builtText({ partial: true, provenance: "Price label" }), /on record from Price label/);
 	assert.equal(core.builtText({ partial: false, built: "the 1st production period of May, 1996" }), "Built in the 1st production period of May, 1996.");
 });
+
+test("provenanceText names both factory exports", () => {
+	assert.match(core.provenanceText("CAPS"), /CAPS export/);
+	assert.match(core.provenanceText("CAPS 2004"), /2004 CAPS export/);
+	assert.equal(core.provenanceText("Canadian price label"), "Production record source: Canadian price label.");
+});

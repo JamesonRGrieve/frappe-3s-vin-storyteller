@@ -118,3 +118,23 @@ def test_placeholder_colour_codes_read_as_not_recorded(connection):
 	story = ProductionRecords(connection, "qmark").story("JA3XE74C9MY003000")
 	assert story.exterior.code == "" and story.interior.code == ""
 	assert story.equipment.code == "A07"
+
+
+def test_a_caps_2004_car_tells_a_full_story_and_counts(connection):
+	"""Cars only the 2004 CAPS build holds are factory records: a full story, and they count in totals."""
+	records = ProductionRecords(connection, "qmark")
+	before = records.story("JA3AM84J3NY000009").in_year.total
+	connection.execute(
+		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
+		"DateOfManufacture, ModelYear, Provenance) VALUES ('NY000010', ?, 'M1', 'Z16A', 'CLASS01', 'XA1', 'T87', "
+		"'12A', '92033', '92', 'CAPS 2004')",
+		(valid("JA3AM84J3NY000010"),),
+	)
+	story = records.story(valid("JA3AM84J3NY000010"))
+	assert not story.partial and story.built and story.provenance == "CAPS 2004"
+	assert records.story("JA3AM84J3NY000009").in_year.total == before + 1
+
+
+def test_add_record_refuses_a_factory_provenance(connection):
+	with pytest.raises(RecordRefused, match="factory export"):
+		add_record(connection, GAP_VIN, "CAPS 2004", "qmark")

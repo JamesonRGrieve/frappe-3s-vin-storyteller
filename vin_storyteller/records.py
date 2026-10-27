@@ -14,8 +14,8 @@ from dataclasses import dataclass
 
 from vin_storyteller.repository import PARAMSTYLES
 from vin_storyteller.story import (
-	CAPS,
 	CHASSIS_MODELS,
+	FACTORY_PROVENANCES,
 	has_valid_check_digit,
 	is_chassis_number,
 	normalize_chassis,
@@ -45,9 +45,9 @@ def add_record(connection, raw_vin: str, provenance: str, paramstyle: str = "for
 	"""Insert a non-CAPS production record for `raw_vin` (a 17-character VIN, or a JDM GTO chassis number), with
 	`provenance` naming its source."""
 	provenance = " ".join((provenance or "").split())
-	if not provenance or provenance.upper() == CAPS or len(provenance) > PROVENANCE_MAX:
+	if not provenance or provenance.upper() in FACTORY_PROVENANCES or len(provenance) > PROVENANCE_MAX:
 		raise RecordRefused(
-			f"provenance must name the source in 1-{PROVENANCE_MAX} characters, and not be {CAPS}"
+			f"provenance must name the source in 1-{PROVENANCE_MAX} characters, and not be a factory export"
 		)
 	if is_chassis_number(raw_vin):
 		return _add_chassis(connection, normalize_chassis(raw_vin), provenance, PARAMSTYLES[paramstyle])
@@ -65,9 +65,9 @@ def add_record(connection, raw_vin: str, provenance: str, paramstyle: str = "for
 			raise RecordRefused(f"{vin}: the check digit doesn't match; not a real VIN as written")
 		cursor.execute(
 			f"SELECT ModelYear, Model, ModelCode, Classification, COUNT(*) FROM Production "
-			f"WHERE SUBSTR(VIN, 1, 8) = {mark} AND Provenance = {mark} "
+			f"WHERE SUBSTR(VIN, 1, 8) = {mark} AND Provenance IN ({mark}, {mark}) "
 			"GROUP BY ModelYear, Model, ModelCode, Classification",
-			(vin[:8], CAPS),
+			(vin[:8], *FACTORY_PROVENANCES),
 		)
 		patterns = cursor.fetchall()
 		if not patterns:

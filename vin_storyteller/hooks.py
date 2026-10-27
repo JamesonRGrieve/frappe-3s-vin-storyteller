@@ -15,3 +15,6 @@ required_apps = ["frappe"]
 
 # frappe-public-site-router: list every code page (behind the dynamic code-page Web Pages) in the site's sitemap.
 public_site_sitemap_routes = ["vin_storyteller.api.sitemap_routes"]
+
+# Templates stamp the app's commit on its asset URLs (?v=), so a CDN never serves stale code after a deploy.
+jinja = {"methods": ["vin_storyteller.assets.vin_storyteller_asset_version"]}

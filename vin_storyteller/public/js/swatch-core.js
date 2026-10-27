@@ -187,6 +187,9 @@
 			flake: [flake.r, flake.g, flake.b],
 			finish: [p.flakeDensity ?? 0, p.flakeSize ?? 1, p.flakeStrength ?? 0, p.pearl ?? 0],
 			surface: [p.gloss ?? 0.2, p.peel ?? 0.3],
+			// Which texture coordinates the paint's flake and interference layers use: 1 for a pearl, whose mica
+			// platelets lie in long swirled streaks, else 0 (the panel's own coordinates) (operator 2026-10-27).
+			uvMap: swatch.kind === "paint" && swatch.finish === "pearl" ? 1 : 0,
 			seed: ((seed % 997) + 997) % 997,
 		};
 	}

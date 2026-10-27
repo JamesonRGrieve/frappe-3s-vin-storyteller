@@ -235,3 +235,9 @@ test("captionParts names the swatch and never implies a colour that isn't on fil
 	});
 	assert.deepEqual(plain(core.captionParts(core.interiorSwatch(null, ""), "")), { title: "Interior", detail: "No interior on record" });
 });
+
+test("pearl paints use their own texture coordinates; metallic, solid and interiors don't", () => {
+	assert.equal(core.uniformsFor(core.paintSwatch({ hex: "#F2F2EE", finish: "pearl" }, "")).uvMap, 1);
+	assert.equal(core.uniformsFor(core.paintSwatch({ hex: "#4F8EBF", finish: "metallic" }, "")).uvMap, 0);
+	assert.equal(core.uniformsFor(core.paintSwatch({ hex: "#AA0000", finish: "solid" }, "")).uvMap, 0);
+});

@@ -57,6 +57,7 @@ uniform vec3 uFlake;    // linear
 uniform vec4 uFinish;   // flake density, flake size, flake strength, pearl
 uniform vec2 uSurface;  // gloss, bump (peel / grain) height
 uniform float uSeed;
+uniform float uUvMap;   // 0 the panel's coordinates; 1 a pearl's swirled, stretched platelet field
 
 float hash(vec2 p) {
 	p = fract(p * vec2(123.34, 456.21) + uSeed * 0.0137);
@@ -111,6 +112,15 @@ vec2 weave(vec2 p) {
 	return vec2(h + 0.15 * noise(p * 1.7), warpOnTop);
 }
 
+// A pearl's own texture coordinates: mica platelets lie in long streaks that swirl gently across the panel, so its
+// flake and interference layers are sampled through a rotated, stretched and domain-warped map.
+vec2 pearlUv(vec2 p) {
+	float a = 0.55 + 0.6 * (fbm(p * 0.006) - 0.5);
+	vec2 r = mat2(cos(a), -sin(a), sin(a), cos(a)) * p;
+	vec2 warp = vec2(fbm(p * 0.018 + 3.1), fbm(p * 0.018 + 7.7)) - 0.5;
+	return vec2(r.x * 0.42, r.y * 1.6) + warp * 18.0;
+}
+
 float heightAt(vec2 p) {
 	if (uMode == 1) {
 		float grain = 1.0 - cells(p * 0.32);
@@ -150,8 +160,11 @@ void main() {
 		// Flop: metallic and pearl paint is brighter facing the highlight and darker away from it.
 		float flop = mix(1.0, mix(0.55, 1.2, pow(ndoth, 3.0)), clamp(density + pearl, 0.0, 1.0));
 		vec3 body = uBase * (0.12 + 0.78 * diffuse) * flop;
-		// Spectral map: the interference colour shifts with the angle to the light.
-		float t = dot(n, hv) * 1.6 + vUv.x * 0.35 + uLight.x * 0.25;
+		// Spectral map: the interference colour shifts with the angle to the light; on a pearl it also bands along
+		// the platelet streaks.
+		vec2 fp = uUvMap > 0.5 ? pearlUv(p) : p;
+		float band = uUvMap > 0.5 ? fbm(fp * 0.02) * 1.2 : vUv.x * 0.35;
+		float t = dot(n, hv) * 1.6 + band + uLight.x * 0.25;
 		vec3 spectrum = 0.5 + 0.5 * cos(6.28318 * (vec3(0.0, 0.33, 0.67) + t));
 		vec3 pearlTint = mix(uFlake, uFlake * (0.55 + 0.9 * spectrum), 0.45);
 		body += pearlTint * pow(ndoth, 10.0) * pearl * 0.45; // the pearl glows round the highlight, not over the body
@@ -159,13 +172,16 @@ void main() {
 		vec3 sparkle = vec3(0.0);
 		for (int layer = 0; layer < 2; layer++) {
 			float scale = size * (layer == 0 ? 1.0 : 1.7);
-			vec2 q = p / scale + float(layer) * 31.0;
+			vec2 q = fp / scale + float(layer) * 31.0;
 			vec2 cell = floor(q);
 			vec2 r = hash2(cell);
 			float present = step(1.0 - density * (layer == 0 ? 1.0 : 0.45), r.x);
 			// A round flake at a jittered spot in its cell.
 			vec2 centre = 0.25 + 0.5 * hash2(cell + 3.7);
-			float disc = 1.0 - smoothstep(0.18, 0.34, length(fract(q) - centre));
+			// Metallic flakes are round; a pearl's platelets are thin slivers along the streak.
+			vec2 d = fract(q) - centre;
+			if (uUvMap > 0.5) d *= vec2(0.45, 1.9);
+			float disc = 1.0 - smoothstep(0.18, 0.34, length(d));
 			vec3 fn = normalize(n0 + vec3((hash2(cell + 7.3) - 0.5) * 0.9, 0.0));
 			float glint = pow(max(dot(fn, hv), 0.0), 80.0 + 160.0 * r.y);
 			vec3 tint = mix(uFlake, uFlake * (0.4 + 1.2 * spectrum), pearl);
@@ -232,7 +248,7 @@ void main() {
 		gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 		const at = (name) => gl.getUniformLocation(program, name);
 		const uniforms = {};
-		for (const name of ["uRes", "uUnit", "uLight", "uMode", "uBase", "uFlake", "uFinish", "uSurface", "uSeed"]) {
+		for (const name of ["uRes", "uUnit", "uLight", "uMode", "uBase", "uFlake", "uFinish", "uSurface", "uSeed", "uUvMap"]) {
 			uniforms[name] = at(name);
 		}
 		const state = { canvas, gl, uniforms, lost: false };
@@ -279,6 +295,7 @@ void main() {
 		gl.uniform4fv(u.uFinish, v.finish);
 		gl.uniform2fv(u.uSurface, v.surface);
 		gl.uniform1f(u.uSeed, v.seed);
+		gl.uniform1f(u.uUvMap, v.uvMap);
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 		// WebGL draws from the bottom-left; the 2D copy reads from the top-left.
 		record.context.drawImage(canvas, 0, canvas.height - size.height, size.width, size.height, 0, 0, size.width, size.height);

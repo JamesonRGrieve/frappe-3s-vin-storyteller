@@ -592,3 +592,27 @@ class CodeIndexEntry:
 	description: str
 	total: int
 	by_model: tuple[ModelCount, ...]
+
+
+# The code pages' dynamic Web Page routes under a site's prefix (card 330), and the page each code has there.
+CODE_PAGE_ROUTES = {
+	"paint": "storyteller/paint/<code>",
+	"interior": "storyteller/interior/<code>",
+	"option": "storyteller/option/<model>/<code>",
+}
+
+
+def code_page_endpoint(prefix: str, kind: str, code: str, model_code: str = "") -> str:
+	"""A code page's endpoint under the site prefix: ``3shub-ca/storyteller/option/Z16A/302``."""
+	tail = f"{model_code}/{code}" if kind == "option" else code
+	return f"{prefix}/storyteller/{kind}/{tail}"
+
+
+def code_page_endpoints(prefix: str, index: dict[str, tuple]) -> list[str]:
+	"""Every code page under ``prefix`` for the sitemap, from each kind's code index entries."""
+	return [
+		code_page_endpoint(prefix, kind, entry.code, entry.model_code)
+		for kind in CODE_KINDS
+		for entry in index.get(kind, ())
+		if kind != "option" or entry.model_code
+	]

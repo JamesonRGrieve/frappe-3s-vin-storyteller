@@ -12,3 +12,6 @@ app_license = "AGPL-3.0-or-later"
 app_version = _version
 
 required_apps = ["frappe"]
+
+# frappe-public-site-router: list every code page (behind the dynamic code-page Web Pages) in the site's sitemap.
+public_site_sitemap_routes = ["vin_storyteller.api.sitemap_routes"]

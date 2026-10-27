@@ -254,9 +254,13 @@ read smaller than it really was. The page says so.
    }
    ```
 
-6. **The code pages.** Three more published Web Pages, `<prefix>/storyteller/paint`, `<prefix>/storyteller/interior`
-   and `<prefix>/storyteller/option`, each like the one above with
-   `{% include "vin_storyteller/templates/includes/codes.html" %}` as its `main_section_html`.
+6. **The code pages.** Published Web Pages with `{% include "vin_storyteller/templates/includes/codes.html" %}` as
+   their `main_section_html` (dynamic template, like the page above): the three indexes
+   `<prefix>/storyteller/paint`, `<prefix>/storyteller/interior` and `<prefix>/storyteller/option`, and three
+   dynamic-route pages (`dynamic_route` set) `<prefix>/storyteller/paint/<code>`,
+   `<prefix>/storyteller/interior/<code>` and `<prefix>/storyteller/option/<model>/<code>`. frappe-public-site-router
+   serves dynamic-route Web Pages and, through this app's `public_site_sitemap_routes` hook, lists every code page in
+   the site's sitemap. The templates write path links (`data-code-routes="path"`); `?code=` addresses still work.
 
 ## Development
 

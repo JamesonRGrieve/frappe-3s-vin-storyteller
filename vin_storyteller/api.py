@@ -31,8 +31,10 @@ from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
 from vin_storyteller.story import (
 	CODE_KINDS,
+	CODE_PAGE_ROUTES,
 	InvalidName,
 	InvalidVin,
+	code_page_endpoints,
 	is_chassis_number,
 	is_frame_number,
 	normalize_chassis,
@@ -157,3 +159,18 @@ def codes(kind: str = "") -> dict:
 	_count_lookup("code_pages", CODE_PAGES_PER_WINDOW, CODE_PAGES_LIMITED)
 	key = f"index:{kind}" if kind in CODE_KINDS else None
 	return _cached(key, lambda: index_answer(kind, _records, (pymysql.MySQLError,)))
+
+
+def sitemap_routes(site) -> list[tuple[str, None]]:
+	"""public_site_sitemap_routes hook (frappe-public-site-router): every code page on a site that publishes the
+	dynamic code-page Web Pages. A database failure leaves the code pages out of the sitemap rather than breaking it."""
+	routes = {kind: f"{site.route_prefix}/{route}" for kind, route in CODE_PAGE_ROUTES.items()}
+	if not frappe.db.exists("Web Page", {"route": routes["paint"], "published": 1, "dynamic_route": 1}):
+		return []
+	try:
+		with _records() as records:
+			index = {kind: records.code_index(kind) for kind in CODE_KINDS}
+	except pymysql.MySQLError:
+		frappe.log_error(title="VIN Storyteller: code pages left out of the sitemap")
+		return []
+	return [(endpoint, None) for endpoint in code_page_endpoints(site.route_prefix, index)]

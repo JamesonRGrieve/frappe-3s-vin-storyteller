@@ -282,3 +282,12 @@ test("an interior's colour word comes from its description, else the table, a le
 	assert.equal(described.colour, "");
 	assert.equal(core.interiorSwatch({ material: "cloth" }, "").status, "missing");
 });
+
+test("only metallic paint has flake; pearls shimmer without it and solids have neither", () => {
+	assert.ok(core.FINISHES.metallic.flakeDensity > 0 && core.FINISHES.metallic.flakeStrength > 0);
+	for (const finish of ["solid", "pearl"]) {
+		assert.equal(core.FINISHES[finish].flakeDensity, 0, finish);
+		assert.equal(core.FINISHES[finish].flakeStrength, 0, finish);
+	}
+	assert.ok(core.FINISHES.pearl.pearl > 0 && core.FINISHES.solid.pearl === 0);
+});

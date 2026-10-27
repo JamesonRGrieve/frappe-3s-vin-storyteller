@@ -83,7 +83,9 @@
 	const FINISHES = Object.freeze({
 		solid: Object.freeze({ flakeDensity: 0, flakeSize: 1, flakeStrength: 0, pearl: 0, gloss: 0.9, peel: 0.35 }),
 		metallic: Object.freeze({ flakeDensity: 0.75, flakeSize: 1.4, flakeStrength: 0.9, pearl: 0.08, gloss: 0.85, peel: 0.3 }),
-		pearl: Object.freeze({ flakeDensity: 0.5, flakeSize: 1.8, flakeStrength: 0.55, pearl: 0.6, gloss: 0.88, peel: 0.3 }),
+		// Only metallics carry aluminium flake (operator 2026-10-27): a mica pearl's look is its interference shimmer,
+		// banded along the platelet streaks of its own UV map, with no sparkling flake; solids have neither.
+		pearl: Object.freeze({ flakeDensity: 0, flakeSize: 1.8, flakeStrength: 0, pearl: 0.6, gloss: 0.88, peel: 0.3 }),
 	});
 	const NOT_ON_FILE = "Colour not on file";
 	const NEUTRAL = "#7A7C80"; // the "not on file" panel: a mid grey that claims no colour

@@ -132,6 +132,13 @@
 .vst-n { display: block; font-size: 26px; font-weight: 800; font-style: italic; line-height: 1.1; color: #fff; }
 .vst-l { display: block; margin-top: 6px; font-size: 14px; color: var(--vst-soft); }
 .vst-timeline { margin: 0 0 24px; color: var(--vst-grey); }
+.vst-equipment, .vst-shared { margin: 0 0 24px; }
+.vst-equipment h4, .vst-shared h4 { margin: 0 0 10px; }
+.vst-equipment-list { margin: 0; padding-left: 20px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.vst-breakdowns { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.vst-breakdown { padding: 16px; border-radius: 14px; border: 1px solid var(--vst-line); background: rgba(75, 105, 161, 0.12); display: flex; flex-direction: column; gap: 4px; }
+.vst-breakdown .vst-n { font-size: 1.5rem; font-weight: 800; }
+.vst-breakdown-models { color: var(--vst-grey); font-size: 0.92rem; }
 
 .vst-spec { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
 .vst-spec caption { text-align: left; font-weight: 700; padding-bottom: 8px; }

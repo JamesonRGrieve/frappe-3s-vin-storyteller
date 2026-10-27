@@ -27,7 +27,7 @@ def test_found(open_records):
 	story = body["story"]
 	assert story["vin"] == "JA3AM84J3NY000004"
 	assert story["vehicle_name"] == "1992 Mitsubishi 3000GT VR-4"
-	assert story["provenance"] == "CAPS"
+	assert story["provenance"] == "CAPS 1999"
 	assert [h["kind"] for h in story["history"]] == ["sale", "auction", "photo"]
 	assert story["rarest"] == "sub10"
 

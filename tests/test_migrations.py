@@ -17,7 +17,14 @@ from vin_storyteller.migrations import (
 	statements,
 )
 
-SHIPPED = ["0001_indexes", "0002_provenance_and_history", "0003_stories_told", "0004_gto_models"]
+SHIPPED = [
+	"0001_indexes",
+	"0002_provenance_and_history",
+	"0003_stories_told",
+	"0004_gto_models",
+	"0005_factory_build_provenance",
+	"0006_code_labels",
+]
 
 
 def test_shipped_migrations_in_order():
@@ -51,10 +58,11 @@ def test_fresh_dump_migrates_and_records(caps_connection):
 	assert migrate(caps_connection, "sqlite") == []  # idempotent
 
 
-def test_existing_rows_get_caps_provenance(caps_connection):
+def test_existing_rows_are_named_for_the_1999_caps_build(caps_connection):
+	"""The original export is NA9199, from CAPS PASEN/SHARYO dated 1999-09-16 (0002 then 0005)."""
 	migrate(caps_connection, "sqlite")
 	values = {row[0] for row in caps_connection.execute("SELECT Provenance FROM Production")}
-	assert values == {"CAPS"}
+	assert values == {"CAPS 1999"}
 
 
 def test_new_rows_can_carry_other_provenance(caps_connection):
@@ -73,7 +81,13 @@ def test_new_rows_can_carry_other_provenance(caps_connection):
 def test_indexes_exist(caps_connection):
 	migrate(caps_connection, "sqlite")
 	names = {row[0] for row in caps_connection.execute("SELECT name FROM sqlite_master WHERE type = 'index'")}
-	assert {"idx_production_vin", "idx_production_spec", "idx_history_vin"} <= names
+	assert {
+		"idx_production_vin",
+		"idx_production_spec",
+		"idx_history_vin",
+		"idx_production_colours",
+		"idx_production_interior",
+	} <= names
 
 
 def test_pending_only(tmp_path, caps_connection):

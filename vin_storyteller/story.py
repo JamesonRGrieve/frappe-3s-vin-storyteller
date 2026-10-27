@@ -11,7 +11,6 @@ import re
 from dataclasses import asdict, dataclass
 
 VIN_PATTERN = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")  # 17 characters, never I, O or Q
-CENTURY = "19"  # every car in the production record is a 1990s model year
 MISSING = "MISSING"  # the record's own placeholder for an undeciphered code
 PERIOD_NAMES = {"1": "1st", "2": "2nd", "3": "3rd"}
 
@@ -44,7 +43,8 @@ def normalize_name(raw: str | None) -> str:
 
 
 def full_year(two_digit_year: str) -> str:
-	return f"{CENTURY}{two_digit_year}"
+	"""'91' -> '1991'; '00' -> '2000' (the last GTOs are 2000 model years)."""
+	return f"{'20' if two_digit_year < '50' else '19'}{two_digit_year}"
 
 
 def describe_production_date(code: str) -> str:
@@ -56,10 +56,14 @@ def describe_production_date(code: str) -> str:
 	return f"the {PERIOD_NAMES.get(period, 'Unknown')} production period of {month_name}, {full_year(year)}"
 
 
-CAPS = "CAPS"  # Production.Provenance of the factory export; only these rows count in positions and totals
-# Factory production records: the original CAPS export and the cars only the 2004 CAPS build holds (the 1997
-# Nov 1996 - Jan 1997 block and the last two 1999s; operator 2026-10-27). These tell full stories and count.
-FACTORY_PROVENANCES = (CAPS, "CAPS 2004")
+# Factory production records, named by the Mitsubishi catalogue build they came from (operator 2026-10-27). Only
+# these tell full stories and count in positions and totals.
+CAPS = "CAPS 1999"  # the original export: Reid's NA9199, from CAPS PASEN/SHARYO dated 1999-09-16
+CAPS_2004 = (
+	"CAPS 2004"  # cars only the 2004 WINCAPS build holds (the 1997 Nov 1996 - Jan 1997 block, two 1999s)
+)
+ASA_JAPAN = "ASA Japan 2008"  # every Japanese-market GTO, from Mitsubishi's ASA Japan EPC (2008-02-22)
+FACTORY_PROVENANCES = (CAPS, CAPS_2004, ASA_JAPAN)
 
 # ISO 3779 check digit (the VIN's 9th character): every one of the 236,589 CAPS VINs has a correct one, so a VIN
 # whose check digit fails was almost certainly mistyped.
@@ -85,16 +89,21 @@ def has_valid_check_digit(vin: str) -> bool:
 
 
 # Japanese-market GTOs carry a chassis number, not a 17-character VIN: Z15A- or Z16A- and seven digits (Mitsubishi
-# service campaign SC059; card 327). None of them are in the production record yet.
+# service campaign SC059; card 327). Mitsubishi's ASA Japan catalogue holds every one of them.
 CHASSIS_PATTERN = re.compile(r"^Z1[56]A-?[0-9]{7}$")
 CHASSIS_NOT_ON_RECORD = (
-	"That's a Japanese-market Mitsubishi GTO chassis number, and it isn't on record. The production record covers "
-	"the North American 3000GT and Stealth (17-character VINs) and only a few GTOs so far; we're looking for their "
-	"factory data, so if you have your car's papers, please email storyteller@3shub.com."
+	"That's a Japanese-market Mitsubishi GTO chassis number, but it isn't in Mitsubishi's own record of the GTOs it "
+	"built (the ASA Japan parts catalogue, 23,369 cars). Please check it against the plate in the engine bay or "
+	"your car's papers; if it's right, please email storyteller@3shub.com."
 )
 
 
 CHASSIS_MODELS = {"Z15A": "G5", "Z16A": "G6"}  # chassis family -> Model key (migration 0004)
+
+
+def is_chassis_record(vin: str) -> bool:
+	"""A Production key that is a JDM chassis number rather than a 17-character VIN."""
+	return len(vin) != 17
 
 
 def is_chassis_number(raw: str | None) -> bool:
@@ -222,6 +231,37 @@ class Coded:
 
 
 @dataclass(frozen=True)
+class ModelCount:
+	model: str  # Model.Model: 3000GT, Stealth, GTO
+	count: int
+
+
+# What each cross-model breakdown counts: every factory record of every model and market, matching on...
+BREAKDOWN_SCOPES = {
+	"year": "built for the same model year",
+	"colour": "in the same exterior colour, every year",
+	"colour_year": "in the same exterior colour for the same model year",
+	"interior": "with the same interior, every year",
+	"colours": "with the same exterior and interior colours, every year",
+	"period": "built in the same production period",
+	"month": "built in the same production month",
+}
+
+
+@dataclass(frozen=True)
+class Breakdown:
+	"""How many factory-record cars of every model share something with this one, and of which models."""
+
+	scope: str  # a BREAKDOWN_SCOPES key
+	total: int
+	by_model: tuple[ModelCount, ...]  # largest first
+
+	@property
+	def description(self) -> str:
+		return BREAKDOWN_SCOPES[self.scope]
+
+
+@dataclass(frozen=True)
 class Position:
 	"""This car's place in a run: number `position` out of `total`."""
 
@@ -279,7 +319,7 @@ class HistoryRecord:
 @dataclass(frozen=True)
 class Story:
 	vin: str
-	provenance: str  # where this VIN's production record came from, e.g. CAPS
+	provenance: str  # where this VIN's production record came from, e.g. CAPS 1999
 	history: tuple[HistoryRecord, ...]
 	model_year: str
 	manufacturer: str
@@ -300,6 +340,9 @@ class Story:
 	partial: bool = (
 		False  # on record from another source than CAPS: no build date, codes, positions or rarity
 	)
+	classification: Coded = Coded("", "")  # the factory grade code and Mitsubishi's description of it
+	equipment_items: tuple[Coded, ...] = ()  # what the equipment (option) code fits, item by item
+	breakdowns: tuple[Breakdown, ...] = ()  # across every model: same colour, same period, ...
 
 	@property
 	def vehicle_name(self) -> str:
@@ -323,6 +366,7 @@ class Story:
 		rarities = self.rarities
 		return {
 			**asdict(self),
+			"breakdowns": [{**asdict(b), "description": b.description} for b in self.breakdowns],
 			"vehicle_name": self.vehicle_name,
 			"rarities": [{**asdict(r), "description": r.description} for r in rarities],
 			"rarest": rarities[0].tier if rarities else None,

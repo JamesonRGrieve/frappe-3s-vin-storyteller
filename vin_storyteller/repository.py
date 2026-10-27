@@ -12,17 +12,21 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from vin_storyteller.story import (
+	CHASSIS_MODELS,
 	FACTORY_PROVENANCES,
 	MISSING,
+	Breakdown,
 	Coded,
 	Gap,
 	HistoryRecord,
+	ModelCount,
 	Neighbour,
 	Position,
 	Story,
 	describe_production_date,
 	exterior_description,
 	full_year,
+	is_chassis_record,
 	safe_url,
 	year_code,
 )
@@ -32,6 +36,12 @@ SECOND_SERIES = (
 )
 
 PARAMSTYLES = {"format": "%s", "qmark": "?"}  # PyMySQL uses %s, sqlite3 uses ?
+FACTORY = "Provenance IN (" + ", ".join(["%s"] * len(FACTORY_PROVENANCES)) + ")"
+# Positions and totals stay within a car's own market and numbering (17-character VINs or JDM chassis numbers),
+# so the original storyteller's counts are unchanged; the cross-model breakdowns span both.
+_GTO_MODELS = "(" + ", ".join(f"'{m}'" for m in CHASSIS_MODELS.values()) + ")"
+MARKETS = {False: f"Model NOT IN {_GTO_MODELS}", True: f"Model IN {_GTO_MODELS}"}
+LANGUAGE = "en"
 
 
 @dataclass(frozen=True)
@@ -47,6 +57,7 @@ class Car:
 	built: str  # 'YYMMP'
 	model_year: str  # 'YY'
 	provenance: str
+	classification: str = ""
 
 
 # CAPS writes these instead of a code when it holds no colour or interior for a car (e.g. 285 1991 VR-4s).
@@ -56,6 +67,11 @@ NOT_RECORDED_CODES = {"EXT", "INT"}
 def _unrecorded(code: str) -> Coded | None:
 	"""A placeholder code as 'not recorded' (no code), else None."""
 	return Coded("", MISSING) if code.strip() in NOT_RECORDED_CODES else None
+
+
+def _full_date(built: str) -> str:
+	"""'YYMMP' -> 'YYYYMMP', the ASA catalogue's date form."""
+	return full_year(built[0:2]) + built[2:] if len(built) == 5 else ""
 
 
 class ProductionRecords:
@@ -75,20 +91,96 @@ class ProductionRecords:
 		rows = self._rows(sql, params)
 		return rows[0] if rows else None
 
-	def _count(self, where: str, params: tuple) -> int:
-		"""Cars in the factory export matching `where`: records from other sources never shift a CAPS count."""
+	def _count(self, where: str, params: tuple, chassis: bool = False) -> int:
+		"""Factory-record cars in the same market matching `where`: records from other sources never shift a count."""
 		return int(
 			self._one(
-				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND Provenance IN (%s, %s)",
+				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND {FACTORY} AND {MARKETS[chassis]}",
 				(*params, *FACTORY_PROVENANCES),
 			)[0]
 		)
 
+	def _breakdown(self, scope: str, where: str, params: tuple) -> Breakdown:
+		"""Factory-record cars of every model and market matching `where`, by model (3000GT, Stealth, GTO)."""
+		rows = self._rows(
+			"SELECT m.Model, COUNT(*) FROM Production p JOIN Model m ON m.ModelCode = p.Model "
+			f"WHERE ({where}) AND p.{FACTORY} GROUP BY m.Model",
+			(*params, *FACTORY_PROVENANCES),
+		)
+		counts = tuple(
+			sorted((ModelCount(model, int(n)) for model, n in rows), key=lambda c: (-c.count, c.model))
+		)
+		return Breakdown(scope, sum(c.count for c in counts), counts)
+
+	def breakdowns(self, car: Car) -> tuple[Breakdown, ...]:
+		"""What this car shares with the rest of the factory record, across every model."""
+		scopes = [("year", "p.ModelYear = %s", (car.model_year,))]
+		exterior_known = car.exterior.strip() not in NOT_RECORDED_CODES
+		interior_known = car.interior.strip() not in NOT_RECORDED_CODES
+		if exterior_known:
+			scopes += [
+				("colour", "p.Exterior = %s", (car.exterior,)),
+				("colour_year", "p.Exterior = %s AND p.ModelYear = %s", (car.exterior, car.model_year)),
+			]
+		if interior_known:
+			scopes.append(("interior", "p.Interior = %s", (car.interior,)))
+		if exterior_known and interior_known:
+			scopes.append(("colours", "p.Exterior = %s AND p.Interior = %s", (car.exterior, car.interior)))
+		scopes += [
+			("period", "p.DateOfManufacture = %s", (car.built,)),
+			("month", "SUBSTR(p.DateOfManufacture, 1, 4) = %s", (car.built[0:4],)),
+		]
+		return tuple(self._breakdown(scope, where, params) for scope, where, params in scopes)
+
+	def classification(self, car: Car) -> Coded:
+		"""The grade code and Mitsubishi's description of it: the exact code, else the same first four characters
+		(CAPS splits a grade by destination, e.g. MJGFL2M federal / MJGFL7M California)."""
+		if not car.classification:
+			return Coded("", "")
+		row = self._one(
+			"SELECT Description FROM ClassificationLabel WHERE ModelCode = %s AND Classification = %s "
+			"AND Language = %s ORDER BY Source DESC LIMIT 1",
+			(car.model_code, car.classification.strip(), LANGUAGE),
+		) or self._one(
+			"SELECT Description FROM ClassificationLabel WHERE ModelCode = %s AND SUBSTR(Classification, 1, 4) = %s "
+			"AND Language = %s ORDER BY Source DESC, Classification LIMIT 1",
+			(car.model_code, car.classification.strip()[0:4], LANGUAGE),
+		)
+		return Coded(car.classification.strip(), row[0] if row else MISSING)
+
+	def equipment_items(self, car: Car) -> tuple[Coded, ...]:
+		"""What the car's option code fits, from the catalogue entry for its model, grade and model year."""
+		row = self._one(
+			"SELECT Items FROM OptionContent WHERE ModelCode = %s AND OptionCode = %s AND Classification = %s "
+			"AND ModelYear = %s AND StartDate <= %s AND EndDate >= %s ORDER BY Source DESC LIMIT 1",
+			(
+				car.model_code,
+				car.equipment,
+				car.classification.strip(),
+				car.model_year,
+				*(_full_date(car.built),) * 2,
+			),
+		) or self._one(
+			"SELECT Items FROM OptionContent WHERE ModelCode = %s AND OptionCode = %s AND Classification = %s "
+			"AND ModelYear = %s ORDER BY Source DESC LIMIT 1",
+			(car.model_code, car.equipment, car.classification.strip(), car.model_year),
+		)
+		if not row or not row[0]:
+			return ()
+		items = []
+		for code in row[0].split(","):
+			label = self._one(
+				"SELECT Description FROM OptionItem WHERE ItemCode = %s AND Language = %s ORDER BY Source DESC LIMIT 1",
+				(code, LANGUAGE),
+			)
+			items.append(Coded(code, label[0] if label else MISSING))
+		return tuple(items)
+
 	def car(self, vin: str) -> Car | None:
 		row = self._one(
 			"SELECT SerialNumber, Model, ModelCode, Equipment, Exterior, Interior, DateOfManufacture, ModelYear, "
-			"Provenance FROM Production WHERE VIN = %s LIMIT 1",
-			(vin,),
+			f"Provenance, Classification FROM Production WHERE VIN = %s ORDER BY {FACTORY} DESC LIMIT 1",
+			(vin, *FACTORY_PROVENANCES),
 		)
 		return Car(*row) if row else None
 
@@ -127,12 +219,14 @@ class ProductionRecords:
 		colour = (*line, car.exterior)
 		earlier = " AND SerialNumber < %s"
 
+		chassis = is_chassis_record(vin)
+		market = MARKETS[chassis]
 		year_start = self._one(
-			"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND Provenance IN (%s, %s)",
+			f"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND {FACTORY} AND {market}",
 			(car.model_year, *FACTORY_PROVENANCES),
 		)
 		model_start = self._one(
-			f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line} AND Provenance IN (%s, %s)",
+			f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line} AND {FACTORY}",
 			(*line, *FACTORY_PROVENANCES),
 		)
 		if car.provenance not in FACTORY_PROVENANCES:
@@ -159,6 +253,7 @@ class ProductionRecords:
 				in_colour=Position(0, 0),
 				among_identical=Position(0, 0),
 				partial=True,
+				classification=self.classification(car),
 			)
 
 		return Story(
@@ -175,26 +270,29 @@ class ProductionRecords:
 			or Coded(car.interior, self._description("Interior", "InteriorCode", car.interior)),
 			equipment=Coded(car.equipment, self._description("Equipment", "EquipmentCode", car.equipment)),
 			built=describe_production_date(car.built),
-			built_in_period=self._count("DateOfManufacture = %s", (car.built,)),
-			built_in_month=self._count("SUBSTR(DateOfManufacture, 1, 4) = %s", (car.built[0:4],)),
+			built_in_period=self._count("DateOfManufacture = %s", (car.built,), chassis),
+			built_in_month=self._count("SUBSTR(DateOfManufacture, 1, 4) = %s", (car.built[0:4],), chassis),
 			year_started=describe_production_date(year_start[0]),
 			model_started=describe_production_date(model_start[0]),
 			in_year=Position(
-				self._count("ModelYear = %s" + earlier, (car.model_year, car.serial)) + 1,
-				self._count("ModelYear = %s", (car.model_year,)),
+				self._count("ModelYear = %s" + earlier, (car.model_year, car.serial), chassis) + 1,
+				self._count("ModelYear = %s", (car.model_year,), chassis),
 			),
 			in_model=Position(
-				self._count(same_line + earlier, (*line, car.serial)) + 1,
-				self._count(same_line, line),
+				self._count(same_line + earlier, (*line, car.serial), chassis) + 1,
+				self._count(same_line, line, chassis),
 			),
 			in_colour=Position(
-				self._count(same_colour + earlier, (*colour, car.serial)) + 1,
-				self._count(same_colour, colour),
+				self._count(same_colour + earlier, (*colour, car.serial), chassis) + 1,
+				self._count(same_colour, colour, chassis),
 			),
 			among_identical=Position(
-				self._count(identical + earlier, (*spec, car.serial)) + 1,
-				self._count(identical, spec),
+				self._count(identical + earlier, (*spec, car.serial), chassis) + 1,
+				self._count(identical, spec, chassis),
 			),
+			classification=self.classification(car),
+			equipment_items=self.equipment_items(car),
+			breakdowns=self.breakdowns(car),
 		)
 
 	def gap(self, vin: str) -> Gap | None:
@@ -207,16 +305,16 @@ class ProductionRecords:
 		if serial >= SECOND_SERIES:
 			occupied = (
 				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
-				"WHERE ModelYear = %s AND Provenance IN (%s, %s) AND SUBSTR(VIN, 12, 6) >= %s"
+				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS[False]} AND SUBSTR(VIN, 12, 6) >= %s"
 			)
 			params = (year, *FACTORY_PROVENANCES, SECOND_SERIES)
 		else:
 			# 1995-96's 8xxxxx-VIN cars take their place in the main run by their SerialNumber's digits.
 			occupied = (
 				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
-				"WHERE ModelYear = %s AND Provenance IN (%s, %s) AND SUBSTR(VIN, 12, 6) < %s "
+				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS[False]} AND SUBSTR(VIN, 12, 6) < %s "
 				"UNION ALL SELECT SUBSTR(SerialNumber, 3, 6) AS s, DateOfManufacture AS d FROM Production "
-				"WHERE ModelYear = %s AND Provenance IN (%s, %s) AND SUBSTR(VIN, 12, 6) >= %s"
+				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS[False]} AND SUBSTR(VIN, 12, 6) >= %s"
 			)
 			params = (year, *FACTORY_PROVENANCES, SECOND_SERIES, year, *FACTORY_PROVENANCES, SECOND_SERIES)
 		before = self._one(

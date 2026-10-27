@@ -61,7 +61,10 @@ def test_refuses_what_it_cannot_ground(connection, vin, provenance, reason):
 		pytest.skip("the substituted digit happened to be valid")
 	with pytest.raises(RecordRefused, match=reason):
 		add_record(connection, vin, provenance, "qmark")
-	assert connection.execute("SELECT COUNT(*) FROM Production WHERE Provenance <> 'CAPS'").fetchone()[0] == 0
+	assert (
+		connection.execute("SELECT COUNT(*) FROM Production WHERE Provenance <> 'CAPS 1999'").fetchone()[0]
+		== 0
+	)
 
 
 def test_a_jdm_gto_is_recorded_by_its_chassis_number(connection):
@@ -101,7 +104,8 @@ def test_a_1995_spyder_fills_its_serial_in_the_main_run(connection):
 	]
 	connection.executemany(
 		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
-		"DateOfManufacture, ModelYear) VALUES (?, ?, 'M1', 'Z16A', 'CLASS01', 'XA1', 'T87', '12A', ?, '95')",
+		"DateOfManufacture, ModelYear, Provenance) VALUES (?, ?, 'M1', 'Z16A', 'CLASS01', 'XA1', 'T87', '12A', ?, '95', "
+		"'CAPS 1999')",
 		rows,
 	)
 	gap = ProductionRecords(connection, "qmark").gap(valid("JA3AM84J3SY000011"))
@@ -112,8 +116,8 @@ def test_a_1995_spyder_fills_its_serial_in_the_main_run(connection):
 def test_placeholder_colour_codes_read_as_not_recorded(connection):
 	connection.execute(
 		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
-		"DateOfManufacture, ModelYear) VALUES ('MY003000', 'JA3XE74C9MY003000', 'M1', 'Z16A', 'MNGFL7M', 'A07', "
-		"'EXT', 'INT', '90081', '91')"
+		"DateOfManufacture, ModelYear, Provenance) VALUES ('MY003000', 'JA3XE74C9MY003000', 'M1', 'Z16A', 'MNGFL7M', "
+		"'A07', 'EXT', 'INT', '90081', '91', 'CAPS 1999')"
 	)
 	story = ProductionRecords(connection, "qmark").story("JA3XE74C9MY003000")
 	assert story.exterior.code == "" and story.interior.code == ""

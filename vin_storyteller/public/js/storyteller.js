@@ -91,6 +91,14 @@
 		return item;
 	}
 
+	function breakdownItem(b) {
+		const parts = core.breakdownParts(b);
+		const item = element("li", "vst-breakdown");
+		item.append(element("span", "vst-n", parts.total), element("span", "vst-l", parts.label));
+		if (parts.models) item.append(element("span", "vst-breakdown-models", parts.models));
+		return item;
+	}
+
 	function render(root, story) {
 		const result = root.querySelector(".vst-result");
 		result.querySelector(".vst-name").textContent = story.vehicle_name;
@@ -127,11 +135,24 @@
 			specRow("Manufacturer", story.manufacturer),
 			specRow("Model", story.model),
 			specRow("Trim", story.trim || "—"),
+			...(story.classification && story.classification.code
+				? [specRow("Grade", core.codedText(story.classification))]
+				: []),
 			specRow("Exterior colour", core.codedText(story.exterior)),
 			specRow("Interior colour", core.codedText(story.interior)),
 			specRow("Equipment", core.codedText(story.equipment)),
 			specRow(story.vin.length === 17 ? "VIN" : "Chassis number", story.vin),
 		);
+		const items = core.equipmentItemsText(story.equipment_items || []);
+		const fitted = result.querySelector(".vst-equipment");
+		fitted.querySelector(".vst-equipment-list").replaceChildren(...items.map((text) => element("li", "", text)));
+		fitted.hidden = items.length === 0;
+
+		const breakdowns = story.breakdowns || [];
+		const shared = result.querySelector(".vst-shared");
+		shared.querySelector(".vst-breakdowns").replaceChildren(...breakdowns.map(breakdownItem));
+		shared.hidden = breakdowns.length === 0;
+
 		result.querySelector(".vst-provenance").textContent = core.provenanceText(story.provenance);
 
 		const history = result.querySelector(".vst-history");

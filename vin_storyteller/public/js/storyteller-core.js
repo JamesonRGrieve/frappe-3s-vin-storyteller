@@ -23,9 +23,12 @@
 		other: "Record",
 	};
 	const PROVENANCE_NAMES = {
-		CAPS: "the factory production record (CAPS export)",
-		"CAPS 2004": "the factory production record (the 2004 CAPS export, which holds cars the earlier one lost)",
+		"CAPS 1999": "Mitsubishi's factory production record (the 1999 CAPS export)",
+		"CAPS 2004": "Mitsubishi's factory production record (the 2004 CAPS build, which holds cars the 1999 export lost)",
+		"ASA Japan 2008": "Mitsubishi's factory record of every Japanese-market GTO (the 2008 ASA Japan parts catalogue)",
 	};
+	// Model.Model as a count: "1 GTO", "2 Stealths".
+	const MODEL_PLURALS = { "3000GT": "3000GTs", Stealth: "Stealths", GTO: "GTOs" };
 	const LOCALE = "en-CA";
 	const VIN_LENGTH = 17;
 	const LOOK_ALIKES = /[IOQ]/;
@@ -58,6 +61,20 @@
 				"colours and equipment aren't known yet."
 			: `Built in ${story.built}.`;
 	const provenanceText = (p) => `Production record source: ${PROVENANCE_NAMES[p] || p}.`;
+	const modelCountText = (c) =>
+		`${formatNumber(c.count)} ${c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`}`;
+	// "and"-joined list: "a", "a and b", "a, b and c".
+	const listText = (items) =>
+		items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+	// One cross-model line: the total sharing it and, when more than one model does, of which models.
+	function breakdownParts(b) {
+		let models = "";
+		if (b.by_model.length > 1) models = `of which ${listText(b.by_model.map(modelCountText))}`;
+		else if (b.by_model.length === 1 && b.total > 1) models = `all ${MODEL_PLURALS[b.by_model[0].model] || b.by_model[0].model}`;
+		return { total: formatNumber(b.total), label: `${b.total === 1 ? "car" : "cars"} ${b.description}`, models };
+	}
+	// What the equipment code fits, item by item, for the spec table.
+	const equipmentItemsText = (items) => items.map(codedText);
 
 	// Live feedback while typing: the count so far and, once something is wrong, why. `ready` means the VIN
 	// can be looked up; nothing here blocks submitting (the submit handler validates again).
@@ -116,6 +133,10 @@
 		codedText,
 		builtText,
 		provenanceText,
+		modelCountText,
+		listText,
+		breakdownParts,
+		equipmentItemsText,
 		badgeParts,
 		historyParts,
 		timelineText,

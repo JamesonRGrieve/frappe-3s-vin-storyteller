@@ -59,11 +59,16 @@ total, tier, description}`, rarest first) and `rarest` (the top tier or null).
 The CAPS dump provides `Production` (one row per car) and the lookup tables `Model`, `Exterior`,
 `Interior` and `Equipment`. The migrations add:
 
-- **`Production.Provenance`** (`VARCHAR(30) NOT NULL DEFAULT 'CAPS'`): where the record came from. Every
-  record in the dump becomes `CAPS`; records added later name their own source.
+- **`Production.Provenance`** (`VARCHAR(30)`): where the record came from. The dump's records are `CAPS 1999`
+  (migration 0005); every later write names its own source (the column's old `'CAPS'` default is never relied on).
 - **`VehicleHistory`**: what is known about a car after the factory, one row per record:
   `VIN`, `RecordType` (`auction`, `photo`, `sale`, `registration`, `service`, `article` or `other`; enforced),
   `Title`, `URL`, `RecordDate`, `Source`, `Notes`, `Provenance` (who added it) and `CreatedAt`.
+- **`ClassificationLabel`**, **`OptionContent`**, **`OptionItem`** (migration 0006): what Mitsubishi's own catalogues
+  say the codes mean, per source build and language: a model code's grade (classification) text, which option
+  items an option (equipment) code fits per model, grade and model year, and each option item's text. Loaded by
+  one-off host jobs from CAPS 2004 and ASA Japan 2008 (formats: 3S Hub SOP → *Mitsubishi CAPS and ASA Data
+  Formats*).
 - **Indexes** on the columns every lookup uses.
 
 Adding a history record is a plain insert, for example:
@@ -77,11 +82,26 @@ VALUES ('JA3AM84J3NY012345', 'auction', 'Sold on Bring a Trailer', 'https://brin
 Migrations are numbered files in [`vin_storyteller/sql/migrations/`](vin_storyteller/sql/migrations/). Each
 runs once, in order, and is recorded in `SchemaMigration`. Never edit one that has run; add the next number.
 
-### Cars the CAPS export is missing
+### Factory records
 
-`Provenance` `CAPS` is the original export; `CAPS 2004` marks cars only the 2004 CAPS build (WINCAPS, `PASEN/SHARYO`)
-holds: the 1997 Nov 1996 – Jan 1997 block and the last two 1999 SLs. Both are factory records: full stories, and
-they count in positions and totals. Every other provenance is a partial story outside the counts.
+Three provenances are factory records, named by the Mitsubishi catalogue build they came from; they tell full
+stories and count in positions and totals:
+
+- `CAPS 1999`: the original export, Michael Reid's NA9199 (236,589 Nagoya 1991–99 cars), taken from CAPS
+  `PASEN/SHARYO` dated 1999-09-16; every row is identical to it.
+- `CAPS 2004`: cars only the 2004 CAPS build (WINCAPS, `PASEN/SHARYO`) holds: the 1997 Nov 1996 – Jan 1997 block
+  and the last two 1999 SLs.
+- `ASA Japan 2008`: every Japanese-market GTO (Z15A/Z16A, 23,369 cars, 1990–2000) from Mitsubishi's ASA Japan
+  EPC. Model year is the record's own where it stores one, else the catalogue's production window for the
+  build date (both agree on all 3,404 that store it). A 2000 model year is `00`.
+
+Positions and totals count within the car's own market (17-character VINs, or JDM chassis numbers), so the
+original storyteller's counts are unchanged. The story's **breakdowns** span every model and market: how many
+factory-record cars share its model year, exterior colour (every year, and its year), interior, colour pair,
+production period and month, and of which models (3000GT, Stealth, GTO). Every other provenance is a partial
+story outside all counts.
+
+### Cars the factory records are missing
 
 
 A real VIN proven by another source (a factory price label, a dealer or auction record) is added with
@@ -96,7 +116,8 @@ CAPS cars only.
 A Japanese-market GTO is added the same way by its chassis number (`Z15A-`/`Z16A-` and seven digits, stored in
 canonical `Z16A-0011452` form in the VIN column): its family gives the Model (`G5` / `G6`, migration 0004,
 Mitsubishi GTO with no trim), the seven digits are its serial, and model year, build date and codes stay empty.
-What a source says beyond that (a factory build date, a trim) goes into `VehicleHistory` with that source.
+What a source says beyond that (a factory build date, a trim) goes into `VehicleHistory` with that source. Since
+ASA Japan holds every GTO, this is only for a chassis number ASA lacks.
 
 ### Not-found answers
 
@@ -104,8 +125,8 @@ A VIN without a record gets the most specific reason the VIN and the record give
 1991–99 model year; a wrong check digit (all 236,589 CAPS VINs have a correct one, so this means a typo); a serial
 inside a stretch missing from the export (naming the cars either side and their build periods); before the
 year's first or after its last car on record; otherwise the original message. A Japanese-market GTO chassis
-number (`Z15A-`/`Z16A-` and seven digits) is looked up the same way and, when it isn't on record, answered as a
-JDM GTO not on record yet.
+number (`Z15A-`/`Z16A-` and seven digits) is looked up the same way and, when it isn't on record, answered as
+not in Mitsubishi's ASA Japan record of GTOs.
 
 ## Rarity
 

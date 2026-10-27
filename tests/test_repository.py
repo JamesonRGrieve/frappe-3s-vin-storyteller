@@ -11,7 +11,7 @@ from vin_storyteller.story import MISSING
 
 
 def test_existing_records_are_caps(records):
-	assert records.story("JA3AM84J3NY000004").provenance == "CAPS"
+	assert records.story("JA3AM84J3NY000004").provenance == "CAPS 1999"
 
 
 def test_car_row(records):
@@ -31,7 +31,7 @@ def test_car_row(records):
 		"T87",
 		"92032",
 		"92",
-		"CAPS",
+		"CAPS 1999",
 	)
 	assert records.car("JA3AM84J3NY999999") is None
 

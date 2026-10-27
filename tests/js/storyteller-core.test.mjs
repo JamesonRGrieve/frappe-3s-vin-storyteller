@@ -45,7 +45,11 @@ test("numbers and positions use Canadian English grouping", () => {
 test("codedText and provenanceText", () => {
 	assert.equal(core.codedText({ code: "T87", description: "Fiji Blue" }), "Fiji Blue · T87");
 	assert.equal(core.codedText({ code: "47E", description: "MISSING" }), "Not yet decoded · 47E");
-	assert.equal(core.provenanceText("CAPS"), "Production record source: the factory production record (CAPS export).");
+	assert.equal(
+		core.provenanceText("CAPS 1999"),
+		"Production record source: Mitsubishi's factory production record (the 1999 CAPS export).",
+	);
+	assert.match(core.provenanceText("ASA Japan 2008"), /every Japanese-market GTO/);
 	assert.equal(core.provenanceText("owner"), "Production record source: owner.");
 });
 
@@ -128,7 +132,40 @@ test("a partial story (not in the factory export) says so and shows unknown code
 });
 
 test("provenanceText names both factory exports", () => {
-	assert.match(core.provenanceText("CAPS"), /CAPS export/);
-	assert.match(core.provenanceText("CAPS 2004"), /2004 CAPS export/);
+	assert.match(core.provenanceText("CAPS 1999"), /CAPS export/);
+	assert.match(core.provenanceText("CAPS 2004"), /2004 CAPS build/);
 	assert.equal(core.provenanceText("Canadian price label"), "Production record source: Canadian price label.");
+});
+
+test("breakdownParts says how many cars share something, and of which models", () => {
+	const parts = core.breakdownParts({
+		scope: "colour",
+		total: 1236,
+		description: "in the same exterior colour, every year",
+		by_model: [
+			{ model: "3000GT", count: 800 },
+			{ model: "Stealth", count: 400 },
+			{ model: "GTO", count: 36 },
+		],
+	});
+	assert.deepEqual(
+		{ ...parts },
+		{
+			total: "1,236",
+			label: "cars in the same exterior colour, every year",
+			models: "of which 800 3000GTs, 400 Stealths and 36 GTOs",
+		},
+	);
+	const two = core.breakdownParts({ total: 2, description: "x", by_model: [{ model: "GTO", count: 1 }, { model: "Stealth", count: 1 }] });
+	assert.equal(two.models, "of which 1 GTO and 1 Stealth");
+	assert.equal(core.breakdownParts({ total: 5, description: "x", by_model: [{ model: "GTO", count: 5 }] }).models, "all GTOs");
+	const one = core.breakdownParts({ total: 1, description: "built in the same production period", by_model: [{ model: "GTO", count: 1 }] });
+	assert.deepEqual({ ...one }, { total: "1", label: "car built in the same production period", models: "" });
+});
+
+test("equipmentItemsText lists what an option code fits", () => {
+	assert.deepEqual(
+		[...core.equipmentItemsText([{ code: "J50", description: "CD AUTO CHANGER" }, { code: "ZZ1", description: "MISSING" }])],
+		["CD AUTO CHANGER · J50", "Not yet decoded · ZZ1"],
+	);
 });

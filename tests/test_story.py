@@ -123,7 +123,7 @@ class TestRarityTier:
 def make_story(**overrides) -> Story:
 	base = Story(
 		vin="JA3AM84J3NY012345",
-		provenance="CAPS",
+		provenance="CAPS 1999",
 		history=(
 			HistoryRecord(
 				"auction", "Sold on BaT", "https://bringatrailer.com/x", "2021-05-01", "BaT", "operator"
@@ -154,7 +154,7 @@ def test_vehicle_name_and_dict():
 	assert data["vehicle_name"] == "1992 Mitsubishi 3000GT VR-4"
 	assert data["in_year"] == {"position": 5, "total": 1000}
 	assert data["exterior"] == {"code": "T87", "description": "Fiji Blue"}
-	assert data["provenance"] == "CAPS"
+	assert data["provenance"] == "CAPS 1999"
 	assert data["history"][0]["kind"] == "auction"
 	assert data["rarities"] == [] and data["rarest"] is None
 

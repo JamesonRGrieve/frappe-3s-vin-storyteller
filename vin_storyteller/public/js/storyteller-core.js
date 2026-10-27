@@ -62,6 +62,11 @@
 			: `Built in ${story.built}.`;
 	const provenanceText = (p) => `Production record source: ${PROVENANCE_NAMES[p] || p}.`;
 	const OTHER_MODELS = "Other"; // the record's other Nagoya-built cars (no Model name)
+	// A model count's noun alone: "3000GT", "Stealths".
+	const modelNoun = (c) => {
+		if (c.model === OTHER_MODELS) return `other Nagoya-built ${c.count === 1 ? "car" : "cars"}`;
+		return c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`;
+	};
 	const modelCountText = (c) => {
 		if (c.model === OTHER_MODELS) return `${formatNumber(c.count)} other Nagoya-built ${c.count === 1 ? "car" : "cars"}`;
 		return `${formatNumber(c.count)} ${c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`}`;
@@ -261,6 +266,7 @@
 		builtText,
 		provenanceText,
 		modelCountText,
+		modelNoun,
 		listText,
 		breakdownParts,
 		equipmentItemsText,

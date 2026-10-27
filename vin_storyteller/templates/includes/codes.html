@@ -1,0 +1,81 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- The per-code pages (card 330): one template for /storyteller/paint, /storyteller/interior and /storyteller/option.
+     codes.js reads the kind and code from the address and asks the API for the code's page or the kind's index.
+     data-code-routes: "query" (?code=T87, served by the public site router today) or "path" (/storyteller/paint/T87). -->
+<link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css">
+<div class="vst vst-codes" data-code-endpoint="/api/method/vin_storyteller.api.code"
+	data-index-endpoint="/api/method/vin_storyteller.api.codes" data-code-routes="query">
+	<header class="vst-head">
+		<p class="vst-kicker">3000GT &middot; Stealth &middot; GTO</p>
+		<h2 class="vst-title">Factory codes</h2>
+		<p class="vst-lede">Every paint, interior and option code in Mitsubishi's factory production records, and how many cars were built with it.</p>
+		<nav class="vst-code-nav" aria-label="Factory codes">
+			<a href="/storyteller/paint" data-kind="paint">Paint codes</a>
+			<a href="/storyteller/interior" data-kind="interior">Interior codes</a>
+			<a href="/storyteller/option" data-kind="option">Option codes</a>
+			<a href="/storyteller">VIN Storyteller</a>
+		</nav>
+	</header>
+
+	<p class="vst-status" role="status" aria-live="polite" hidden></p>
+
+	<section class="vst-code-page" tabindex="-1" aria-labelledby="vst-code-title" hidden>
+		<p class="vst-kicker vst-code-kind"></p>
+		<div class="vst-code-heading">
+			<!-- Swatch hook (card 329): on paint and interior pages codes.js sets data-swatch-kind / data-swatch-code;
+			     the swatch script fills this element and removes `hidden`. -->
+			<span class="vst-swatch" data-swatch-kind="" data-swatch-code="" aria-hidden="true" hidden></span>
+			<h3 id="vst-code-title" class="vst-name vst-code-title"></h3>
+		</div>
+		<p class="vst-built vst-code-names"></p>
+
+		<ul class="vst-stats">
+			<li><span class="vst-n" data-field="total"></span><span class="vst-l" data-field="total_label"></span></li>
+		</ul>
+		<p class="vst-timeline vst-code-span"></p>
+
+		<section class="vst-shared vst-code-models" aria-labelledby="vst-code-models-h">
+			<h4 id="vst-code-models-h">By model</h4>
+			<ul class="vst-breakdowns"></ul>
+		</section>
+
+		<table class="vst-spec vst-code-table vst-code-years">
+			<caption>By model year</caption>
+			<thead><tr><th scope="col">Model year</th><th scope="col">Cars</th><th scope="col">Share</th></tr></thead>
+			<tbody></tbody>
+		</table>
+
+		<table class="vst-spec vst-code-table vst-code-lines">
+			<caption>By model line</caption>
+			<thead><tr><th scope="col">Model</th><th scope="col">Cars</th><th scope="col">Share</th></tr></thead>
+			<tbody></tbody>
+		</table>
+
+		<table class="vst-spec vst-code-table vst-code-pairings" hidden>
+			<caption></caption>
+			<thead><tr><th scope="col" class="vst-code-pairings-kind"></th><th scope="col">Cars</th><th scope="col">Share</th></tr></thead>
+			<tbody></tbody>
+		</table>
+
+		<section class="vst-equipment vst-code-fits" aria-labelledby="vst-code-fits-h" hidden>
+			<h4 id="vst-code-fits-h">What this option code fits</h4>
+			<p class="vst-note">Per Mitsubishi's parts catalogue, for each grade and model year it lists.</p>
+			<ul class="vst-code-fits-list"></ul>
+		</section>
+
+		<p class="vst-provenance">Counted from Mitsubishi's factory production records: the 1999 and 2004 CAPS builds and the 2008 ASA Japan catalogue.</p>
+	</section>
+
+	<section class="vst-code-index" aria-labelledby="vst-code-index-h" hidden>
+		<h3 id="vst-code-index-h" class="vst-name"></h3>
+		<table class="vst-spec vst-code-table">
+			<thead><tr><th scope="col">Code</th><th scope="col">Name</th><th scope="col">Cars</th><th scope="col">Models</th></tr></thead>
+			<tbody></tbody>
+		</table>
+	</section>
+
+	<p class="vst-source">The VIN Storyteller is open source under the AGPL-3.0:
+		<a href="https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller" rel="noopener">source on GitHub</a>.</p>
+</div>
+<script src="/assets/vin_storyteller/js/storyteller-core.js" defer></script>
+<script src="/assets/vin_storyteller/js/codes.js" defer></script>

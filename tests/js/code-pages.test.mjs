@@ -116,3 +116,9 @@ test("pairingText, fitParts and indexEntryParts", () => {
 		{ code: "302 · Z16A", description: "Not yet decoded", total: "2,699", models: "2,699 GTOs" },
 	);
 });
+
+test("modelNoun names a model count without its number", () => {
+	assert.equal(core.modelNoun({ model: "GTO", count: 1 }), "GTO");
+	assert.equal(core.modelNoun({ model: "Stealth", count: 2 }), "Stealths");
+	assert.equal(core.modelNoun({ model: "3000GT", count: 5 }), "3000GTs");
+});

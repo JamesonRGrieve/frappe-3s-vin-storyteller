@@ -55,13 +55,25 @@
 		root.querySelector(`[data-field="${field}"]`).textContent = text;
 	}
 
-	function specRow(label, value) {
+	// A spec row; with an address, its value links to that code's page (card 330).
+	function specRow(label, value, href = null) {
 		const row = element("tr");
 		const th = element("th", "", label);
 		th.scope = "row";
-		row.append(th, element("td", "", value));
+		const td = element("td");
+		if (href) {
+			const link = element("a", "vst-code-link", value);
+			link.href = href;
+			td.append(link);
+		} else {
+			td.textContent = value;
+		}
+		row.append(th, td);
 		return row;
 	}
+
+	// A partial story's codes are unknown, so they link nowhere; codeHref refuses placeholders and empty codes.
+	const codeLink = (root, kind, code, model = "") => core.codeHref(kind, code, model, root.dataset.codeRoutes);
 
 	function badge(rarity) {
 		const parts = core.badgeParts(rarity);
@@ -138,9 +150,13 @@
 			...(story.classification && story.classification.code
 				? [specRow("Grade", core.codedText(story.classification))]
 				: []),
-			specRow("Exterior colour", core.codedText(story.exterior)),
-			specRow("Interior colour", core.codedText(story.interior)),
-			specRow("Equipment", core.codedText(story.equipment)),
+			specRow("Exterior colour", core.codedText(story.exterior), codeLink(root, "paint", story.exterior.code)),
+			specRow("Interior colour", core.codedText(story.interior), codeLink(root, "interior", story.interior.code)),
+			specRow(
+				"Equipment",
+				core.codedText(story.equipment),
+				codeLink(root, "option", story.equipment.code, story.model_code),
+			),
 			specRow(story.vin.length === 17 ? "VIN" : "Chassis number", story.vin),
 		);
 		const items = core.equipmentItemsText(story.equipment_items || []);

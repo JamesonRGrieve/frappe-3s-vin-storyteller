@@ -75,8 +75,9 @@ The code tables (`public/data/swatches.json`) are rebuilt with
   sharing it agree (marked *likely*). Each entry records its basis.
 - **Interior colour:** no trim colour values exist, so a swatch takes a generic shade for a colour word (labelled
   "representative shade"): the description's, else the table's (`interior_colours.tsv`): *named* (a recorded
-  description), *catalogue* (the colour ASA's parts catalogue gives the trim parts specific to the code), or
-  *letter* (the US trim letter: H/W charcoal, T tan, U and A red, D ivory; shown as *likely*). Otherwise the
+  description), *listings* (the sellers' words on Bring a Trailer / Cars & Bids for cars whose VIN gives the code),
+  *catalogue* (the colour ASA's parts catalogue gives the trim parts specific to the code), or
+  *letter* (the US trim letter: H/W charcoal, T tan, U red, D ivory; shown as *likely*). Otherwise the
   neutral panel.
 
 ## API

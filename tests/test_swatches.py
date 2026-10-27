@@ -199,9 +199,10 @@ def test_shipped_table_is_well_formed():
 		assert entry["material"] in {"leather", "cloth", "unknown"}, code
 		assert entry["basis"], code
 		if "colour" in entry:
-			assert entry["colour_confidence"] in {"named", "catalogue", "letter"} and entry["colour_basis"], (
-				code
-			)
+			assert (
+				entry["colour_confidence"] in {"named", "listings", "catalogue", "letter"}
+				and entry["colour_basis"]
+			), code
 
 
 def test_an_alias_takes_its_paint_codes_published_value():

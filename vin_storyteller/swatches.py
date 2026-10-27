@@ -17,9 +17,9 @@ Rules (operator, 2026-10-27):
 - A code with no published value or name may be `derived` from evidence that names its colour (operator: derive
   from the colour name): the same paint on another grade (BA4 = B34 on the R/T), or a colour word in the
   catalogue (W9X, the white/black patrol-car GTOs). It carries `approximate: true` and the derivation.
-- Interior colour (`interior_colours.tsv`): a colour word per code, named (a recorded description), from the
-  catalogue (the colour of the trim parts specific to the code), or from the US trim letter; drawn as a
-  representative shade for the word, never as a factory value.
+- Interior colour (`interior_colours.tsv`): a colour word per code, named (a recorded description), from listings
+  (the sellers' words for cars whose VIN gives the code), from the catalogue (the colour of the trim parts specific
+  to the code), or from the US trim letter; drawn as a representative shade for the word, never a factory value.
 - Interior material: an explicit description wins; then, for GTOs, Mitsubishi's leather option K03 on the
   car; then, as evidence rather than a rule, the code's suffix letter when the decided codes sharing it
   agree. Each decision records how it was made.
@@ -240,7 +240,7 @@ def infer_from_letter(code: str, evidence: Mapping[str, dict]) -> dict:
 	}
 
 
-COLOUR_CONFIDENCES = frozenset({"named", "catalogue", "letter"})
+COLOUR_CONFIDENCES = frozenset({"named", "listings", "catalogue", "letter"})
 
 
 def interior_colours(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:

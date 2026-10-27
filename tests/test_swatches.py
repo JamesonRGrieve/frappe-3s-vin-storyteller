@@ -369,3 +369,33 @@ def test_interior_colour_words_carry_how_they_were_found(tmp_path):
 	assert table["05H"]["colour_basis"] == "US trim letter H"
 	assert "31X" not in table  # other Nagoya-built only
 	assert swatches.interior_colours([{"code": "01A", "colour": "Red", "confidence": "guess"}]) == {}
+
+
+def test_a_sampled_value_is_flagged(tmp_path):
+	codes = write(
+		tmp_path, "paint_codes.tsv", PAINT_COLUMNS, [paint_row("BA4", "MISSING", "MISSING", stealth=3)]
+	)
+	researched = write(
+		tmp_path,
+		"paint_hex.tsv",
+		BRAND_HEX_COLUMNS,
+		[
+			[
+				"BA4",
+				"Danube Blue Mica",
+				"",
+				"pearl",
+				"#27365C",
+				"",
+				"https://example.com/l",
+				"",
+				"sampled",
+				"",
+				"",
+				"",
+				"photos",
+			]
+		],
+	)
+	entry = swatches.paint_table(swatches.read_tsv(codes), swatches.read_tsv(researched))["BA4"]
+	assert entry["sampled"] is True and entry["approximate"] is True and entry["status"] == "derived"

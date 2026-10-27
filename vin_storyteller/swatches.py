@@ -16,7 +16,9 @@ Rules (operator, 2026-10-27):
   in Dodge's (operator: by the car's brand).
 - A code with no published value or name may be `derived` from evidence that names its colour (operator: derive
   from the colour name): the same paint on another grade (BA4 = B34 on the R/T), or a colour word in the
-  catalogue (W9X, the white/black patrol-car GTOs). It carries `approximate: true` and the derivation.
+  catalogue (W9X, the white/black patrol-car GTOs), or, where no official value exists, sampled from listing photos
+  of cars whose VIN gives the code (`sampled: true`; operator 2026-10-27). It carries `approximate: true` and the
+  derivation.
 - Interior colour (`interior_colours.tsv`): a colour word per code, named (a recorded description), from listings
   (the sellers' words for cars whose VIN gives the code), from the catalogue (the colour of the trim parts specific
   to the code), or from the US trim letter; drawn as a representative shade for the word, never a factory value.
@@ -139,6 +141,8 @@ def paint_table(
 			table[code].update(dodge_hex=dodge_hex, dodge_source=dodge_source)
 		if sourced and derivation:
 			table[code].update(approximate=True, derivation=derivation)
+			if (found.get("status") or "").strip() == "sampled":
+				table[code]["sampled"] = True  # measured from listing photos of cars with this code
 	return table
 
 

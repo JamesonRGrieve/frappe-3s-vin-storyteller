@@ -2611,13 +2611,11 @@
 		},
 		"BA4": {
 			"approximate": true,
-			"derivation": "Same paint as B34 on the R/T grades: in CAPS 1999 every 1993 Stealth in BA4 is an R/T or R/T Turbo (MNPM/MRPM/MNGF) and every one in B34 a base or ES (MNHE/MNXM/MRHE), built in the same months. Colour from B34's published values (operator 2026-10-27: derive from the colour name).",
-			"dodge_hex": "#0E2888",
+			"derivation": "Sampled from listing photos (operator 2026-10-27: sampled where no official hex exists): the lit body colour of 2 cars whose VIN gives BA4 (JB3BN74K9PY032067, JB3BN74K5PY013418; Bring a Trailer and Cars & Bids), median of each car's 70th-lightness-percentile paint pixels. Same paint family as B34 on the R/T grades; sellers call it Pearl Blue.",
 			"dodge_name": "Dark Blue Pearl",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "#4B69A1",
+			"hex": "#27365C",
 			"mitsubishi_name": "Danube Blue Mica",
 			"model_years": [
 				"93"
@@ -2627,7 +2625,8 @@
 			],
 			"name": "Danube Blue Mica",
 			"notes": "No name and no published hex/RGB found for BA4.",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/mariana-blue-pearl-b34/",
+			"sampled": true,
+			"source": "https://bringatrailer.com/listing/1993-dodge-stealth-19/",
 			"status": "derived"
 		},
 		"G13": {
@@ -2778,13 +2777,11 @@
 		},
 		"HA8": {
 			"approximate": true,
-			"derivation": "Same paint as H28 on the R/T grades: in CAPS 1999 every 1993 Stealth in HA8 is an R/T or R/T Turbo and every one in H28 a base or ES, built in the same months. Colour from H28's published values (operator 2026-10-27: derive from the colour name).",
-			"dodge_hex": "#A1A7A3",
+			"derivation": "Sampled from listing photos (operator 2026-10-27: sampled where no official hex exists): the lit body colour of 1 car whose VIN gives HA8 (JB3BN74K6PY042023, Bring a Trailer), 70th-lightness-percentile paint pixels; one car, so approximate. Same paint family as H28 on the R/T grades; the seller calls it Dark Gray Metallic.",
 			"dodge_name": "Dark Silver Metallic",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/dark-silver-pearl-h28pad/",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "#D0C8BA",
+			"hex": "#C9DDEE",
 			"mitsubishi_name": "Gentile Silver Metallic",
 			"model_years": [
 				"93"
@@ -2794,7 +2791,8 @@
 			],
 			"name": "Gentile Silver Metallic",
 			"notes": "No name and no published hex/RGB found for HA8.",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/gentile-silver-metallic-h28/",
+			"sampled": true,
+			"source": "https://bringatrailer.com/listing/1993-dodge-stealth-21/",
 			"status": "derived"
 		},
 		"HA9": {

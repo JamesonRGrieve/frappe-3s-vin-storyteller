@@ -125,7 +125,7 @@
 		}
 		const flake = parseHex(entry.flake_hex) || derivedFlake(base, finish);
 		const status = entry.approximate ? "derived" : "sourced";
-		return { kind: "paint", status, approximate: Boolean(entry.approximate), name, finish, label: name, base, flake, params: FINISHES[finish] || FINISHES.solid, source };
+		return { kind: "paint", status, approximate: Boolean(entry.approximate), sampled: Boolean(entry.sampled), name, finish, label: name, base, flake, params: FINISHES[finish] || FINISHES.solid, source };
 	}
 
 	// Interior material. An explicit "Leather" / "Cloth" in the description wins; then the shipped table's
@@ -282,7 +282,8 @@
 				return { title: coded(swatch.name || "Paint"), detail: code ? NOT_ON_FILE : "No colour on record" };
 			}
 			const finish = FINISH_NAMES[swatch.finish] || "";
-			return { title: coded(swatch.name || "Paint"), detail: swatch.approximate ? [finish, "approximate colour"].filter(Boolean).join(" · ") : finish };
+			const how = swatch.sampled ? "sampled from photos" : "approximate colour";
+			return { title: coded(swatch.name || "Paint"), detail: swatch.approximate ? [finish, how].filter(Boolean).join(" · ") : finish };
 		}
 		// An inferred material (from the code's suffix letter) is said to be likely, not stated as fact.
 		const material = MATERIAL_NAMES[swatch.material] + (swatch.confidence === "inferred" ? " (likely)" : "");

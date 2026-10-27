@@ -291,3 +291,8 @@ test("only metallic paint has flake; pearls shimmer without it and solids have n
 	}
 	assert.ok(core.FINISHES.pearl.pearl > 0 && core.FINISHES.solid.pearl === 0);
 });
+
+test("a paint sampled from listing photos says so", () => {
+	const s = core.paintSwatch({ hex: "#27365C", finish: "pearl", name: "Danube Blue Mica", approximate: true, sampled: true, source: "https://x" }, "");
+	assert.equal(core.captionParts(s, "BA4").detail, "Pearl · sampled from photos");
+});

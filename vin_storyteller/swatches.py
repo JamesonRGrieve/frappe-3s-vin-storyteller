@@ -20,7 +20,8 @@ Rules (operator, 2026-10-27):
   catalogue (W9X, the white/black patrol-car GTOs), or, where no official value exists, sampled from listing photos
   of cars whose VIN gives the code (`sampled: true`; operator 2026-10-27). It carries `approximate: true` and the
   derivation.
-- Interior colour (`interior_colours.tsv`): a colour word per code, named (a recorded description), from listings
+- Interior colour (`interior_colours.tsv`): a colour word per code, from a factory document (window sticker, equipment
+  list or build record of a car with the code), named (a recorded description), from listings
   (the sellers' words for cars whose VIN gives the code), from the catalogue (the colour of the trim parts specific
   to the code), or from the US trim letter; drawn as a representative shade for the word, never a factory value.
 - Interior samples (`interior_sampled.tsv`): the colour measured from listing photos of cars whose VIN gives the
@@ -252,7 +253,7 @@ def infer_from_letter(code: str, evidence: Mapping[str, dict]) -> dict:
 	}
 
 
-COLOUR_CONFIDENCES = frozenset({"named", "listings", "catalogue", "letter"})
+COLOUR_CONFIDENCES = frozenset({"document", "named", "listings", "catalogue", "letter"})
 
 
 def interior_colours(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:

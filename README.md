@@ -74,7 +74,7 @@ The code tables (`public/data/swatches.json`) are rebuilt with
   K03 on every car with the code (or on none); else the code's last letter, when at least 90% of the decided cars
   sharing it agree (marked *likely*). Each entry records its basis.
 - **Interior colour:** no trim colour values exist, so a swatch takes a generic shade for a colour word (labelled
-  "representative shade"): the description's, else the table's (`interior_colours.tsv`): *named* (a recorded
+  "representative shade"): the description's, else the table's (`interior_colours.tsv`): *document* (a window sticker, equipment list or build record of a car with the code), *named* (a recorded
   description), *listings* (the sellers' words on Bring a Trailer / Cars & Bids for cars whose VIN gives the code),
   *catalogue* (the colour ASA's parts catalogue gives the trim parts specific to the code), or
   *letter* (the US trim letter: H/W charcoal, T tan, U red, D ivory; shown as *likely*). Otherwise the

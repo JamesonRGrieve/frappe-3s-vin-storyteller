@@ -202,7 +202,7 @@ def test_shipped_table_is_well_formed():
 			assert re.fullmatch(r"#[0-9A-F]{6}", entry["sampled_hex"]) and entry["sampled_cars"] > 0, code
 		if "colour" in entry:
 			assert (
-				entry["colour_confidence"] in {"named", "listings", "catalogue", "letter"}
+				entry["colour_confidence"] in {"document", "named", "listings", "catalogue", "letter"}
 				and entry["colour_basis"]
 			), code
 

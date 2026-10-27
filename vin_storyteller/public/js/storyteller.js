@@ -99,6 +99,32 @@
 		return item;
 	}
 
+	// The car's paint and interior, drawn by swatch.js (globalThis.VinSwatch) when it has loaded; the
+	// captions come from VinSwatchCore so they say plainly when a colour isn't on file.
+	function renderSwatches(result, story) {
+		const section = result.querySelector(".vst-swatches");
+		const swatch = globalThis.VinSwatch;
+		const swatchCore = globalThis.VinSwatchCore;
+		section.hidden = !(swatch && swatchCore && core.swatchesShown(story));
+		if (section.hidden) return;
+		const figures = section.querySelectorAll(".vst-swatch");
+		core.swatchRequests(story).forEach((request, i) => {
+			const figure = figures[i];
+			figure.querySelector(".vst-swatch-title").textContent = request.description === "MISSING" ? "" : request.description;
+			figure.querySelector(".vst-swatch-detail").textContent = "";
+			swatch
+				.render(figure.querySelector(".vst-swatch-chip"), request)
+				.then((model) => {
+					const parts = swatchCore.captionParts(model, request.code);
+					figure.querySelector(".vst-swatch-title").textContent = parts.title;
+					figure.querySelector(".vst-swatch-detail").textContent = parts.detail;
+				})
+				.catch(() => {
+					figure.hidden = true;
+				});
+		});
+	}
+
 	function render(root, story) {
 		const result = root.querySelector(".vst-result");
 		result.querySelector(".vst-name").textContent = story.vehicle_name;
@@ -128,6 +154,7 @@
 		const badges = result.querySelector(".vst-badges");
 		badges.replaceChildren(...story.rarities.map(badge));
 		badges.hidden = story.rarities.length === 0;
+		renderSwatches(result, story);
 
 		result.querySelector(".vst-timeline").textContent = core.timelineText(story);
 		result.querySelector(".vst-spec tbody").replaceChildren(

@@ -175,3 +175,18 @@ test("the record's other Nagoya-built cars are named as such", () => {
 	assert.equal(core.modelCountText({ model: "Other", count: 1 }), "1 other Nagoya-built car");
 	assert.equal(core.breakdownParts({ total: 3, description: "x", by_model: [{ model: "Other", count: 3 }] }).models, "");
 });
+
+test("swatches show when the record has either code, each with its code and description", () => {
+	const story = { exterior: { code: "R25", description: "Morocco Red Mica" }, interior: { code: "", description: "" } };
+	assert.equal(core.swatchesShown(story), true);
+	assert.equal(core.swatchesShown({ exterior: { code: "", description: "" }, interior: { code: "", description: "" } }), false);
+	assert.equal(core.swatchesShown({}), false);
+	assert.deepEqual(JSON.parse(JSON.stringify(core.swatchRequests(story))), [
+		{ kind: "paint", code: "R25", description: "Morocco Red Mica" },
+		{ kind: "interior", code: "", description: "" },
+	]);
+	assert.deepEqual(JSON.parse(JSON.stringify(core.swatchRequests({}))), [
+		{ kind: "paint", code: "", description: "" },
+		{ kind: "interior", code: "", description: "" },
+	]);
+});

@@ -1,5 +1,6 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css">
+<link rel="stylesheet" href="/assets/vin_storyteller/css/swatch.css">
 <div class="vst" data-endpoint="/api/method/vin_storyteller.api.tell" data-limit="3">
 	<header class="vst-head">
 		<p class="vst-kicker">3000GT &middot; Stealth &middot; GTO</p>
@@ -31,6 +32,17 @@
 		<p class="vst-built"></p>
 		<p class="vst-vin"><span class="vst-vin-label">VIN</span> <span class="vst-vin-value"></span></p>
 		<ul class="vst-badges" aria-label="Rarity" hidden></ul>
+
+		<div class="vst-swatches" hidden>
+			<figure class="vst-swatch">
+				<div class="vst-swatch-chip" data-kind="paint"></div>
+				<figcaption><span class="vst-swatch-kind">Paint</span><span class="vst-swatch-title"></span><span class="vst-swatch-detail"></span></figcaption>
+			</figure>
+			<figure class="vst-swatch">
+				<div class="vst-swatch-chip" data-kind="interior"></div>
+				<figcaption><span class="vst-swatch-kind">Interior</span><span class="vst-swatch-title"></span><span class="vst-swatch-detail"></span></figcaption>
+			</figure>
+		</div>
 
 		<ul class="vst-stats">
 			<li><span class="vst-n" data-field="in_year"></span><span class="vst-l" data-field="in_year_label"></span></li>
@@ -79,5 +91,7 @@
 	<p class="vst-source">The VIN Storyteller is open source under the AGPL-3.0:
 		<a href="https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller" rel="noopener">source on GitHub</a>.</p>
 </div>
+<script src="/assets/vin_storyteller/js/swatch-core.js" defer></script>
+<script src="/assets/vin_storyteller/js/swatch.js" defer></script>
 <script src="/assets/vin_storyteller/js/storyteller-core.js" defer></script>
 <script src="/assets/vin_storyteller/js/storyteller.js" defer></script>

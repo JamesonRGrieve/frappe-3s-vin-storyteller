@@ -149,12 +149,12 @@ void main() {
 		float pearl = uFinish.w;
 		// Flop: metallic and pearl paint is brighter facing the highlight and darker away from it.
 		float flop = mix(1.0, mix(0.55, 1.2, pow(ndoth, 3.0)), clamp(density + pearl, 0.0, 1.0));
-		vec3 body = uBase * (0.18 + 0.82 * diffuse) * flop;
+		vec3 body = uBase * (0.12 + 0.78 * diffuse) * flop;
 		// Spectral map: the interference colour shifts with the angle to the light.
 		float t = dot(n, hv) * 1.6 + vUv.x * 0.35 + uLight.x * 0.25;
 		vec3 spectrum = 0.5 + 0.5 * cos(6.28318 * (vec3(0.0, 0.33, 0.67) + t));
 		vec3 pearlTint = mix(uFlake, uFlake * (0.55 + 0.9 * spectrum), 0.45);
-		body = mix(body, pearlTint * (0.1 + 1.1 * pow(ndoth, 6.0)), pearl * 0.45);
+		body += pearlTint * pow(ndoth, 10.0) * pearl * 0.45; // the pearl glows round the highlight, not over the body
 		// Flake map: each cell may hold a flake with its own tilt; a flake sparkles when it faces the half-vector.
 		vec3 sparkle = vec3(0.0);
 		for (int layer = 0; layer < 2; layer++) {
@@ -174,8 +174,8 @@ void main() {
 		// Clearcoat: a crisp highlight over the peel, a soft lobe round it, and a dim sky reflection.
 		float gloss = uSurface.x;
 		float fresnel = 0.04 + 0.96 * pow(1.0 - ndotv, 5.0);
-		float coat = pow(ndoth, mix(120.0, 1400.0, gloss)) * 1.4 + pow(ndoth, 45.0) * 0.18;
-		float sheen = pow(ndoth, 10.0) * 0.06;
+		float coat = pow(ndoth, mix(120.0, 1400.0, gloss)) * 1.4 + pow(ndoth, 90.0) * 0.08;
+		float sheen = pow(ndoth, 10.0) * 0.03;
 		vec3 sky = mix(vec3(0.02, 0.025, 0.03), vec3(0.22, 0.25, 0.3), vUv.y) * (0.25 + fresnel);
 		colour = body + sparkle + vec3(coat + sheen) + sky * 0.2;
 	} else if (uMode == 1) {

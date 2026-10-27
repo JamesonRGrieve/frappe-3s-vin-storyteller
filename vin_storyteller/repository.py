@@ -12,8 +12,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from vin_storyteller.story import (
-	CHASSIS_MODELS,
 	FACTORY_PROVENANCES,
+	MARKET_MODELS,
 	MISSING,
 	Breakdown,
 	Coded,
@@ -26,7 +26,7 @@ from vin_storyteller.story import (
 	describe_production_date,
 	exterior_description,
 	full_year,
-	is_chassis_record,
+	market_of,
 	safe_url,
 	year_code,
 )
@@ -39,10 +39,15 @@ PARAMSTYLES = {"format": "%s", "qmark": "?"}  # PyMySQL uses %s, sqlite3 uses ?
 FACTORY = "Provenance IN (" + ", ".join(["%s"] * len(FACTORY_PROVENANCES)) + ")"
 # Positions and totals stay within a car's own market and numbering (17-character VINs or JDM chassis numbers),
 # so the original storyteller's counts are unchanged; the cross-model breakdowns span both.
-_GTO_MODELS = "(" + ", ".join(f"'{m}'" for m in CHASSIS_MODELS.values()) + ")"
-MARKETS = {False: f"Model NOT IN {_GTO_MODELS}", True: f"Model IN {_GTO_MODELS}"}
+_NON_US = "(" + ", ".join(f"'{m}'" for models in MARKET_MODELS.values() for m in models) + ")"
+MARKETS = {
+	"us": f"Model NOT IN {_NON_US}",
+	**{
+		market: "Model IN (" + ", ".join(f"'{m}'" for m in models) + ")"
+		for market, models in MARKET_MODELS.items()
+	},
+}
 LANGUAGE = "en"
-OTHER_MODELS = "Other"  # breakdown name for the record's other Nagoya-built cars (Model XX)
 
 
 @dataclass(frozen=True)
@@ -92,11 +97,11 @@ class ProductionRecords:
 		rows = self._rows(sql, params)
 		return rows[0] if rows else None
 
-	def _count(self, where: str, params: tuple, chassis: bool = False) -> int:
+	def _count(self, where: str, params: tuple, market: str = "us") -> int:
 		"""Factory-record cars in the same market matching `where`: records from other sources never shift a count."""
 		return int(
 			self._one(
-				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND {FACTORY} AND {MARKETS[chassis]}",
+				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND {FACTORY} AND {MARKETS[market]}",
 				(*params, *FACTORY_PROVENANCES),
 			)[0]
 		)
@@ -104,24 +109,20 @@ class ProductionRecords:
 	def _breakdown(self, scope: str, where: str, params: tuple) -> Breakdown:
 		"""Factory-record cars of every model and market matching `where`, by model (3000GT, Stealth, GTO)."""
 		rows = self._rows(
-			"SELECT m.Model, COUNT(*) FROM Production p LEFT JOIN Model m ON m.ModelCode = p.Model "
-			f"WHERE ({where}) AND p.{FACTORY} GROUP BY m.Model",
-			(*params, *FACTORY_PROVENANCES),
+			"SELECT m.Model, COUNT(*) FROM Production p JOIN Model m ON m.ModelCode = p.Model "
+			f"WHERE ({where}) AND p.{FACTORY} AND m.Model <> %s GROUP BY m.Model",
+			(*params, *FACTORY_PROVENANCES, MISSING),
 		)
-		merged: dict[str, int] = {}
-		for model, n in rows:  # the 1999 export holds every Nagoya-built car; the rest have no Model name
-			name = model if model and model != MISSING else OTHER_MODELS
-			merged[name] = merged.get(name, 0) + int(n)
 		counts = tuple(
-			sorted((ModelCount(m, n) for m, n in merged.items()), key=lambda c: (-c.count, c.model))
+			sorted((ModelCount(model, int(n)) for model, n in rows), key=lambda c: (-c.count, c.model))
 		)
 		return Breakdown(scope, sum(c.count for c in counts), counts)
 
 	def breakdowns(self, car: Car) -> tuple[Breakdown, ...]:
 		"""What this car shares with the rest of the factory record, across every model."""
 		scopes = [("year", "p.ModelYear = %s", (car.model_year,))]
-		exterior_known = car.exterior.strip() not in NOT_RECORDED_CODES
-		interior_known = car.interior.strip() not in NOT_RECORDED_CODES
+		exterior_known = car.exterior.strip() not in NOT_RECORDED_CODES | {""}
+		interior_known = car.interior.strip() not in NOT_RECORDED_CODES | {""}
 		if exterior_known:
 			scopes += [
 				("colour", "p.Exterior = %s", (car.exterior,)),
@@ -224,7 +225,7 @@ class ProductionRecords:
 		colour = (*line, car.exterior)
 		earlier = " AND SerialNumber < %s"
 
-		chassis = is_chassis_record(vin)
+		chassis = market_of(car.model)  # the car's market: positions and totals count within it
 		market = MARKETS[chassis]
 		year_start = self._one(
 			f"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND {FACTORY} AND {market}",
@@ -310,16 +311,16 @@ class ProductionRecords:
 		if serial >= SECOND_SERIES:
 			occupied = (
 				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
-				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS[False]} AND SUBSTR(VIN, 12, 6) >= %s"
+				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS['us']} AND SUBSTR(VIN, 12, 6) >= %s"
 			)
 			params = (year, *FACTORY_PROVENANCES, SECOND_SERIES)
 		else:
 			# 1995-96's 8xxxxx-VIN cars take their place in the main run by their SerialNumber's digits.
 			occupied = (
 				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
-				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS[False]} AND SUBSTR(VIN, 12, 6) < %s "
+				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS['us']} AND SUBSTR(VIN, 12, 6) < %s "
 				"UNION ALL SELECT SUBSTR(SerialNumber, 3, 6) AS s, DateOfManufacture AS d FROM Production "
-				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS[False]} AND SUBSTR(VIN, 12, 6) >= %s"
+				f"WHERE ModelYear = %s AND {FACTORY} AND {MARKETS['us']} AND SUBSTR(VIN, 12, 6) >= %s"
 			)
 			params = (year, *FACTORY_PROVENANCES, SECOND_SERIES, year, *FACTORY_PROVENANCES, SECOND_SERIES)
 		before = self._one(

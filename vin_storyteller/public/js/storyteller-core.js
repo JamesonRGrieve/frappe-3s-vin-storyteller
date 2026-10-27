@@ -36,6 +36,9 @@
 	// Japanese-market GTO chassis number (Z15A-/Z16A- and seven digits): not a VIN, and not in the record yet.
 	const CHASSIS = /^Z1[56]A-?[0-9]{7}$/;
 	const CHASSIS_SO_FAR = /^Z(1([56](A(-?[0-9]{0,7})?)?)?)?$/;
+	// Export-market 3000GT frame number (1992-94 cars, e.g. DMNZ16APY00001): 14 characters, dashes ignored.
+	const FRAME = /^(?=[A-Z0-9]{14}$)[A-Z]{2,3}Z16A[A-Z0-9]+$/;
+	const isFrameNumber = (raw) => FRAME.test(normalizeVin(raw).replace(/-/g, ""));
 
 	const normalizeVin = (raw) => String(raw ?? "").replace(/\s+/g, "").toUpperCase();
 	const NAME_MAX = 100; // StoriesTold.Name
@@ -61,11 +64,8 @@
 				"colours and equipment aren't known yet."
 			: `Built in ${story.built}.`;
 	const provenanceText = (p) => `Production record source: ${PROVENANCE_NAMES[p] || p}.`;
-	const OTHER_MODELS = "Other"; // the record's other Nagoya-built cars (no Model name)
-	const modelCountText = (c) => {
-		if (c.model === OTHER_MODELS) return `${formatNumber(c.count)} other Nagoya-built ${c.count === 1 ? "car" : "cars"}`;
-		return `${formatNumber(c.count)} ${c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`}`;
-	};
+	const modelCountText = (c) =>
+		`${formatNumber(c.count)} ${c.count === 1 ? c.model : MODEL_PLURALS[c.model] || `${c.model}s`}`;
 	// "and"-joined list: "a", "a and b", "a, b and c".
 	const listText = (items) =>
 		items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
@@ -73,11 +73,13 @@
 	function breakdownParts(b) {
 		let models = "";
 		if (b.by_model.length > 1) models = `of which ${listText(b.by_model.map(modelCountText))}`;
-		else if (b.by_model.length === 1 && b.total > 1 && b.by_model[0].model !== OTHER_MODELS) {
+		else if (b.by_model.length === 1 && b.total > 1) {
 			models = `all ${MODEL_PLURALS[b.by_model[0].model] || b.by_model[0].model}`;
 		}
 		return { total: formatNumber(b.total), label: `${b.total === 1 ? "car" : "cars"} ${b.description}`, models };
 	}
+	// What the record key is called: a VIN, a JDM chassis number or an export frame number.
+	const keyLabel = (key) => (key.length === 17 ? "VIN" : /^Z1[56]A-/.test(key) ? "Chassis number" : "Frame number");
 	// What the equipment code fits, item by item, for the spec table.
 	const equipmentItemsText = (items) => items.map(codedText);
 
@@ -86,6 +88,7 @@
 	function vinCheck(raw) {
 		const vin = normalizeVin(raw);
 		if (CHASSIS.test(vin)) return { count: "JDM chassis", state: "ready", ready: true, message: "" };
+		if (isFrameNumber(vin)) return { count: "frame no.", state: "ready", ready: true, message: "" };
 		if (vin.length > 1 && CHASSIS_SO_FAR.test(vin)) {
 			return { count: "chassis?", state: "typing", ready: false, message: "" };
 		}
@@ -131,6 +134,8 @@
 		normalizeName,
 		isValidVin,
 		isChassisNumber,
+		isFrameNumber,
+		keyLabel,
 		vinCheck,
 		isSafeUrl,
 		formatNumber,

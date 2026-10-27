@@ -21,7 +21,9 @@ from vin_storyteller.story import (
 	InvalidName,
 	InvalidVin,
 	is_chassis_number,
+	is_frame_number,
 	normalize_chassis,
+	normalize_frame,
 	normalize_name,
 	normalize_vin,
 )
@@ -84,7 +86,13 @@ NAME_REQUIRED = "Please enter your name. Every story told is logged with the nam
 @frappe.whitelist(allow_guest=True, methods=["GET"])
 def tell(vin: str = "", name: str = "") -> dict:
 	try:
-		normalized = normalize_chassis(vin) if is_chassis_number(vin) else normalize_vin(vin)
+		normalized = (
+			normalize_chassis(vin)
+			if is_chassis_number(vin)
+			else normalize_frame(vin)
+			if is_frame_number(vin)
+			else normalize_vin(vin)
+		)
 	except InvalidVin:
 		normalized = None  # answered as invalid below, without touching the database or the client's lookups
 	if normalized:

@@ -141,7 +141,7 @@
 			specRow("Exterior colour", core.codedText(story.exterior)),
 			specRow("Interior colour", core.codedText(story.interior)),
 			specRow("Equipment", core.codedText(story.equipment)),
-			specRow(story.vin.length === 17 ? "VIN" : "Chassis number", story.vin),
+			specRow(core.keyLabel(story.vin), story.vin),
 		);
 		const items = core.equipmentItemsText(story.equipment_items || []);
 		const fitted = result.querySelector(".vst-equipment");
@@ -202,7 +202,7 @@
 			const vin = core.normalizeVin(input.value);
 			input.value = vin;
 			showCheck(root, input);
-			if (!core.isValidVin(vin) && !core.isChassisNumber(vin)) {
+			if (!core.isValidVin(vin) && !core.isChassisNumber(vin) && !core.isFrameNumber(vin)) {
 				input.setAttribute("aria-invalid", "true");
 				setStatus(root, MESSAGES.invalid, "error");
 				input.focus();

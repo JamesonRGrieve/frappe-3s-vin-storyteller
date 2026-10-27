@@ -24,6 +24,7 @@ SHIPPED = [
 	"0004_gto_models",
 	"0005_factory_build_provenance",
 	"0006_code_labels",
+	"0007_export_models",
 ]
 
 

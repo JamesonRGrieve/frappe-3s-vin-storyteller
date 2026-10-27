@@ -87,16 +87,22 @@ runs once, in order, and is recorded in `SchemaMigration`. Never edit one that h
 Three provenances are factory records, named by the Mitsubishi catalogue build they came from; they tell full
 stories and count in positions and totals:
 
-- `CAPS 1999`: the original export, Michael Reid's NA9199 (236,589 Nagoya 1991–99 cars), taken from CAPS
-  `PASEN/SHARYO` dated 1999-09-16; every row is identical to it.
+- `CAPS 1999`: the original export, the 3000GT/Stealth part of Michael Reid's NA9199 (taken from CAPS
+  `PASEN/SHARYO` dated 1999-09-16; every row identical). NA9199 is all of Nagoya's 1991–99 output; its 85,135
+  Mitsubishi Diamante sedans (Model `XX`) were deleted on 2026-10-27, leaving 151,454 cars (Reid's 3S9199 count).
+  The database holds 3000GTs, Stealths and GTOs only.
 - `CAPS 2004`: cars only the 2004 CAPS build (WINCAPS, `PASEN/SHARYO`) holds: the 1997 Nov 1996 – Jan 1997 block
   and the last two 1999 SLs.
 - `ASA Japan 2008`: every Japanese-market GTO (Z15A/Z16A, 23,369 cars, 1990–2000) from Mitsubishi's ASA Japan
   EPC. Model year is the record's own where it stores one, else the catalogue's production window for the
   build date (both agree on all 3,404 that store it). A 2000 model year is `00`.
+- `ASA General 2008`: export-market 3000GTs (756 Z16A twin-turbo cars, 345 of them UK-spec) from Mitsubishi's ASA
+  General EPC, Model `EL` / `ER` by drive side (migration 0007). They are keyed by a 17-character VIN (JMA/JMY,
+  no ISO check digit) or, for 1992–94 cars, a 14-character frame number such as `DMNZ16APY00001`; the model year
+  is the year letter in either.
 
-Positions and totals count within the car's own market (17-character VINs, or JDM chassis numbers), so the
-original storyteller's counts are unchanged. The story's **breakdowns** span every model and market: how many
+Positions and totals count within the car's own market (North American VINs, JDM chassis numbers, or export
+cars), so they never mix numbering schemes. The story's **breakdowns** span every model and market: how many
 factory-record cars share its model year, exterior colour (every year, and its year), interior, colour pair,
 production period and month, and of which models (3000GT, Stealth, GTO). Every other provenance is a partial
 story outside all counts.
@@ -122,7 +128,7 @@ ASA Japan holds every GTO, this is only for a chassis number ASA lacks.
 ### Not-found answers
 
 A VIN without a record gets the most specific reason the VIN and the record give: not a JA3/JB3 VIN; not a
-1991–99 model year; a wrong check digit (all 236,589 CAPS VINs have a correct one, so this means a typo); a serial
+1991–99 model year; a wrong check digit (all 151,454 CAPS 1999 VINs have a correct one, so this means a typo); a serial
 inside a stretch missing from the export (naming the cars either side and their build periods); before the
 year's first or after its last car on record; otherwise the original message. A Japanese-market GTO chassis
 number (`Z15A-`/`Z16A-` and seven digits) is looked up the same way and, when it isn't on record, answered as

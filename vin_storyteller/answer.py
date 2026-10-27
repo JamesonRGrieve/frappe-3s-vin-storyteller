@@ -13,9 +13,12 @@ from contextlib import AbstractContextManager
 from vin_storyteller.repository import ProductionRecords
 from vin_storyteller.story import (
 	CHASSIS_NOT_ON_RECORD,
+	EXPORT_NOT_ON_RECORD,
 	InvalidVin,
 	is_chassis_number,
+	is_frame_number,
 	normalize_chassis,
+	normalize_frame,
 	normalize_vin,
 	not_found_message,
 )
@@ -39,15 +42,19 @@ def answer(
 	database_errors: tuple[type[BaseException], ...],
 ) -> dict:
 	"""The API response body for `raw_vin`: status invalid | not_found | found (with the story)."""
-	if is_chassis_number(raw_vin):
-		chassis = normalize_chassis(raw_vin)
+	if is_chassis_number(raw_vin) or is_frame_number(raw_vin):
+		chassis_number = is_chassis_number(raw_vin)
+		key = normalize_chassis(raw_vin) if chassis_number else normalize_frame(raw_vin)
 		try:
 			with open_records() as records:
-				story = records.story(chassis)
+				story = records.story(key)
 		except database_errors as error:
 			raise RecordsUnavailable from error
 		if story is None:
-			return {"status": "not_found", "message": CHASSIS_NOT_ON_RECORD}
+			message = (
+				CHASSIS_NOT_ON_RECORD if chassis_number else EXPORT_NOT_ON_RECORD.format(kind="frame number")
+			)
+			return {"status": "not_found", "message": message}
 		return {"status": "found", "story": story.as_dict()}
 	try:
 		vin = normalize_vin(raw_vin)

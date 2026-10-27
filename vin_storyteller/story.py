@@ -63,9 +63,10 @@ CAPS_2004 = (
 	"CAPS 2004"  # cars only the 2004 WINCAPS build holds (the 1997 Nov 1996 - Jan 1997 block, two 1999s)
 )
 ASA_JAPAN = "ASA Japan 2008"  # every Japanese-market GTO, from Mitsubishi's ASA Japan EPC (2008-02-22)
-FACTORY_PROVENANCES = (CAPS, CAPS_2004, ASA_JAPAN)
+ASA_GENERAL = "ASA General 2008"  # export-market 3000GTs (UK and others), from Mitsubishi's ASA General EPC
+FACTORY_PROVENANCES = (CAPS, CAPS_2004, ASA_JAPAN, ASA_GENERAL)
 
-# ISO 3779 check digit (the VIN's 9th character): every one of the 236,589 CAPS VINs has a correct one, so a VIN
+# ISO 3779 check digit (the VIN's 9th character): every one of the 151,454 CAPS 1999 VINs has a correct one, so a VIN
 # whose check digit fails was almost certainly mistyped.
 _VIN_VALUES = {
 	**{str(d): d for d in range(10)},
@@ -101,9 +102,33 @@ CHASSIS_NOT_ON_RECORD = (
 CHASSIS_MODELS = {"Z15A": "G5", "Z16A": "G6"}  # chassis family -> Model key (migration 0004)
 
 
-def is_chassis_record(vin: str) -> bool:
-	"""A Production key that is a JDM chassis number rather than a 17-character VIN."""
-	return len(vin) != 17
+EXPORT_MODELS = {"EL": "LHD", "ER": "RHD"}  # export-market 3000GT Model keys by drive side (migration 0007)
+MARKET_MODELS = {"jdm": tuple(CHASSIS_MODELS.values()), "export": tuple(EXPORT_MODELS)}
+
+
+def market_of(model: str) -> str:
+	"""Which numbering a car's positions and totals count within: 'us', 'jdm' (GTO) or 'export'."""
+	return next((market for market, models in MARKET_MODELS.items() if model in models), "us")
+
+
+# Export-market 3000GTs (ASA General): 17-character VINs from JMA/JMY without an ISO check digit, or, for 1992-94
+# cars, a 14-character frame number such as DMNZ16APY00001 (card 331).
+EXPORT_VIN_PREFIXES = ("JMA", "JMY")
+FRAME_PATTERN = re.compile(r"^(?=[A-Z0-9]{14}$)[A-Z]{2,3}Z16A[A-Z0-9]+$")
+EXPORT_NOT_ON_RECORD = (
+	"That's an export-market Mitsubishi 3000GT {kind}, but it isn't in Mitsubishi's record of the export cars (the "
+	"ASA General parts catalogue, 756 cars). Please check it against your car's plate or papers; if it's right, "
+	"please email storyteller@3shub.com."
+)
+
+
+def is_frame_number(raw: str | None) -> bool:
+	"""An export 3000GT's 14-character frame number (e.g. DMNZ16APY00001), spaces and dashes ignored."""
+	return bool(FRAME_PATTERN.match(normalize_frame(raw)))
+
+
+def normalize_frame(raw: str | None) -> str:
+	return "".join(c for c in (raw or "").upper() if c.isalnum())
 
 
 def is_chassis_number(raw: str | None) -> bool:
@@ -163,6 +188,8 @@ def year_code(vin: str) -> str | None:
 
 def not_found_message(vin: str, gap: Gap | None) -> str | None:
 	"""Why a well-formed VIN has no production record, when the VIN or the record around it says; None otherwise."""
+	if vin[:3] in EXPORT_VIN_PREFIXES:
+		return EXPORT_NOT_ON_RECORD.format(kind="VIN")
 	maker = MANUFACTURER_CODES.get(vin[:3])
 	if maker is None:
 		return (

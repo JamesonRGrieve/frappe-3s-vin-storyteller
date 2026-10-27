@@ -170,8 +170,14 @@ test("equipmentItemsText lists what an option code fits", () => {
 	);
 });
 
-test("the record's other Nagoya-built cars are named as such", () => {
-	assert.equal(core.modelCountText({ model: "Other", count: 2400 }), "2,400 other Nagoya-built cars");
-	assert.equal(core.modelCountText({ model: "Other", count: 1 }), "1 other Nagoya-built car");
-	assert.equal(core.breakdownParts({ total: 3, description: "x", by_model: [{ model: "Other", count: 3 }] }).models, "");
+test("export frame numbers are accepted and named", () => {
+	assert.ok(core.isFrameNumber("DMNZ16APY00001"));
+	assert.ok(core.isFrameNumber("dmnz16a-py00001"));
+	assert.ok(core.isFrameNumber("MNZ16AVY000101"));
+	assert.equal(core.isFrameNumber("DMNZ16APY0000"), false);
+	assert.equal(core.isFrameNumber("JA3AM84J3NY012345"), false);
+	assert.equal(core.vinCheck("DMNZ16APY00001").ready, true);
+	assert.equal(core.keyLabel("JMAMJZ16AVY000101"), "VIN");
+	assert.equal(core.keyLabel("Z16A-0300250"), "Chassis number");
+	assert.equal(core.keyLabel("DMNZ16APY00001"), "Frame number");
 });

@@ -140,6 +140,16 @@ def decide_material(row: Mapping[str, str]) -> dict | None:
 	material = _material_from_description(description)
 	if material:
 		return {"material": material, "confidence": "decided", "basis": f'description "{description}"'}
+	# US Mitsubishi 3000GTs: ASA USA's option items say when a car has leather seats (K03, K67 ...). Only "every car
+	# with this code has one" is evidence: leather standard on a grade needs no option item, so its absence is not
+	# evidence of cloth.
+	us_leather = _count(row, "us_with_leather_seat_item")
+	if us_leather and not _count(row, "us_without_leather_seat_item"):
+		return {
+			"material": "leather",
+			"confidence": "decided",
+			"basis": f"ASA USA leather-seat option item (K03 / K67) on all {us_leather:,} US 3000GTs with this code",
+		}
 	with_k03 = _count(row, "gto_with_leather_option_K03")
 	without_k03 = _count(row, "gto_without_K03")
 	if with_k03 and not without_k03:
@@ -161,6 +171,8 @@ def evidence_cars(row: Mapping[str, str], decision: Mapping[str, str]) -> int:
 	"""How many cars a decision was observed on: every car for a description, the GTOs for K03."""
 	if decision["basis"].startswith("description"):
 		return sum(model_counts(row).values())
+	if decision["basis"].startswith("ASA USA"):
+		return _count(row, "us_with_leather_seat_item")
 	return _count(row, "gto_with_leather_option_K03") + _count(row, "gto_without_K03")
 
 
@@ -220,7 +232,10 @@ def interior_table(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
 		decision = decide_material(row)
 		if decision:
 			decided[row["code"].strip().upper()] = (decision, evidence_cars(row, decision))
-	evidence = letter_evidence(decided)
+	# The suffix-letter rule learns only from descriptions and the GTO K03 evidence: US leather-seat items decide their
+	# own codes, but leather is option-driven there, so letting them vote would flip unrelated codes (a Stealth
+	# base/ES "D" interior, which ASA USA doesn't cover, would turn leather).
+	evidence = letter_evidence({c: d for c, d in decided.items() if not d[0]["basis"].startswith("ASA USA")})
 	table: dict[str, dict] = {}
 	for row in rows:
 		code = row["code"].strip().upper()

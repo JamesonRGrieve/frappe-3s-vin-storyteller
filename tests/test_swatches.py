@@ -242,3 +242,35 @@ def test_an_alias_takes_its_paint_codes_published_value():
 	)
 	assert paint["RA8"]["same_paint_as"] == "R38" and "Same paint as R38" in paint["RA8"]["notes"]
 	assert paint["TA7"]["hex"] == "#123456"  # its own published value is kept
+
+
+def test_us_leather_seat_items_decide_leather_but_their_absence_decides_nothing():
+	from vin_storyteller.swatches import decide_material
+
+	row = {
+		"code": "21D",
+		"description": "MISSING",
+		"3000GT": "2391",
+		"us_with_leather_seat_item": "2391",
+		"us_without_leather_seat_item": "0",
+	}
+	assert decide_material(row)["material"] == "leather"
+	mixed = dict(row, us_without_leather_seat_item="5")
+	assert decide_material(mixed) is None
+	only_without = dict(row, us_with_leather_seat_item="0", us_without_leather_seat_item="900")
+	assert decide_material(only_without) is None
+	described = dict(row, description="White Cloth, Power Seats")
+	assert decide_material(described)["material"] == "cloth"  # a description still wins
+
+
+def test_us_evidence_does_not_vote_in_the_suffix_letter_rule():
+	from vin_storyteller.swatches import interior_table
+
+	rows = [
+		{"code": "08D", "description": "White Cloth, Power Seats", "Stealth": "276"},
+		{"code": "21D", "description": "", "3000GT": "2391", "us_with_leather_seat_item": "2391"},
+		{"code": "05D", "description": "", "Stealth": "5000"},
+	]
+	table = interior_table(rows)
+	assert table["21D"]["material"] == "leather" and table["21D"]["confidence"] == "decided"
+	assert table["05D"]["material"] == "cloth"  # still from 08D's description, not outvoted by 21D

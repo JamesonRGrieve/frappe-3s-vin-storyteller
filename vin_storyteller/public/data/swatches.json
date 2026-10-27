@@ -90,7 +90,7 @@
 			]
 		},
 		"03A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -142,7 +142,7 @@
 			]
 		},
 		"04A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -207,7 +207,7 @@
 			]
 		},
 		"05A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -249,7 +249,7 @@
 			]
 		},
 		"06A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -340,7 +340,7 @@
 			]
 		},
 		"07A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -449,7 +449,7 @@
 			]
 		},
 		"09A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -488,7 +488,7 @@
 			]
 		},
 		"10A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -564,10 +564,10 @@
 			]
 		},
 		"13E": {
-			"basis": "no decided code ends in E",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 545 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"96"
 			],
@@ -588,10 +588,10 @@
 			]
 		},
 		"13J": {
-			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 146 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"96"
 			],
@@ -600,8 +600,8 @@
 			]
 		},
 		"13T": {
-			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,920 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -614,8 +614,8 @@
 			]
 		},
 		"13U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 65 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -626,7 +626,7 @@
 			]
 		},
 		"13W": {
-			"basis": "ASA option K03 (leather seat & room trim) on all 630 GTOs with this code",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 3,017 US 3000GTs with this code",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -653,10 +653,10 @@
 			]
 		},
 		"14E": {
-			"basis": "no decided code ends in E",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 393 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"96"
 			],
@@ -677,10 +677,10 @@
 			]
 		},
 		"14J": {
-			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 101 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"96"
 			],
@@ -689,8 +689,8 @@
 			]
 		},
 		"14T": {
-			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 7,199 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -703,8 +703,8 @@
 			]
 		},
 		"14U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 119 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -715,7 +715,7 @@
 			]
 		},
 		"14W": {
-			"basis": "ASA option K03 (leather seat & room trim) on all 1,437 GTOs with this code",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 9,310 US 3000GTs with this code",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -742,7 +742,7 @@
 			]
 		},
 		"15A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -806,7 +806,7 @@
 			]
 		},
 		"16A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -870,7 +870,7 @@
 			]
 		},
 		"17A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -922,7 +922,7 @@
 			]
 		},
 		"17W": {
-			"basis": "suffix letter W: 10,747 of 10,876 decided cars ending W are leather (13W, 14W, 18W); against: 33W, 34W",
+			"basis": "suffix letter W: 8,680 of 8,809 decided cars ending W are leather (18W); against: 33W, 34W",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -936,7 +936,7 @@
 			]
 		},
 		"18A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1014,7 +1014,7 @@
 			]
 		},
 		"19A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1038,8 +1038,8 @@
 			]
 		},
 		"19T": {
-			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1050,8 +1050,8 @@
 			]
 		},
 		"19U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1062,8 +1062,8 @@
 			]
 		},
 		"19W": {
-			"basis": "suffix letter W: 10,747 of 10,876 decided cars ending W are leather (13W, 14W, 18W); against: 33W, 34W",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 10 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1077,7 +1077,7 @@
 			]
 		},
 		"20A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1101,8 +1101,8 @@
 			]
 		},
 		"20T": {
-			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1113,7 +1113,7 @@
 			]
 		},
 		"20W": {
-			"basis": "suffix letter W: 10,747 of 10,876 decided cars ending W are leather (13W, 14W, 18W); against: 33W, 34W",
+			"basis": "suffix letter W: 8,680 of 8,809 decided cars ending W are leather (18W); against: 33W, 34W",
 			"confidence": "inferred",
 			"description": "",
 			"material": "leather",
@@ -1127,7 +1127,7 @@
 			]
 		},
 		"21A": {
-			"basis": "ASA option K03 (leather seat & room trim) on all 148 GTOs with this code",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,980 US 3000GTs with this code",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1140,10 +1140,10 @@
 			]
 		},
 		"21D": {
-			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,391 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "cloth",
+			"material": "leather",
 			"model_years": [
 				"94"
 			],
@@ -1177,7 +1177,7 @@
 			]
 		},
 		"22A": {
-			"basis": "ASA option K03 (leather seat & room trim) on all 56 GTOs with this code",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,222 US 3000GTs with this code",
 			"confidence": "decided",
 			"description": "",
 			"material": "leather",
@@ -1190,10 +1190,10 @@
 			]
 		},
 		"22D": {
-			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,492 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "cloth",
+			"material": "leather",
 			"model_years": [
 				"94"
 			],
@@ -1227,7 +1227,7 @@
 			]
 		},
 		"23A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1251,8 +1251,8 @@
 			]
 		},
 		"23U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 298 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1264,7 +1264,7 @@
 			]
 		},
 		"24A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1288,8 +1288,8 @@
 			]
 		},
 		"24U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,021 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1301,7 +1301,7 @@
 			]
 		},
 		"25A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1325,7 +1325,7 @@
 			]
 		},
 		"26A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1349,7 +1349,7 @@
 			]
 		},
 		"27A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1361,7 +1361,7 @@
 			]
 		},
 		"28A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1385,8 +1385,8 @@
 			]
 		},
 		"29U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1397,8 +1397,8 @@
 			]
 		},
 		"30U": {
-			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -1457,7 +1457,7 @@
 			]
 		},
 		"36A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1481,7 +1481,7 @@
 			]
 		},
 		"37A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1541,10 +1541,10 @@
 			]
 		},
 		"41A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,623 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1553,10 +1553,10 @@
 			]
 		},
 		"41D": {
-			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,862 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "cloth",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1565,10 +1565,10 @@
 			]
 		},
 		"42A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,039 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1577,10 +1577,10 @@
 			]
 		},
 		"42D": {
-			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,033 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "cloth",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1589,10 +1589,10 @@
 			]
 		},
 		"47E": {
-			"basis": "no decided code ends in E",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,083 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -1602,10 +1602,10 @@
 			]
 		},
 		"47J": {
-			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 350 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -1699,7 +1699,7 @@
 			]
 		},
 		"55A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1723,7 +1723,7 @@
 			]
 		},
 		"56A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1735,7 +1735,7 @@
 			]
 		},
 		"57A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1747,10 +1747,10 @@
 			]
 		},
 		"57E": {
-			"basis": "no decided code ends in E",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,064 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -1760,10 +1760,10 @@
 			]
 		},
 		"57J": {
-			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 367 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -1797,7 +1797,7 @@
 			]
 		},
 		"58A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1821,7 +1821,7 @@
 			]
 		},
 		"60A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -1833,7 +1833,7 @@
 			]
 		},
 		"61A": {
-			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
 			"confidence": "",
 			"description": "",
 			"material": "unknown",
@@ -2091,10 +2091,10 @@
 			]
 		},
 		"92E": {
-			"basis": "no decided code ends in E",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 293 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"99"
 			],
@@ -2127,8 +2127,8 @@
 			]
 		},
 		"92P": {
-			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 156 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -2163,10 +2163,10 @@
 			]
 		},
 		"93E": {
-			"basis": "no decided code ends in E",
-			"confidence": "",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 359 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"99"
 			],
@@ -2175,8 +2175,8 @@
 			]
 		},
 		"93P": {
-			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
-			"confidence": "inferred",
+			"basis": "ASA USA leather-seat option item (K03 / K67) on all 190 US 3000GTs with this code",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [

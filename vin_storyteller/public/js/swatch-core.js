@@ -173,8 +173,26 @@
 		const named = description && description !== "MISSING" ? description : entry?.description || "";
 		const { material, confidence, basis } = interiorMaterial(entry, named);
 		const ownTone = interiorTone(named);
+		const sampled = parseHex(entry?.sampled_hex);
 		const tone = ownTone || interiorTone(entry?.colour);
 		const colourConfidence = ownTone ? "named" : tone ? entry.colour_confidence || "" : "";
+		if (sampled) {
+			// Measured from listing photos of cars with this code (operator 2026-10-27: sampled everywhere).
+			return {
+				kind: "interior",
+				status: "sampled",
+				material,
+				confidence,
+				basis,
+				colour: ownTone ? "" : entry.colour || "",
+				colourConfidence,
+				sampledCars: entry.sampled_cars || 0,
+				name: named,
+				label: named || entry.colour || "Interior",
+				base: sampled,
+				params: MATERIAL_PARAMS[material],
+			};
+		}
 		return {
 			kind: "interior",
 			status: tone ? "named" : "missing",
@@ -287,6 +305,11 @@
 		}
 		// An inferred material (from the code's suffix letter) is said to be likely, not stated as fact.
 		const material = MATERIAL_NAMES[swatch.material] + (swatch.confidence === "inferred" ? " (likely)" : "");
+		if (swatch.status === "sampled") {
+			const cars = swatch.sampledCars === 1 ? "1 car's" : `${swatch.sampledCars} cars'`;
+			const what = !swatch.colour ? material : swatch.material === "unknown" ? `${swatch.colour} · ${material}` : `${swatch.colour} ${material.toLowerCase()}`;
+			return { title: coded(swatch.name && swatch.name !== swatch.colour ? swatch.name : "Interior"), detail: `${what} · sampled from ${cars} photos` };
+		}
 		if (swatch.status !== "named") {
 			return { title: coded(swatch.name && swatch.name !== "MISSING" ? swatch.name : "Interior"), detail: code ? `${material} · ${NOT_ON_FILE}` : "No interior on record" };
 		}

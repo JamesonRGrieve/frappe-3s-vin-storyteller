@@ -198,6 +198,8 @@ def test_shipped_table_is_well_formed():
 	for code, entry in data["interior"].items():
 		assert entry["material"] in {"leather", "cloth", "unknown"}, code
 		assert entry["basis"], code
+		if "sampled_hex" in entry:
+			assert re.fullmatch(r"#[0-9A-F]{6}", entry["sampled_hex"]) and entry["sampled_cars"] > 0, code
 		if "colour" in entry:
 			assert (
 				entry["colour_confidence"] in {"named", "listings", "catalogue", "letter"}
@@ -399,3 +401,18 @@ def test_a_sampled_value_is_flagged(tmp_path):
 	)
 	entry = swatches.paint_table(swatches.read_tsv(codes), swatches.read_tsv(researched))["BA4"]
 	assert entry["sampled"] is True and entry["approximate"] is True and entry["status"] == "derived"
+
+
+def test_interior_samples_ship_with_their_car_count(tmp_path):
+	interiors = write(
+		tmp_path, "interior_codes.tsv", INTERIOR_COLUMNS, [interior_row("18W", "MISSING", stealth=4)]
+	)
+	samples = write(
+		tmp_path,
+		"interior_sampled.tsv",
+		"code\thex\tcars",
+		[["18W", "383a3e", "39"], ["31X", "#000000", "0"]],
+	)
+	table = swatches.interior_table(swatches.read_tsv(interiors), (), swatches.read_tsv(samples))
+	assert (table["18W"]["sampled_hex"], table["18W"]["sampled_cars"]) == ("#383A3E", 39)
+	assert swatches.interior_samples([{"code": "01A", "hex": "#123456", "cars": "0"}]) == {}

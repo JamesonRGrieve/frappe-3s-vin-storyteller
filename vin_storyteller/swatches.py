@@ -5,7 +5,8 @@ Pure logic, no Frappe. Builds `public/data/swatches.json` (served as
 /assets/vin_storyteller/data/swatches.json and read by `public/js/swatch.js`) from the extracted code lists
 (`paint_codes.tsv`, `interior_codes.tsv`) and the researched colour values (`paint_hex.tsv`):
 
-    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON [PAINT_ALIASES [INTERIOR_COLOURS]]
+    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON [PAINT_ALIASES [INTERIOR_COLOURS
+        [INTERIOR_SAMPLED]]]
 
 Rules (operator, 2026-10-27):
 - Only 3000GTs, Stealths and GTOs: a code used only by the record's other Nagoya-built cars (the deleted
@@ -22,6 +23,9 @@ Rules (operator, 2026-10-27):
 - Interior colour (`interior_colours.tsv`): a colour word per code, named (a recorded description), from listings
   (the sellers' words for cars whose VIN gives the code), from the catalogue (the colour of the trim parts specific
   to the code), or from the US trim letter; drawn as a representative shade for the word, never a factory value.
+- Interior samples (`interior_sampled.tsv`): the colour measured from listing photos of cars whose VIN gives the
+  code, with the number of cars; where one exists it is drawn instead of the word's shade (operator 2026-10-27:
+  sampled everywhere a sample exists).
 - Interior material: an explicit description wins; then, for GTOs, Mitsubishi's leather option K03 on the
   car; then, as evidence rather than a rule, the code's suffix letter when the decided codes sharing it
   agree. Each decision records how it was made.
@@ -263,12 +267,27 @@ def interior_colours(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
 	return colours
 
 
+def interior_samples(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
+	"""code -> the colour measured from listing photos of cars with this code, and how many cars it came from."""
+	samples: dict[str, dict] = {}
+	for row in rows:
+		code = (row.get("code") or "").strip().upper()
+		value = normalize_hex(row.get("hex"))
+		cars = int((row.get("cars") or "0").strip() or 0)
+		if code and value and cars > 0:
+			samples[code] = {"sampled_hex": value, "sampled_cars": cars}
+	return samples
+
+
 def interior_table(
-	rows: Iterable[Mapping[str, str]], colour_rows: Iterable[Mapping[str, str]] = ()
+	rows: Iterable[Mapping[str, str]],
+	colour_rows: Iterable[Mapping[str, str]] = (),
+	sample_rows: Iterable[Mapping[str, str]] = (),
 ) -> dict[str, dict]:
 	"""code -> description, material (leather | cloth | unknown), confidence, basis, colour word, usage."""
 	rows = [row for row in rows if in_scope(row)]
 	colours = interior_colours(colour_rows)
+	samples = interior_samples(sample_rows)
 	decided: dict[str, tuple[dict, int]] = {}
 	for row in rows:
 		decision = decide_material(row)
@@ -286,6 +305,7 @@ def interior_table(
 			"description": known(row.get("description")),
 			**decision,
 			**colours.get(code, {}),
+			**samples.get(code, {}),
 			**_usage(row),
 		}
 	return table
@@ -320,6 +340,7 @@ def build(
 	interior_codes: str | Path,
 	paint_aliases: str | Path | None = None,
 	interior_colour_rows: str | Path | None = None,
+	interior_sample_rows: str | Path | None = None,
 ) -> dict:
 	paint = paint_table(read_tsv(paint_codes), read_tsv(paint_hex))
 	if paint_aliases:
@@ -333,16 +354,18 @@ def build(
 		),
 		"paint": paint,
 		"interior": interior_table(
-			read_tsv(interior_codes), read_tsv(interior_colour_rows) if interior_colour_rows else ()
+			read_tsv(interior_codes),
+			read_tsv(interior_colour_rows) if interior_colour_rows else (),
+			read_tsv(interior_sample_rows) if interior_sample_rows else (),
 		),
 	}
 
 
 def main(argv: list[str]) -> int:
-	if len(argv) not in (4, 5, 6):
+	if len(argv) not in (4, 5, 6, 7):
 		print(__doc__, file=sys.stderr)
 		return 2
-	data = build(*argv[:3], *argv[4:6])
+	data = build(*argv[:3], *argv[4:7])
 	Path(argv[3]).write_text(
 		json.dumps(data, indent="\t", sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
 	)

@@ -78,7 +78,8 @@ The code tables (`public/data/swatches.json`) are rebuilt with
   description), *listings* (the sellers' words on Bring a Trailer / Cars & Bids for cars whose VIN gives the code),
   *catalogue* (the colour ASA's parts catalogue gives the trim parts specific to the code), or
   *letter* (the US trim letter: H/W charcoal, T tan, U red, D ivory; shown as *likely*). Otherwise the
-  neutral panel.
+  neutral panel. Where `interior_sampled.tsv` has a colour measured from listing photos of cars with the code, that
+  colour is drawn instead, captioned with the number of cars (operator 2026-10-27: sampled everywhere).
 
 ## API
 

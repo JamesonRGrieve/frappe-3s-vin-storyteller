@@ -296,3 +296,13 @@ test("a paint sampled from listing photos says so", () => {
 	const s = core.paintSwatch({ hex: "#27365C", finish: "pearl", name: "Danube Blue Mica", approximate: true, sampled: true, source: "https://x" }, "");
 	assert.equal(core.captionParts(s, "BA4").detail, "Pearl · sampled from photos");
 });
+
+test("an interior with a photo sample is drawn in it and says how many cars it came from", () => {
+	const s = core.interiorSwatch({ material: "leather", confidence: "decided", basis: "b", colour: "Charcoal", colour_confidence: "named", sampled_hex: "#383A3E", sampled_cars: 39 }, "");
+	assert.equal(s.status, "sampled");
+	assert.equal(core.toHex(s.base), "#383A3E");
+	assert.equal(core.shaderMode(s), core.MODES.leather);
+	assert.equal(core.captionParts(s, "18W").detail, "Charcoal leather · sampled from 39 cars' photos");
+	const one = core.interiorSwatch({ material: "unknown", sampled_hex: "#525152", sampled_cars: 1 }, "");
+	assert.equal(core.captionParts(one, "41A").detail, "Trim material not on file · sampled from 1 car's photos");
+});

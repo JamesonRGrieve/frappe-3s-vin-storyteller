@@ -115,7 +115,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#908D8C"
 		},
 		"03H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 6,073 GTOs with this code",
@@ -133,7 +135,9 @@
 			"models": [
 				"3000GT",
 				"GTO"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#5D5F64"
 		},
 		"03X": {
 			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
@@ -192,7 +196,9 @@
 			"models": [
 				"3000GT",
 				"GTO"
-			]
+			],
+			"sampled_cars": 5,
+			"sampled_hex": "#626262"
 		},
 		"04U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
@@ -207,7 +213,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#813B3E"
 		},
 		"04X": {
 			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
@@ -267,7 +275,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#383737"
 		},
 		"06A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -310,7 +320,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#9DBADD"
 		},
 		"06H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
@@ -327,7 +339,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#403D3F"
 		},
 		"06J": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 216 GTOs with this code",
@@ -412,7 +426,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#434142"
 		},
 		"07J": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 487 GTOs with this code",
@@ -471,7 +487,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#CECCC5"
 		},
 		"08H": {
 			"basis": "description \"Charcoal Cloth, Power Seats\"",
@@ -488,7 +506,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 4,
+			"sampled_hex": "#28282A"
 		},
 		"09A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -570,7 +590,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#5C697A"
 		},
 		"11S": {
 			"basis": "no decided code ends in S",
@@ -633,7 +655,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#D9CFC7"
 		},
 		"13H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 37 GTOs with this code",
@@ -660,7 +684,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#54565C"
 		},
 		"13T": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,920 US 3000GTs with this code",
@@ -710,7 +736,9 @@
 			"models": [
 				"3000GT",
 				"GTO"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#363638"
 		},
 		"13X": {
 			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
@@ -778,7 +806,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 21,
+			"sampled_hex": "#C9C7C2"
 		},
 		"14U": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 119 US 3000GTs with this code",
@@ -811,7 +841,9 @@
 			"models": [
 				"3000GT",
 				"GTO"
-			]
+			],
+			"sampled_cars": 37,
+			"sampled_hex": "#333439"
 		},
 		"14X": {
 			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
@@ -835,7 +867,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#595754"
 		},
 		"15D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
@@ -941,7 +975,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#20252E"
 		},
 		"16T": {
 			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
@@ -1019,7 +1055,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#C4BFB4"
 		},
 		"17U": {
 			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
@@ -1053,7 +1091,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#423F42"
 		},
 		"18A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -1112,7 +1152,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#D0CCC3"
 		},
 		"18U": {
 			"basis": "description \"Red Leather, Power Seats\"",
@@ -1129,7 +1171,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 5,
+			"sampled_hex": "#C34A4F"
 		},
 		"18W": {
 			"basis": "description \"Charcoal Leather, Power Seats\"",
@@ -1146,7 +1190,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 39,
+			"sampled_hex": "#383A3E"
 		},
 		"19A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -1173,7 +1219,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 4,
+			"sampled_hex": "#929195"
 		},
 		"19T": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2 US 3000GTs with this code",
@@ -1221,7 +1269,9 @@
 			"models": [
 				"3000GT",
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#38393D"
 		},
 		"20A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -1280,7 +1330,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#38393F"
 		},
 		"21A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,980 US 3000GTs with this code",
@@ -1296,7 +1348,9 @@
 			"models": [
 				"3000GT",
 				"GTO"
-			]
+			],
+			"sampled_cars": 5,
+			"sampled_hex": "#8F8F8D"
 		},
 		"21D": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,391 US 3000GTs with this code",
@@ -1311,7 +1365,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 6,
+			"sampled_hex": "#B6B3AD"
 		},
 		"21E": {
 			"basis": "no decided code ends in E",
@@ -1323,7 +1379,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#525860"
 		},
 		"21H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 4 GTOs with this code",
@@ -1367,7 +1425,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#A0A0A0"
 		},
 		"22E": {
 			"basis": "no decided code ends in E",
@@ -1382,7 +1442,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 3,
+			"sampled_hex": "#8B785D"
 		},
 		"22H": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 2 GTOs with this code",
@@ -1484,7 +1546,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 4,
+			"sampled_hex": "#B44C51"
 		},
 		"25A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -1496,7 +1560,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#51565C"
 		},
 		"25D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
@@ -1550,7 +1616,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 4,
+			"sampled_hex": "#636568"
 		},
 		"28A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -1676,7 +1744,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 20,
+			"sampled_hex": "#575659"
 		},
 		"36D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
@@ -1691,7 +1761,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 8,
+			"sampled_hex": "#B0ACA9"
 		},
 		"37A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -1706,7 +1778,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 7,
+			"sampled_hex": "#6F7073"
 		},
 		"37D": {
 			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
@@ -1721,7 +1795,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#DAD5CA"
 		},
 		"37H": {
 			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
@@ -1766,7 +1842,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#5E606B"
 		},
 		"41A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,623 US 3000GTs with this code",
@@ -1778,7 +1856,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 9,
+			"sampled_hex": "#525152"
 		},
 		"41D": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,862 US 3000GTs with this code",
@@ -1793,7 +1873,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 7,
+			"sampled_hex": "#ADABA6"
 		},
 		"42A": {
 			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,039 US 3000GTs with this code",
@@ -1885,7 +1967,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#3A3D42"
 		},
 		"51A": {
 			"basis": "ASA option K03 (leather seat & room trim) on all 72 GTOs with this code",
@@ -1909,7 +1993,9 @@
 			],
 			"models": [
 				"GTO"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#959897"
 		},
 		"52A": {
 			"basis": "ASA option K03 (leather seat & room trim) on all 54 GTOs with this code",
@@ -2034,7 +2120,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#878388"
 		},
 		"58A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -2076,7 +2164,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 3,
+			"sampled_hex": "#131416"
 		},
 		"61A": {
 			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
@@ -2088,7 +2178,9 @@
 			],
 			"models": [
 				"Stealth"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#A6A5A5"
 		},
 		"63J": {
 			"basis": "ASA option K03 (leather seat & room trim) on all 73 GTOs with this code",
@@ -2112,7 +2204,9 @@
 			],
 			"models": [
 				"GTO"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#AEADA8"
 		},
 		"64J": {
 			"basis": "ASA option K03 (leather seat & room trim) on all 40 GTOs with this code",
@@ -2152,7 +2246,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 7,
+			"sampled_hex": "#C5B39F"
 		},
 		"67F": {
 			"basis": "no decided code ends in F",
@@ -2168,7 +2264,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#BDB5AA"
 		},
 		"67J": {
 			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
@@ -2181,7 +2279,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#2F2F31"
 		},
 		"67P": {
 			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
@@ -2197,7 +2297,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#3E3E44"
 		},
 		"77F": {
 			"basis": "no decided code ends in F",
@@ -2238,7 +2340,9 @@
 			],
 			"models": [
 				"GTO"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#646368"
 		},
 		"82X": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 146 GTOs with this code",
@@ -2262,7 +2366,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#6B6A6E"
 		},
 		"85X": {
 			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
@@ -2310,7 +2416,9 @@
 			],
 			"models": [
 				"GTO"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#3E4045"
 		},
 		"90X": {
 			"basis": "ASA option K03 (leather seat & room trim) on none of the 284 GTOs with this code",
@@ -2322,7 +2430,9 @@
 			],
 			"models": [
 				"GTO"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#60636B"
 		},
 		"91P": {
 			"basis": "ASA option K03 (leather seat & room trim) on all 21 GTOs with this code",
@@ -2358,7 +2468,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 1,
+			"sampled_hex": "#9B9487"
 		},
 		"92F": {
 			"basis": "no decided code ends in F",
@@ -2508,7 +2620,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 2,
+			"sampled_hex": "#B8AE94"
 		},
 		"95J": {
 			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
@@ -2523,7 +2637,9 @@
 			],
 			"models": [
 				"3000GT"
-			]
+			],
+			"sampled_cars": 5,
+			"sampled_hex": "#3C3E41"
 		}
 	},
 	"paint": {

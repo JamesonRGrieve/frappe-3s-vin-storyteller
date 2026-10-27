@@ -263,7 +263,16 @@ void main() {
 		for (const name of ["uRes", "uUnit", "uLight", "uMode", "uBase", "uFlake", "uFinish", "uSurface", "uSeed", "uUvMap"]) {
 			uniforms[name] = at(name);
 		}
-		const state = { canvas, gl, uniforms, lost: false };
+		// Swatches draw into an offscreen framebuffer and are read back from it: the result never depends on how (or
+		// whether) the browser presents this canvas, which on some phones made a chip show its neighbour's colour.
+		const target = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, target);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		const framebuffer = gl.createFramebuffer();
+		const state = { canvas, gl, uniforms, lost: false, target, framebuffer, targetWidth: 0, targetHeight: 0 };
 		canvas.addEventListener("webglcontextlost", (event) => {
 			event.preventDefault();
 			state.lost = true;
@@ -286,16 +295,24 @@ void main() {
 	function draw(record) {
 		const r = getRenderer();
 		if (!r) return fallBack(record);
-		const { gl, uniforms: u, canvas } = r;
-		const size = core.canvasSize(record.element.clientWidth, record.element.clientHeight, globalThis.devicePixelRatio);
+		const { gl, uniforms: u } = r;
+		// Phones (no fine pointer) draw at most 400 px a side: every frame is read back on the CPU.
+		const maxSide = mode === "pointer" ? 640 : 400;
+		const size = core.canvasSize(record.element.clientWidth, record.element.clientHeight, globalThis.devicePixelRatio, maxSide);
 		if (record.canvas.width !== size.width || record.canvas.height !== size.height) {
 			record.canvas.width = size.width;
 			record.canvas.height = size.height;
 		}
-		if (canvas.width < size.width || canvas.height < size.height) {
-			canvas.width = Math.max(canvas.width, size.width);
-			canvas.height = Math.max(canvas.height, size.height);
+		if (r.targetWidth < size.width || r.targetHeight < size.height) {
+			r.targetWidth = Math.max(r.targetWidth, size.width);
+			r.targetHeight = Math.max(r.targetHeight, size.height);
+			gl.bindTexture(gl.TEXTURE_2D, r.target);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, r.targetWidth, r.targetHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, r.framebuffer);
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, r.target, 0);
+			if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) return fallBack(record);
 		}
+		gl.bindFramebuffer(gl.FRAMEBUFFER, r.framebuffer);
 		gl.viewport(0, 0, size.width, size.height);
 		const v = record.uniforms;
 		gl.uniform2f(u.uRes, size.width, size.height);

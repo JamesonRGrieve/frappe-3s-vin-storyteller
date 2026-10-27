@@ -125,7 +125,7 @@
 		}
 		const flake = parseHex(entry.flake_hex) || derivedFlake(base, finish);
 		const status = entry.approximate ? "derived" : "sourced";
-		return { kind: "paint", status, approximate: Boolean(entry.approximate), sampled: Boolean(entry.sampled), name, finish, label: name, base, flake, params: FINISHES[finish] || FINISHES.solid, source };
+		return { kind: "paint", status, approximate: Boolean(entry.approximate), sampled: Boolean(entry.sampled), alsoCodes: entry.also_codes || [], name, finish, label: name, base, flake, params: FINISHES[finish] || FINISHES.solid, source };
 	}
 
 	// Interior material. An explicit "Leather" / "Cloth" in the description wins; then the shipped table's
@@ -294,7 +294,9 @@
 	const FINISH_NAMES = { solid: "Solid", metallic: "Metallic", pearl: "Pearl" };
 	const MATERIAL_NAMES = { leather: "Leather", cloth: "Cloth", unknown: "Trim material not on file" };
 	function captionParts(swatch, code) {
-		const coded = (text) => (code ? `${text} · ${code}` : text);
+		// A paint shown once for all its codes is labelled with each (T87 / TA7).
+		const codes = [code, ...(swatch.alsoCodes || [])].filter(Boolean).join(" / ");
+		const coded = (text) => (codes ? `${text} · ${codes}` : text);
 		if (swatch.kind === "paint") {
 			if (swatch.status === "missing") {
 				return { title: coded(swatch.name || "Paint"), detail: code ? NOT_ON_FILE : "No colour on record" };

@@ -306,3 +306,8 @@ test("an interior with a photo sample is drawn in it and says how many cars it c
 	const one = core.interiorSwatch({ material: "unknown", sampled_hex: "#525152", sampled_cars: 1 }, "");
 	assert.equal(core.captionParts(one, "41A").detail, "Trim material not on file · sampled from 1 car's photos");
 });
+
+test("a paint shown once for all its codes lists each in its caption", () => {
+	const s = core.paintSwatch({ hex: "#4F8EBF", finish: "metallic", name: "Fiji Blue Metallic", also_codes: ["TA7"], source: "https://x" }, "");
+	assert.equal(core.captionParts(s, "T87").title, "Fiji Blue Metallic · T87 / TA7");
+});

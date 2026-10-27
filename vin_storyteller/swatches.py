@@ -311,15 +311,27 @@ def interior_table(
 	return table
 
 
+# The 1993 Stealth R/T-grade codes of B34 and H28: in CAPS 1999 every BA4/HA8 car is an R/T or R/T Turbo and every
+# B34/H28 car a base or ES, built in the same months. Same paint and name; each keeps its own colour value.
+GRADE_VARIANTS = ({"caps_code": "BA4", "paint_code": "B34"}, {"caps_code": "HA8", "paint_code": "H28"})
+NAME_FIELDS = ("name", "mitsubishi_name", "dodge_name")
+
+
 def apply_aliases(paint: dict[str, dict], alias_rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
-	"""Give each aliased code without a published value its paint code's (same paint, another code)."""
-	for row in alias_rows:
+	"""One paint, two codes: CAPS's "A" form (TA7, the R/T, R/T Turbo and VR-4 grades' code for T87) takes its paint
+	code's names, and its published value when it has none; the paint code lists its other codes (`also_codes`) so a
+	page can show each paint once."""
+	for row in [*alias_rows, *GRADE_VARIANTS]:
 		code = (row.get("caps_code") or "").strip().upper()
 		target = (row.get("paint_code") or "").strip().upper()
 		entry, source = paint.get(code), paint.get(target)
 		if not entry or not source:
 			continue
 		entry["same_paint_as"] = target
+		if code not in source.setdefault("also_codes", []):
+			source["also_codes"] = sorted([*source["also_codes"], code])
+		for field in NAME_FIELDS:
+			entry[field] = entry.get(field) or source.get(field, "")
 		if entry["status"] == "missing" and source["status"] == "sourced":
 			entry.update(
 				hex=source["hex"], flake_hex=source["flake_hex"], source=source["source"], status="sourced"

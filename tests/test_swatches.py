@@ -416,3 +416,47 @@ def test_interior_samples_ship_with_their_car_count(tmp_path):
 	table = swatches.interior_table(swatches.read_tsv(interiors), (), swatches.read_tsv(samples))
 	assert (table["18W"]["sampled_hex"], table["18W"]["sampled_cars"]) == ("#383A3E", 39)
 	assert swatches.interior_samples([{"code": "01A", "hex": "#123456", "cars": "0"}]) == {}
+
+
+def test_an_alias_takes_its_paint_codes_names_and_is_listed_on_it():
+	blank = {"status": "missing", "hex": "", "flake_hex": "", "source": "", "finish": "", "notes": ""}
+	paint = {
+		"TA7": {**blank, "name": "", "mitsubishi_name": "", "dodge_name": ""},
+		"T87": {
+			**blank,
+			"status": "sourced",
+			"hex": "#4F8EBF",
+			"source": "https://e/m",
+			"finish": "metallic",
+			"name": "Fiji Blue Metallic",
+			"mitsubishi_name": "Fiji Blue Metallic",
+			"dodge_name": "Mystic Blue Metallic",
+		},
+		"BA4": {
+			**blank,
+			"status": "derived",
+			"hex": "#27365C",
+			"source": "https://e/l",
+			"name": "",
+			"mitsubishi_name": "",
+			"dodge_name": "",
+		},
+		"B34": {
+			**blank,
+			"status": "sourced",
+			"hex": "#4B69A1",
+			"source": "https://e/b",
+			"name": "Danube Blue Mica",
+			"mitsubishi_name": "Danube Blue Mica",
+			"dodge_name": "Dark Blue Pearl",
+		},
+	}
+	swatches.apply_aliases(paint, [{"caps_code": "TA7", "paint_code": "T87"}])
+	assert (paint["TA7"]["name"], paint["TA7"]["dodge_name"]) == (
+		"Fiji Blue Metallic",
+		"Mystic Blue Metallic",
+	)
+	assert paint["T87"]["also_codes"] == ["TA7"]
+	# A grade variant shares the name but keeps its own colour.
+	assert paint["BA4"]["name"] == "Danube Blue Mica" and paint["BA4"]["hex"] == "#27365C"
+	assert paint["B34"]["also_codes"] == ["BA4"]

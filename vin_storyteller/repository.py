@@ -13,21 +13,32 @@ from datetime import datetime
 
 from vin_storyteller.story import (
 	CHASSIS_MODELS,
+	CODE_KINDS,
 	FACTORY_PROVENANCES,
 	MISSING,
+	PLACEHOLDER_CODES,
 	Breakdown,
 	Coded,
+	CodeIndexEntry,
+	CodePage,
 	Gap,
 	HistoryRecord,
+	LineRow,
 	ModelCount,
 	Neighbour,
+	OptionFit,
+	Pairing,
 	Position,
 	Story,
+	build_span,
 	describe_production_date,
 	exterior_description,
 	full_year,
 	is_chassis_record,
+	model_name,
+	paint_names,
 	safe_url,
+	tally,
 	year_code,
 )
 
@@ -43,6 +54,9 @@ _GTO_MODELS = "(" + ", ".join(f"'{m}'" for m in CHASSIS_MODELS.values()) + ")"
 MARKETS = {False: f"Model NOT IN {_GTO_MODELS}", True: f"Model IN {_GTO_MODELS}"}
 LANGUAGE = "en"
 OTHER_MODELS = "Other"  # breakdown name for the record's other Nagoya-built cars (Model XX)
+CODE_COLUMNS = {"paint": "p.Exterior", "interior": "p.Interior"}
+INDEX_COLUMNS = {"paint": "p.Exterior", "interior": "p.Interior", "option": "p.Equipment"}
+LABEL_TABLES = {"interior": ("Interior", "InteriorCode"), "option": ("Equipment", "EquipmentCode")}
 
 
 @dataclass(frozen=True)
@@ -142,16 +156,21 @@ class ProductionRecords:
 		(CAPS splits a grade by destination, e.g. MJGFL2M federal / MJGFL7M California)."""
 		if not car.classification:
 			return Coded("", "")
+		return self._grade(car.model_code, car.classification)
+
+	def _grade(self, model_code: str, classification: str) -> Coded:
+		"""A grade code and its catalogue description, exact or by its first four characters."""
+		grade = classification.strip()
 		row = self._one(
 			"SELECT Description FROM ClassificationLabel WHERE ModelCode = %s AND Classification = %s "
 			"AND Language = %s ORDER BY Source DESC LIMIT 1",
-			(car.model_code, car.classification.strip(), LANGUAGE),
+			(model_code, grade, LANGUAGE),
 		) or self._one(
 			"SELECT Description FROM ClassificationLabel WHERE ModelCode = %s AND SUBSTR(Classification, 1, 4) = %s "
 			"AND Language = %s ORDER BY Source DESC, Classification LIMIT 1",
-			(car.model_code, car.classification.strip()[0:4], LANGUAGE),
+			(model_code, grade[0:4], LANGUAGE),
 		)
-		return Coded(car.classification.strip(), row[0] if row else MISSING)
+		return Coded(grade, row[0] if row else MISSING)
 
 	def equipment_items(self, car: Car) -> tuple[Coded, ...]:
 		"""What the car's option code fits, from the catalogue entry for its model, grade and model year."""
@@ -259,6 +278,7 @@ class ProductionRecords:
 				among_identical=Position(0, 0),
 				partial=True,
 				classification=self.classification(car),
+				model_code=car.model_code,
 			)
 
 		return Story(
@@ -296,6 +316,7 @@ class ProductionRecords:
 				self._count(identical, spec, chassis),
 			),
 			classification=self.classification(car),
+			model_code=car.model_code,
 			equipment_items=self.equipment_items(car),
 			breakdowns=self.breakdowns(car),
 		)
@@ -331,6 +352,176 @@ class ProductionRecords:
 		if before is None and after is None:
 			return None
 		return Gap(before=Neighbour(*before) if before else None, after=Neighbour(*after) if after else None)
+
+	# Per-code pages (card 330): factory-record cars only, every model and market.
+
+	def _code_scope(self, kind: str, code: str, model_code: str) -> tuple[str, tuple]:
+		if kind not in CODE_KINDS:
+			raise ValueError(kind)
+		if kind == "option":  # an option code means something per chassis model code
+			return "p.ModelCode = %s AND p.Equipment = %s", (model_code, code)
+		return f"{CODE_COLUMNS[kind]} = %s", (code,)
+
+	def code_page(self, kind: str, code: str, model_code: str = "") -> CodePage | None:
+		"""A code's production stats, or None when no factory-record car carries it."""
+		where, params = self._code_scope(kind, code, model_code)
+		scoped = (*params, *FACTORY_PROVENANCES)
+		counts = tally(
+			LineRow(year, manufacturer, model, trim, line_code, int(n))
+			for year, manufacturer, model, trim, line_code, n in self._rows(
+				"SELECT p.ModelYear, m.Manufacturer, m.Model, m.Trim, p.ModelCode, COUNT(*) FROM Production p "
+				f"LEFT JOIN Model m ON m.ModelCode = p.Model WHERE ({where}) AND p.{FACTORY} "
+				"GROUP BY p.ModelYear, p.Model, p.ModelCode, m.Manufacturer, m.Model, m.Trim",
+				scoped,
+			)
+		)
+		if not counts.total:
+			return None
+		span = build_span(
+			row[0]
+			for row in self._rows(
+				f"SELECT DISTINCT p.DateOfManufacture FROM Production p WHERE ({where}) AND p.{FACTORY}",
+				scoped,
+			)
+		)
+		names = ()
+		if kind == "paint":
+			paint = self._one(
+				"SELECT MitsubishiDescription, DodgeDescription FROM Exterior WHERE ExteriorCode = %s",
+				(code,),
+			)
+			description, names = paint_names(*paint) if paint else (MISSING, ())
+		else:
+			description = self._description(*LABEL_TABLES[kind], code)
+		return CodePage(
+			kind=kind,
+			code=code,
+			model_code=model_code if kind == "option" else "",
+			description=description,
+			names=names,
+			total=counts.total,
+			by_model=counts.by_model,
+			by_year=counts.by_year,
+			by_line=counts.by_line,
+			first_built=describe_production_date(span[0]) if span else "",
+			last_built=describe_production_date(span[1]) if span else "",
+			pairings=self._pairings(kind, where, scoped),
+			fits=self._fits(code, model_code, where, scoped) if kind == "option" else (),
+		)
+
+	def _pairings(self, kind: str, where: str, scoped: tuple) -> tuple[Pairing, ...]:
+		"""A paint's interiors, or an interior's paints, most-built first."""
+		if kind == "paint":
+			rows = self._rows(
+				"SELECT p.Interior, i.Description, COUNT(*) FROM Production p "
+				f"LEFT JOIN Interior i ON i.InteriorCode = p.Interior WHERE ({where}) AND p.{FACTORY} "
+				"GROUP BY p.Interior, i.Description",
+				scoped,
+			)
+			found = [(c, d or MISSING, int(n)) for c, d, n in rows]
+		elif kind == "interior":
+			rows = self._rows(
+				"SELECT p.Exterior, e.MitsubishiDescription, e.DodgeDescription, COUNT(*) FROM Production p "
+				f"LEFT JOIN Exterior e ON e.ExteriorCode = p.Exterior WHERE ({where}) AND p.{FACTORY} "
+				"GROUP BY p.Exterior, e.MitsubishiDescription, e.DodgeDescription",
+				scoped,
+			)
+			found = [(c, paint_names(m, d)[0], int(n)) for c, m, d, n in rows]
+		else:
+			return ()
+		pairings = [
+			Pairing("", MISSING, n) if c.strip() in NOT_RECORDED_CODES else Pairing(c, d, n)
+			for c, d, n in found
+		]
+		return tuple(sorted(pairings, key=lambda p: (-p.count, p.code)))
+
+	def _fits(self, code: str, model_code: str, where: str, scoped: tuple) -> tuple[OptionFit, ...]:
+		"""What the catalogue says an option code fits, per grade and model year, with the cars built so."""
+		entries: dict[tuple[str, str, str], str] = {}
+		for source, grade, year, items in self._rows(
+			"SELECT Source, Classification, ModelYear, Items FROM OptionContent WHERE ModelCode = %s "
+			"AND OptionCode = %s ORDER BY Classification, ModelYear, Source DESC, StartDate",
+			(model_code, code),
+		):
+			entries.setdefault((grade.strip(), year, items), source)
+		if not entries:
+			return ()
+		cars = {
+			(grade.strip(), year): int(n)
+			for grade, year, n in self._rows(
+				f"SELECT p.Classification, p.ModelYear, COUNT(*) FROM Production p WHERE ({where}) AND p.{FACTORY} "
+				"GROUP BY p.Classification, p.ModelYear",
+				scoped,
+			)
+		}
+		labels = self._item_labels({i for _, _, items in entries for i in items.split(",") if i})
+		grades = {grade: self._grade(model_code, grade) for grade, _, _ in entries}
+		return tuple(
+			OptionFit(
+				classification=grades[grade],
+				model_year=full_year(year),
+				items=tuple(Coded(i, labels.get(i, MISSING)) for i in items.split(",") if i),
+				cars=cars.get((grade, year), 0),
+				source=source,
+			)
+			for (grade, year, items), source in entries.items()
+		)
+
+	def _item_labels(self, codes: set[str]) -> dict[str, str]:
+		"""Option item texts by item code (the newest source's)."""
+		if not codes:
+			return {}
+		ordered = sorted(codes)
+		labels: dict[str, str] = {}
+		for item, description in self._rows(
+			"SELECT ItemCode, Description FROM OptionItem WHERE Language = %s AND ItemCode IN ("
+			+ ", ".join(["%s"] * len(ordered))
+			+ ") ORDER BY Source DESC",
+			(LANGUAGE, *ordered),
+		):
+			labels.setdefault(item, description)
+		return labels
+
+	def code_index(self, kind: str) -> tuple[CodeIndexEntry, ...]:
+		"""Every code of a kind carried by a factory-record car (options per chassis model code), in code order."""
+		if kind not in CODE_KINDS:
+			raise ValueError(kind)
+		column = INDEX_COLUMNS[kind]
+		scope = "p.ModelCode" if kind == "option" else "''"
+		rows = self._rows(
+			f"SELECT {scope}, {column}, m.Model, COUNT(*) FROM Production p LEFT JOIN Model m ON m.ModelCode = p.Model "
+			f"WHERE p.{FACTORY} AND {column} <> %s GROUP BY {scope}, {column}, m.Model",
+			(*FACTORY_PROVENANCES, PLACEHOLDER_CODES[kind]),
+		)
+		models: dict[tuple[str, str], dict[str, int]] = {}
+		for model_code, code, model, n in rows:
+			per = models.setdefault((model_code, code.strip()), {})
+			per[model_name(model)] = per.get(model_name(model), 0) + int(n)
+		descriptions = self._descriptions(kind)
+		return tuple(
+			CodeIndexEntry(
+				code=code,
+				model_code=model_code,
+				description=descriptions.get(code, MISSING),
+				total=sum(per.values()),
+				by_model=tuple(
+					sorted((ModelCount(m, n) for m, n in per.items()), key=lambda c: (-c.count, c.model))
+				),
+			)
+			for (model_code, code), per in sorted(models.items())
+			if code
+		)
+
+	def _descriptions(self, kind: str) -> dict[str, str]:
+		if kind == "paint":
+			return {
+				code: paint_names(m, d)[0]
+				for code, m, d in self._rows(
+					"SELECT ExteriorCode, MitsubishiDescription, DodgeDescription FROM Exterior", ()
+				)
+			}
+		table, key = LABEL_TABLES[kind]
+		return {code: d for code, d in self._rows(f"SELECT {key}, Description FROM {table}", ())}
 
 	def record_story(self, vin: str, name: str, at: datetime) -> None:
 		"""Log a story told, as the original storyteller did: the VIN, the visitor's name, the hour and the time."""

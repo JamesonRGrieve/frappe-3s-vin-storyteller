@@ -88,3 +88,33 @@ def test_gap_neighbours_come_from_caps_only(connection):
 		valid("JA3AM84J3NY000006")
 	)  # 000006 is a CAPS Dodge (1B3)
 	assert gap is not None
+
+
+def test_a_1995_spyder_fills_its_serial_in_the_main_run(connection):
+	"""1995-96 8xxxxx-VIN cars sit in the main run by SerialNumber, so they close what looks like a gap."""
+	from vin_storyteller.story import Neighbour
+
+	rows = [
+		("SY000010", valid("JA3AM84J3SY000010"), "94101"),
+		("SY000014", valid("JA3AM84J3SY000014"), "94103"),
+		("SY000012", valid("JA3AM65J3SY800002"), "94102"),  # a Spyder: VIN serial 800002, SerialNumber 000012
+	]
+	connection.executemany(
+		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
+		"DateOfManufacture, ModelYear) VALUES (?, ?, 'M1', 'Z16A', 'CLASS01', 'XA1', 'T87', '12A', ?, '95')",
+		rows,
+	)
+	gap = ProductionRecords(connection, "qmark").gap(valid("JA3AM84J3SY000011"))
+	assert gap.before == Neighbour("000010", "94101")
+	assert gap.after == Neighbour("000012", "94102")  # the Spyder, not 000014
+
+
+def test_placeholder_colour_codes_read_as_not_recorded(connection):
+	connection.execute(
+		"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
+		"DateOfManufacture, ModelYear) VALUES ('MY003000', 'JA3XE74C9MY003000', 'M1', 'Z16A', 'MNGFL7M', 'A07', "
+		"'EXT', 'INT', '90081', '91')"
+	)
+	story = ProductionRecords(connection, "qmark").story("JA3XE74C9MY003000")
+	assert story.exterior.code == "" and story.interior.code == ""
+	assert story.equipment.code == "A07"

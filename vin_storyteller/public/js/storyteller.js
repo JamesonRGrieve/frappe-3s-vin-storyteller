@@ -104,7 +104,13 @@
 		setText(result, "in_model", core.positionText(story.in_model));
 		setText(result, "in_model_label", `${story.vehicle_name}s built`);
 		setText(result, "in_colour", core.positionText(story.in_colour));
-		setText(result, "in_colour_label", `${story.vehicle_name}s in ${story.exterior.description}`);
+		setText(
+			result,
+			"in_colour_label",
+			story.exterior.code
+				? `${story.vehicle_name}s in ${story.exterior.description}`
+				: `${story.vehicle_name}s with no colour on record`,
+		);
 		setText(result, "among_identical", core.positionText(story.among_identical));
 		setText(result, "built_in_period", core.formatNumber(story.built_in_period));
 		setText(result, "built_in_month", core.formatNumber(story.built_in_month));

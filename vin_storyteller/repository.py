@@ -49,6 +49,15 @@ class Car:
 	provenance: str
 
 
+# CAPS writes these instead of a code when it holds no colour or interior for a car (e.g. 285 1991 VR-4s).
+NOT_RECORDED_CODES = {"EXT", "INT"}
+
+
+def _unrecorded(code: str) -> Coded | None:
+	"""A placeholder code as 'not recorded' (no code), else None."""
+	return Coded("", MISSING) if code.strip() in NOT_RECORDED_CODES else None
+
+
 class ProductionRecords:
 	def __init__(self, connection, paramstyle: str = "format"):
 		self.connection = connection
@@ -159,8 +168,10 @@ class ProductionRecords:
 			manufacturer=manufacturer or MISSING,
 			model=model_name or MISSING,
 			trim=trim or "",
-			exterior=Coded(car.exterior, exterior_description(manufacturer, *paint) if paint else MISSING),
-			interior=Coded(car.interior, self._description("Interior", "InteriorCode", car.interior)),
+			exterior=_unrecorded(car.exterior)
+			or Coded(car.exterior, exterior_description(manufacturer, *paint) if paint else MISSING),
+			interior=_unrecorded(car.interior)
+			or Coded(car.interior, self._description("Interior", "InteriorCode", car.interior)),
 			equipment=Coded(car.equipment, self._description("Equipment", "EquipmentCode", car.equipment)),
 			built=describe_production_date(car.built),
 			built_in_period=self._count("DateOfManufacture = %s", (car.built,)),
@@ -191,18 +202,27 @@ class ProductionRecords:
 		if year is None:
 			return None
 		serial = vin[11:]
-		series = ">= %s" if serial >= SECOND_SERIES else "< %s"
 		# Neighbours come from the factory export only: a car added from another source has no build date.
-		where = f"ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) {series}"
+		if serial >= SECOND_SERIES:
+			occupied = (
+				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
+				"WHERE ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) >= %s"
+			)
+			params = (year, CAPS, SECOND_SERIES)
+		else:
+			# 1995-96's 8xxxxx-VIN cars take their place in the main run by their SerialNumber's digits.
+			occupied = (
+				"SELECT SUBSTR(VIN, 12, 6) AS s, DateOfManufacture AS d FROM Production "
+				"WHERE ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) < %s "
+				"UNION ALL SELECT SUBSTR(SerialNumber, 3, 6) AS s, DateOfManufacture AS d FROM Production "
+				"WHERE ModelYear = %s AND Provenance = %s AND SUBSTR(VIN, 12, 6) >= %s"
+			)
+			params = (year, CAPS, SECOND_SERIES, year, CAPS, SECOND_SERIES)
 		before = self._one(
-			f"SELECT SUBSTR(VIN, 12, 6), DateOfManufacture FROM Production WHERE {where} AND SUBSTR(VIN, 12, 6) < %s "
-			"ORDER BY SUBSTR(VIN, 12, 6) DESC LIMIT 1",
-			(year, CAPS, SECOND_SERIES, serial),
+			f"SELECT s, d FROM ({occupied}) AS run WHERE s < %s ORDER BY s DESC LIMIT 1", (*params, serial)
 		)
 		after = self._one(
-			f"SELECT SUBSTR(VIN, 12, 6), DateOfManufacture FROM Production WHERE {where} AND SUBSTR(VIN, 12, 6) > %s "
-			"ORDER BY SUBSTR(VIN, 12, 6) LIMIT 1",
-			(year, CAPS, SECOND_SERIES, serial),
+			f"SELECT s, d FROM ({occupied}) AS run WHERE s > %s ORDER BY s LIMIT 1", (*params, serial)
 		)
 		if before is None and after is None:
 			return None

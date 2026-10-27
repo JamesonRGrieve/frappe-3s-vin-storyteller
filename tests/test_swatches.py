@@ -460,3 +460,38 @@ def test_an_alias_takes_its_paint_codes_names_and_is_listed_on_it():
 	# A grade variant shares the name but keeps its own colour.
 	assert paint["BA4"]["name"] == "Danube Blue Mica" and paint["BA4"]["hex"] == "#27365C"
 	assert paint["B34"]["also_codes"] == ["BA4"]
+
+
+def test_a_dodge_name_cited_from_dodge_literature_wins(tmp_path):
+	codes = write(
+		tmp_path,
+		"paint_codes.tsv",
+		PAINT_COLUMNS,
+		[paint_row("R71", "Caracas Red", "Fire Storm", gt=4, stealth=2)],
+	)
+	researched = write(
+		tmp_path,
+		"paint_hex.tsv",
+		BRAND_HEX_COLUMNS + "\tdodge_name_source",
+		[
+			[
+				"R71",
+				"",
+				"Firestorm Red",
+				"solid",
+				"#E42B1B",
+				"",
+				"https://e/m",
+				"",
+				"sourced",
+				"",
+				"",
+				"",
+				"",
+				"1994 brochure",
+			]
+		],
+	)
+	entry = swatches.paint_table(swatches.read_tsv(codes), swatches.read_tsv(researched))["R71"]
+	assert entry["dodge_name"] == "Firestorm Red" and entry["dodge_name_source"] == "1994 brochure"
+	assert entry["mitsubishi_name"] == "Caracas Red"

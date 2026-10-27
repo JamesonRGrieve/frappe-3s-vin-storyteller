@@ -2688,6 +2688,7 @@
 			],
 			"dodge_hex": "#0E2888",
 			"dodge_name": "Dark Blue Pearl",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/",
 			"finish": "pearl",
 			"flake_hex": "",
@@ -2711,7 +2712,8 @@
 			"status": "sourced"
 		},
 		"B60": {
-			"dodge_name": "Peacock Green",
+			"dodge_name": "Medium Green",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#0D5340",
@@ -2723,7 +2725,7 @@
 			"models": [
 				"Stealth"
 			],
-			"name": "Peacock Green",
+			"name": "Medium Green",
 			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish not stated in name (assumed solid by name only; may be metallic/pearl - unverified). PaintScratch Mitsubishi B60 'Peacock Green' (1992-93 Expo; not 3000GT) = #156D49 (https://www.paintscratch.com/colors/mitsubishi/peacock-green-b60/). No Mitsubishi 3000GT name found.",
 			"source": "https://www.paintscratch.com/colors/dodge/peacock-green-b60pga/",
 			"status": "sourced"
@@ -2732,6 +2734,7 @@
 			"approximate": true,
 			"derivation": "Sampled from listing photos (operator 2026-10-27: sampled where no official hex exists): the lit body colour of 2 cars whose VIN gives BA4 (JB3BN74K9PY032067, JB3BN74K5PY013418; Bring a Trailer and Cars & Bids), median of each car's 70th-lightness-percentile paint pixels. Same paint family as B34 on the R/T grades; sellers call it Pearl Blue.",
 			"dodge_name": "Dark Blue Pearl",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#27365C",
@@ -2774,7 +2777,8 @@
 				"GA4"
 			],
 			"dodge_hex": "#075F35",
-			"dodge_name": "Emerald Green Metallic",
+			"dodge_name": "Emerald Green Pearl Coat",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/",
 			"finish": "pearl",
 			"flake_hex": "",
@@ -2800,7 +2804,8 @@
 		},
 		"GA4": {
 			"dodge_hex": "#075F35",
-			"dodge_name": "Emerald Green Metallic",
+			"dodge_name": "Emerald Green Pearl Coat",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/",
 			"finish": "pearl",
 			"flake_hex": "",
@@ -2825,7 +2830,8 @@
 				"HA8"
 			],
 			"dodge_hex": "#A1A7A3",
-			"dodge_name": "Dark Silver Metallic",
+			"dodge_name": "Tinted Silver Metallic",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/dark-silver-pearl-h28pad/",
 			"finish": "metallic",
 			"flake_hex": "",
@@ -2910,7 +2916,8 @@
 		"HA8": {
 			"approximate": true,
 			"derivation": "Sampled from listing photos (operator 2026-10-27: sampled where no official hex exists): the lit body colour of 1 car whose VIN gives HA8 (JB3BN74K6PY042023, Bring a Trailer), 70th-lightness-percentile paint pixels; one car, so approximate. Same paint family as H28 on the R/T grades; the seller calls it Dark Gray Metallic.",
-			"dodge_name": "Dark Silver Metallic",
+			"dodge_name": "Tinted Silver Metallic",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"finish": "metallic",
 			"flake_hex": "",
 			"hex": "#C9DDEE",
@@ -3039,7 +3046,8 @@
 				"RA8"
 			],
 			"dodge_hex": "#E12A11",
-			"dodge_name": "Fire Storm",
+			"dodge_name": "Firestorm Red",
+			"dodge_name_source": "1992 Dodge full-line brochure: \"Dodge Stealth R/T Turbo shown in Firestorm Red\" (1992 R/T Turbo red is R38/RA8); also the 1993 brochure",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/scarlet-red-r38prh/",
 			"finish": "solid",
 			"flake_hex": "",
@@ -3064,7 +3072,8 @@
 				"RA1"
 			],
 			"dodge_hex": "#CF1E0D",
-			"dodge_name": "Fire Storm",
+			"dodge_name": "Firestorm Red",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/red-r71pe7/",
 			"finish": "solid",
 			"flake_hex": "",
@@ -3093,12 +3102,13 @@
 		},
 		"RA1": {
 			"dodge_hex": "#CF1E0D",
-			"dodge_name": "Fire Storm",
+			"dodge_name": "Firestorm Red",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/red-r71pe7/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#E42B1B",
-			"mitsubishi_name": "Passion Red",
+			"mitsubishi_name": "Caracas Red",
 			"model_years": [
 				"93"
 			],
@@ -3106,7 +3116,7 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "Passion Red",
+			"name": "Caracas Red",
 			"notes": "Same paint as R71: Mitsubishi's ASA USA gives the same cars both codes; colour from R71's published value. No published hex/RGB found for RA1 tied to Mitsubishi. NOTE: PaintScratch has a Dodge 'Dove Gray RA1' page (https://www.paintscratch.com/colors/dodge/dove-gray-ra1/) - a Chrysler code, unrelated. Name only from owner captions (R71/RA1). Name from the 3shub.ca owner-photo captions only.",
 			"same_paint_as": "R71",
 			"source": "https://www.paintscratch.com/colors/mitsubishi/passion-red-r71/",
@@ -3119,7 +3129,7 @@
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#AF1F41",
-			"mitsubishi_name": "Morocco Red Pearl",
+			"mitsubishi_name": "Morocco Red Mica",
 			"model_years": [
 				"91",
 				"92",
@@ -3129,7 +3139,7 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "Morocco Red Pearl",
+			"name": "Morocco Red Mica",
 			"notes": "Same paint as R25: Mitsubishi's ASA USA gives the same cars both codes; colour from R25's published value. No published hex/RGB found for RA5. Name only from owner captions (R25/RA5), not a published source. Name from the 3shub.ca owner-photo captions only.",
 			"same_paint_as": "R25",
 			"source": "https://www.paintscratch.com/colors/mitsubishi/morocco-red-pearl-r25/",
@@ -3138,11 +3148,12 @@
 		"RA8": {
 			"dodge_hex": "#E12A11",
 			"dodge_name": "Firestorm Red",
+			"dodge_name_source": "1992 Dodge full-line brochure: \"Dodge Stealth R/T Turbo shown in Firestorm Red\" (1992 R/T Turbo red is R38/RA8); also the 1993 brochure",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/scarlet-red-r38prh/",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#DA2318",
-			"mitsubishi_name": "Firestorm Red",
+			"mitsubishi_name": "Monza Red",
 			"model_years": [
 				"91",
 				"92",
@@ -3152,7 +3163,7 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "Firestorm Red",
+			"name": "Monza Red",
 			"notes": "Same paint as R38: Mitsubishi's ASA USA gives the same cars both codes; colour from R38's published value. No published hex/RGB found for RA8.",
 			"same_paint_as": "R38",
 			"source": "https://www.paintscratch.com/colors/mitsubishi/monza-red-r38/",
@@ -3320,6 +3331,7 @@
 			],
 			"dodge_hex": "#C1CACA",
 			"dodge_name": "Grayish White Pearl",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/grayish-white-tri-coat-pearl-w29pmw/",
 			"finish": "pearl",
 			"flake_hex": "",
@@ -3361,6 +3373,7 @@
 		},
 		"W32": {
 			"dodge_name": "Brilliant White",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"finish": "solid",
 			"flake_hex": "",
 			"hex": "#F9FBFD",
@@ -3474,12 +3487,13 @@
 		},
 		"WA9": {
 			"dodge_hex": "#C1CACA",
-			"dodge_name": "Pearl White",
+			"dodge_name": "Grayish White Pearl",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/grayish-white-tri-coat-pearl-w29pmw/",
 			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "#DEE1E6",
-			"mitsubishi_name": "Pearl White",
+			"mitsubishi_name": "Zurich White Mica",
 			"model_years": [
 				"93"
 			],
@@ -3487,7 +3501,7 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "Pearl White",
+			"name": "Zurich White Mica",
 			"notes": "Same paint as W29: Mitsubishi's ASA USA gives the same cars both codes; colour from W29's published value. No published hex/RGB found for WA9.",
 			"same_paint_as": "W29",
 			"source": "https://www.paintscratch.com/colors/mitsubishi/misty-white-pearl-tri-coat-w29/",
@@ -3543,6 +3557,7 @@
 			],
 			"dodge_hex": "#0A110E",
 			"dodge_name": "Jet Black",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/lamp-black-x94px2/",
 			"finish": "solid",
 			"flake_hex": "",
@@ -3588,6 +3603,7 @@
 		"XA4": {
 			"dodge_hex": "#0A110E",
 			"dodge_name": "Jet Black",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/lamp-black-x94px2/",
 			"finish": "solid",
 			"flake_hex": "",
@@ -3610,7 +3626,8 @@
 		},
 		"Y99": {
 			"dodge_hex": "#F7F67F",
-			"dodge_name": "Champagne Yellow Pearl",
+			"dodge_name": "Pearl Yellow",
+			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"dodge_source": "https://www.paintscratch.com/colors/dodge/champagne-yellow-tri-coat-pearl-y99py1/",
 			"finish": "pearl",
 			"flake_hex": "",

@@ -118,7 +118,9 @@ def paint_table(
 		code = row["code"].strip().upper()
 		found = researched.get(code, {})
 		mitsubishi = known(row.get("mitsubishi_name")) or known(found.get("mitsubishi_name"))
-		dodge = known(row.get("dodge_name")) or known(found.get("dodge_name"))
+		# A Dodge name cited from Dodge's own literature (`dodge_name_source`) wins over the record's.
+		cited_dodge = known(found.get("dodge_name")) if (found.get("dodge_name_source") or "").strip() else ""
+		dodge = cited_dodge or known(row.get("dodge_name")) or known(found.get("dodge_name"))
 		name = mitsubishi or dodge
 		finish = finish_from_name(name) or (found.get("finish") or "").strip().lower()
 		base = normalize_hex(found.get("base_hex"))
@@ -141,6 +143,8 @@ def paint_table(
 			"notes": (found.get("notes") or "").strip(),
 			**_usage(row),
 		}
+		if cited_dodge:
+			table[code]["dodge_name_source"] = found["dodge_name_source"].strip()
 		if has_dodge:
 			table[code].update(dodge_hex=dodge_hex, dodge_source=dodge_source)
 		if sourced and derivation:
@@ -330,8 +334,11 @@ def apply_aliases(paint: dict[str, dict], alias_rows: Iterable[Mapping[str, str]
 		entry["same_paint_as"] = target
 		if code not in source.setdefault("also_codes", []):
 			source["also_codes"] = sorted([*source["also_codes"], code])
+		# Same paint, same names: the paint code's (cited) names replace whatever the record held for the alias.
 		for field in NAME_FIELDS:
-			entry[field] = entry.get(field) or source.get(field, "")
+			entry[field] = source.get(field) or entry.get(field, "")
+		if source.get("dodge_name_source"):
+			entry["dodge_name_source"] = source["dodge_name_source"]
 		if entry["status"] == "missing" and source["status"] == "sourced":
 			entry.update(
 				hex=source["hex"], flake_hex=source["flake_hex"], source=source["source"], status="sourced"

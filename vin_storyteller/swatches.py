@@ -5,7 +5,7 @@ Pure logic, no Frappe. Builds `public/data/swatches.json` (served as
 /assets/vin_storyteller/data/swatches.json and read by `public/js/swatch.js`) from the extracted code lists
 (`paint_codes.tsv`, `interior_codes.tsv`) and the researched colour values (`paint_hex.tsv`):
 
-    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON
+    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON [PAINT_ALIASES]
 
 Rules (operator, 2026-10-27):
 - Only 3000GTs, Stealths and GTOs: a code used only by the record's other Nagoya-built cars (the deleted
@@ -15,6 +15,9 @@ Rules (operator, 2026-10-27):
 - Interior material: an explicit description wins; then, for GTOs, Mitsubishi's leather option K03 on the
   car; then, as evidence rather than a rule, the code's suffix letter when the decided codes sharing it
   agree. Each decision records how it was made.
+- Paint aliases (`paint_aliases.tsv`): CAPS writes some early paints in an "A" form (RA8, WA5, TA7 ...) where
+  Mitsubishi's ASA USA gives the same cars the plain paint code (R38, W75, T87 ...). An alias with no published
+  value of its own takes its paint code's published value, and says so.
 """
 
 from __future__ import annotations
@@ -226,23 +229,52 @@ def interior_table(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
 	return table
 
 
-def build(paint_codes: str | Path, paint_hex: str | Path, interior_codes: str | Path) -> dict:
+def apply_aliases(paint: dict[str, dict], alias_rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
+	"""Give each aliased code without a published value its paint code's (same paint, another code)."""
+	for row in alias_rows:
+		code = (row.get("caps_code") or "").strip().upper()
+		target = (row.get("paint_code") or "").strip().upper()
+		entry, source = paint.get(code), paint.get(target)
+		if not entry or not source:
+			continue
+		entry["same_paint_as"] = target
+		if entry["status"] == "missing" and source["status"] == "sourced":
+			entry.update(
+				hex=source["hex"], flake_hex=source["flake_hex"], source=source["source"], status="sourced"
+			)
+			entry["finish"] = entry["finish"] or source["finish"]
+			entry["notes"] = (
+				f"Same paint as {target}: Mitsubishi's ASA USA gives the same cars both codes; colour from {target}'s "
+				f"published value. {entry['notes']}"
+			).strip()
+	return paint
+
+
+def build(
+	paint_codes: str | Path,
+	paint_hex: str | Path,
+	interior_codes: str | Path,
+	paint_aliases: str | Path | None = None,
+) -> dict:
+	paint = paint_table(read_tsv(paint_codes), read_tsv(paint_hex))
+	if paint_aliases:
+		apply_aliases(paint, read_tsv(paint_aliases))
 	return {
 		"version": 1,
 		"about": (
 			"Paint: published colour values with their source URL, or missing (shown as 'colour not on file'). "
 			"Interior: leather or cloth, with the basis for each. 3000GT, Stealth and GTO codes only."
 		),
-		"paint": paint_table(read_tsv(paint_codes), read_tsv(paint_hex)),
+		"paint": paint,
 		"interior": interior_table(read_tsv(interior_codes)),
 	}
 
 
 def main(argv: list[str]) -> int:
-	if len(argv) != 4:
+	if len(argv) not in (4, 5):
 		print(__doc__, file=sys.stderr)
 		return 2
-	data = build(*argv[:3])
+	data = build(*argv[:3], *argv[4:5])
 	Path(argv[3]).write_text(
 		json.dumps(data, indent="\t", sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
 	)

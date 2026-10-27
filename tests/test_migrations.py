@@ -27,6 +27,7 @@ SHIPPED = [
 	"0007_export_models",
 	"0008_option_code_index",
 	"0009_factory_features",
+	"0010_paint_aliases",
 ]
 
 

@@ -578,6 +578,7 @@ class CodePage:
 	last_built: str
 	pairings: tuple[Pairing, ...] = ()  # paint: its interiors; interior: its paints
 	fits: tuple[OptionFit, ...] = ()  # option: what it fits, per grade and model year
+	same_paint: tuple[str, ...] = ()  # paint: its other codes (an "A" form like TA7 for T87), counted with it
 
 	def as_dict(self) -> dict:
 		return {

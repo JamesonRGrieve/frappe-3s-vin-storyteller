@@ -179,3 +179,20 @@ def test_production_start_is_calendar_order_across_the_century(connection, recor
 	story = records.story("Z15A-0600102")
 	assert story.year_started == "the 1st production period of July, 1999"
 	assert story.model_started == "the 1st production period of July, 1999"
+
+
+def test_a_paints_a_form_counts_with_it_in_breakdowns_and_pages(connection, records):
+	"""CAPS writes some early paints as an "A" form (TA7) that ASA records as the paint code (T87): one paint."""
+	connection.execute(
+		"INSERT INTO PaintAlias (Code, PaintCode, Source) VALUES ('TA7', 'T87', 'ASA USA 2007')"
+	)
+	add_gto(connection, exterior="TA7")
+	story = records.story("JA3AM84J3NY000004")  # a T87 car
+	colour = {b.scope: b for b in story.breakdowns}["colour"]
+	assert ModelCount("GTO", 1) in colour.by_model  # the TA7 GTO is the same paint
+	page = records.code_page("paint", "T87")
+	assert page.same_paint == ("TA7",) and any(c.model == "GTO" for c in page.by_model)
+	assert records.code_page("paint", "TA7").total == page.total
+	index = {e.code: e for e in records.code_index("paint")}
+	assert "TA7" not in index and index["T87"].total == page.total
+	assert story.in_colour == records.story("JA3AM84J3NY000004").in_colour  # positions stay exact

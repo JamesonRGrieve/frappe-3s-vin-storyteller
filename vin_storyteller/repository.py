@@ -145,18 +145,20 @@ class ProductionRecords:
 
 	def breakdowns(self, car: Car) -> tuple[Breakdown, ...]:
 		"""What this car shares with the rest of the factory record, across every model."""
+		paint = self.paint_family(car.exterior)  # the same paint under every code it was recorded with
+		marks = ", ".join(["%s"] * len(paint))
 		scopes = [("year", "p.ModelYear = %s", (car.model_year,))]
 		exterior_known = car.exterior.strip() not in NOT_RECORDED_CODES | {""}
 		interior_known = car.interior.strip() not in NOT_RECORDED_CODES | {""}
 		if exterior_known:
 			scopes += [
-				("colour", "p.Exterior = %s", (car.exterior,)),
-				("colour_year", "p.Exterior = %s AND p.ModelYear = %s", (car.exterior, car.model_year)),
+				("colour", f"p.Exterior IN ({marks})", paint),
+				("colour_year", f"p.Exterior IN ({marks}) AND p.ModelYear = %s", (*paint, car.model_year)),
 			]
 		if interior_known:
 			scopes.append(("interior", "p.Interior = %s", (car.interior,)))
 		if exterior_known and interior_known:
-			scopes.append(("colours", "p.Exterior = %s AND p.Interior = %s", (car.exterior, car.interior)))
+			scopes.append(("colours", f"p.Exterior IN ({marks}) AND p.Interior = %s", (*paint, car.interior)))
 		scopes += [
 			("period", "p.DateOfManufacture = %s", (car.built,)),
 			("month", "SUBSTR(p.DateOfManufacture, 1, 4) = %s", (car.built[0:4],)),
@@ -380,11 +382,30 @@ class ProductionRecords:
 
 	# Per-code pages (card 330): factory-record cars only, every model and market.
 
+	def _paint_aliases(self) -> dict[str, str]:
+		return {
+			code.strip(): paint.strip()
+			for code, paint in self._rows("SELECT Code, PaintCode FROM PaintAlias", ())
+		}
+
+	def paint_family(self, code: str) -> tuple[str, ...]:
+		"""Every code that names the same paint as ``code`` (its plain paint code first, then its "A" forms)."""
+		code = code.strip()
+		row = self._one("SELECT PaintCode FROM PaintAlias WHERE Code = %s", (code,))
+		paint = row[0].strip() if row else code
+		aliases = sorted(
+			r[0].strip() for r in self._rows("SELECT Code FROM PaintAlias WHERE PaintCode = %s", (paint,))
+		)
+		return (paint, *(a for a in aliases if a != paint))
+
 	def _code_scope(self, kind: str, code: str, model_code: str) -> tuple[str, tuple]:
 		if kind not in CODE_KINDS:
 			raise ValueError(kind)
 		if kind == "option":  # an option code means something per chassis model code
 			return "p.ModelCode = %s AND p.Equipment = %s", (model_code, code)
+		if kind == "paint":  # a paint counts under all its codes
+			family = self.paint_family(code)
+			return f"p.Exterior IN ({', '.join(['%s'] * len(family))})", family
 		return f"{CODE_COLUMNS[kind]} = %s", (code,)
 
 	def code_page(self, kind: str, code: str, model_code: str = "") -> CodePage | None:
@@ -410,7 +431,9 @@ class ProductionRecords:
 			)
 		)
 		names = ()
+		same_paint = ()
 		if kind == "paint":
+			same_paint = tuple(c for c in params if c != code)
 			paint = self._one(
 				"SELECT MitsubishiDescription, DodgeDescription FROM Exterior WHERE ExteriorCode = %s",
 				(code,),
@@ -432,6 +455,7 @@ class ProductionRecords:
 			last_built=describe_production_date(span[1]) if span else "",
 			pairings=self._pairings(kind, where, scoped),
 			fits=self._fits(code, model_code, where, scoped) if kind == "option" else (),
+			same_paint=same_paint,
 		)
 
 	def _pairings(self, kind: str, where: str, scoped: tuple) -> tuple[Pairing, ...]:
@@ -451,7 +475,15 @@ class ProductionRecords:
 				"GROUP BY p.Exterior, e.MitsubishiDescription, e.DodgeDescription",
 				scoped,
 			)
-			found = [(c, paint_names(m, d)[0], int(n)) for c, m, d, n in rows]
+			aliases = self._paint_aliases()
+			merged: dict[str, list] = {}
+			for c, m, d, n in rows:  # a paint's "A" form counts under its paint code
+				code = aliases.get(c.strip(), c.strip())
+				entry = merged.setdefault(code, [code, paint_names(m, d)[0], 0])
+				if entry[1] == MISSING:
+					entry[1] = paint_names(m, d)[0]
+				entry[2] += int(n)
+			found = [tuple(e) for e in merged.values()]
 		else:
 			return ()
 		pairings = [
@@ -518,9 +550,11 @@ class ProductionRecords:
 			f"WHERE p.{FACTORY} AND {column} <> %s GROUP BY {scope}, {column}, m.Model",
 			(*FACTORY_PROVENANCES, PLACEHOLDER_CODES[kind]),
 		)
+		aliases = self._paint_aliases() if kind == "paint" else {}
 		models: dict[tuple[str, str], dict[str, int]] = {}
 		for model_code, code, model, n in rows:
-			per = models.setdefault((model_code, code.strip()), {})
+			code = aliases.get(code.strip(), code.strip())  # a paint's "A" form counts under its paint code
+			per = models.setdefault((model_code, code), {})
 			per[model_name(model)] = per.get(model_name(model), 0) + int(n)
 		descriptions = self._descriptions(kind)
 		return tuple(

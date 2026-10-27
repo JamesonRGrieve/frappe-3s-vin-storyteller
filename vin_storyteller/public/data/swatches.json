@@ -2405,7 +2405,7 @@
 			"dodge_name": "Emerald Green Metallic",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#588059",
 			"mitsubishi_name": "Panama Green Mica",
 			"model_years": [
 				"92",
@@ -2416,9 +2416,10 @@
 				"Stealth"
 			],
 			"name": "Panama Green Mica",
-			"notes": "No published hex/RGB found for GA4. Possibly an alternate code for G84 but no source states this; not assumed.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as G84: Mitsubishi's ASA USA gives the same cars both codes; colour from G84's published value. No published hex/RGB found for GA4. Possibly an alternate code for G84 but no source states this; not assumed.",
+			"same_paint_as": "G84",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/kilder-green-pearl-g84/",
+			"status": "sourced"
 		},
 		"H28": {
 			"dodge_name": "Dark Silver Metallic",
@@ -2480,9 +2481,9 @@
 		},
 		"HA4": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#E3E2DD",
 			"mitsubishi_name": "",
 			"model_years": [
 				"92"
@@ -2491,9 +2492,10 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "No name and no published hex/RGB found for HA4.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as H84: Mitsubishi's ASA USA gives the same cars both codes; colour from H84's published value. No name and no published hex/RGB found for HA4.",
+			"same_paint_as": "H84",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/grace-silver-metallic-h84/",
+			"status": "sourced"
 		},
 		"HA8": {
 			"dodge_name": "",
@@ -2514,9 +2516,9 @@
 		},
 		"HA9": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#918A73",
 			"mitsubishi_name": "",
 			"model_years": [
 				"92",
@@ -2526,9 +2528,10 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "No name and no published hex/RGB found for HA9.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as H89: Mitsubishi's ASA USA gives the same cars both codes; colour from H89's published value. No name and no published hex/RGB found for HA9.",
+			"same_paint_as": "H89",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/corse-gray-metallic-h89/",
+			"status": "sourced"
 		},
 		"L79": {
 			"dodge_name": "Selva Olive Pearl",
@@ -2659,7 +2662,7 @@
 			"dodge_name": "",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#E42B1B",
 			"mitsubishi_name": "Passion Red",
 			"model_years": [
 				"93"
@@ -2669,15 +2672,16 @@
 				"Stealth"
 			],
 			"name": "Passion Red",
-			"notes": "No published hex/RGB found for RA1 tied to Mitsubishi. NOTE: PaintScratch has a Dodge 'Dove Gray RA1' page (https://www.paintscratch.com/colors/dodge/dove-gray-ra1/) - a Chrysler code, unrelated. Name only from owner captions (R71/RA1). Name from the 3shub.ca owner-photo captions only.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as R71: Mitsubishi's ASA USA gives the same cars both codes; colour from R71's published value. No published hex/RGB found for RA1 tied to Mitsubishi. NOTE: PaintScratch has a Dodge 'Dove Gray RA1' page (https://www.paintscratch.com/colors/dodge/dove-gray-ra1/) - a Chrysler code, unrelated. Name only from owner captions (R71/RA1). Name from the 3shub.ca owner-photo captions only.",
+			"same_paint_as": "R71",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/passion-red-r71/",
+			"status": "sourced"
 		},
 		"RA5": {
 			"dodge_name": "",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#AF1F41",
 			"mitsubishi_name": "Morocco Red Pearl",
 			"model_years": [
 				"91",
@@ -2689,15 +2693,16 @@
 				"Stealth"
 			],
 			"name": "Morocco Red Pearl",
-			"notes": "No published hex/RGB found for RA5. Name only from owner captions (R25/RA5), not a published source. Name from the 3shub.ca owner-photo captions only.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as R25: Mitsubishi's ASA USA gives the same cars both codes; colour from R25's published value. No published hex/RGB found for RA5. Name only from owner captions (R25/RA5), not a published source. Name from the 3shub.ca owner-photo captions only.",
+			"same_paint_as": "R25",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/morocco-red-pearl-r25/",
+			"status": "sourced"
 		},
 		"RA8": {
 			"dodge_name": "Firestorm Red",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#DA2318",
 			"mitsubishi_name": "Firestorm Red",
 			"model_years": [
 				"91",
@@ -2709,9 +2714,10 @@
 				"Stealth"
 			],
 			"name": "Firestorm Red",
-			"notes": "No published hex/RGB found for RA8.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as R38: Mitsubishi's ASA USA gives the same cars both codes; colour from R38's published value. No published hex/RGB found for RA8.",
+			"same_paint_as": "R38",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/monza-red-r38/",
+			"status": "sourced"
 		},
 		"S22": {
 			"dodge_name": "Sandstorm Metallic",
@@ -2735,9 +2741,9 @@
 		},
 		"SA2": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#BBBCA8",
 			"mitsubishi_name": "",
 			"model_years": [
 				"91",
@@ -2748,9 +2754,10 @@
 				"Stealth"
 			],
 			"name": "",
-			"notes": "No name and no published hex/RGB found for SA2.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as S22: Mitsubishi's ASA USA gives the same cars both codes; colour from S22's published value. No name and no published hex/RGB found for SA2.",
+			"same_paint_as": "S22",
+			"source": "https://www.paintscratch.com/colors/dodge/wheat-beige-metallic-s22pvc/",
+			"status": "sourced"
 		},
 		"T72": {
 			"dodge_name": "Strata Blue Metallic",
@@ -2792,9 +2799,9 @@
 		},
 		"TA2": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#30CAC8",
 			"mitsubishi_name": "",
 			"model_years": [
 				"91"
@@ -2804,15 +2811,16 @@
 				"Stealth"
 			],
 			"name": "",
-			"notes": "No name and no published hex/RGB found for TA2.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as T72: Mitsubishi's ASA USA gives the same cars both codes; colour from T72's published value. No name and no published hex/RGB found for TA2.",
+			"same_paint_as": "T72",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/napier-blue-metallic-t72/",
+			"status": "sourced"
 		},
 		"TA7": {
 			"dodge_name": "Mystic Blue Metallic",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#4F8EBF",
 			"mitsubishi_name": "Fiji Blue Metallic",
 			"model_years": [
 				"91",
@@ -2823,9 +2831,10 @@
 				"Stealth"
 			],
 			"name": "Fiji Blue Metallic",
-			"notes": "No published hex/RGB found for TA7. Possibly an alternate code for T87 but no source states this; not assumed.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as T87: Mitsubishi's ASA USA gives the same cars both codes; colour from T87's published value. No published hex/RGB found for TA7. Possibly an alternate code for T87 but no source states this; not assumed.",
+			"same_paint_as": "T87",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/fiji-blue-metallic-t87/",
+			"status": "sourced"
 		},
 		"W20": {
 			"dodge_name": "White",
@@ -2951,9 +2960,9 @@
 		},
 		"WA0": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#F9FBFD",
 			"mitsubishi_name": "",
 			"model_years": [
 				"91",
@@ -2963,15 +2972,16 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "No name and no published hex/RGB found for WA0.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as W20: Mitsubishi's ASA USA gives the same cars both codes; colour from W20's published value. No name and no published hex/RGB found for WA0.",
+			"same_paint_as": "W20",
+			"source": "https://www.paintscratch.com/colors/dodge/white-w20pwe/",
+			"status": "sourced"
 		},
 		"WA5": {
 			"dodge_name": "Galaxy White Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#E5EDE3",
 			"mitsubishi_name": "Glacier White Pearl",
 			"model_years": [
 				"91",
@@ -2982,15 +2992,16 @@
 				"Stealth"
 			],
 			"name": "Glacier White Pearl",
-			"notes": "No published hex/RGB found for code WA5 (PaintScratch sitemap, AutomotiveTouchup 3000GT/Stealth 1991-99, encycolorpedia, web search). Possibly an alternate code for W75 but no source states this; not assumed.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as W75: Mitsubishi's ASA USA gives the same cars both codes; colour from W75's published value. No published hex/RGB found for code WA5 (PaintScratch sitemap, AutomotiveTouchup 3000GT/Stealth 1991-99, encycolorpedia, web search). Possibly an alternate code for W75 but no source states this; not assumed.",
+			"same_paint_as": "W75",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/galaxy-white-pearl-tricoat-w75/",
+			"status": "sourced"
 		},
 		"WA9": {
 			"dodge_name": "Pearl White",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#DEE1E6",
 			"mitsubishi_name": "Pearl White",
 			"model_years": [
 				"93"
@@ -3000,9 +3011,10 @@
 				"Stealth"
 			],
 			"name": "Pearl White",
-			"notes": "No published hex/RGB found for WA9.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as W29: Mitsubishi's ASA USA gives the same cars both codes; colour from W29's published value. No published hex/RGB found for WA9.",
+			"same_paint_as": "W29",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/misty-white-pearl-tri-coat-w29/",
+			"status": "sourced"
 		},
 		"X02": {
 			"dodge_name": "",
@@ -3071,9 +3083,9 @@
 		},
 		"XA2": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#151618",
 			"mitsubishi_name": "",
 			"model_years": [
 				"92",
@@ -3083,15 +3095,16 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "No name and no published hex/RGB found for XA2.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as X02: Mitsubishi's ASA USA gives the same cars both codes; colour from X02's published value. No name and no published hex/RGB found for XA2.",
+			"same_paint_as": "X02",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/toscana-black-pearl-x02/",
+			"status": "sourced"
 		},
 		"XA4": {
 			"dodge_name": "Jet Black",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#0D1315",
 			"mitsubishi_name": "Lamp Black",
 			"model_years": [
 				"91",
@@ -3103,9 +3116,10 @@
 				"Stealth"
 			],
 			"name": "Lamp Black",
-			"notes": "No published hex/RGB found for XA4. Possibly an alternate code for X94 but no source states this; not assumed.",
-			"source": "",
-			"status": "missing"
+			"notes": "Same paint as X94: Mitsubishi's ASA USA gives the same cars both codes; colour from X94's published value. No published hex/RGB found for XA4. Possibly an alternate code for X94 but no source states this; not assumed.",
+			"same_paint_as": "X94",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/lamp-black-x94/",
+			"status": "sourced"
 		},
 		"Y99": {
 			"dodge_name": "Champagne Yellow Pearl",

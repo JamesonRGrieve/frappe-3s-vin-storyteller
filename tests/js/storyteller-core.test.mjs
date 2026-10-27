@@ -201,3 +201,8 @@ test("featuresText says a feature came from the factory", () => {
 	assert.deepEqual([...core.featuresText(["Headlamp washers"])], ["Headlamp washers · fitted at the factory (parts catalogue)"]);
 	assert.deepEqual([...core.featuresText(undefined)], []);
 });
+
+test("a paint page names its other codes", () => {
+	const text = core.codeNamesText({ names: [{ manufacturer: "Mitsubishi", name: "Fiji Blue Metallic" }], same_paint: ["TA7"] });
+	assert.equal(text, "Mitsubishi: Fiji Blue Metallic · Also recorded as TA7");
+});

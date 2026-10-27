@@ -177,6 +177,13 @@
 		return MODES[swatch.material] ?? MODES.plain;
 	}
 	// Uniform values for one swatch: colours in linear light, finish parameters as numbers.
+	// The ?v= of an asset URL ("" when it has none), and a URL with that version added.
+	function versionOf(url) {
+		const match = /[?&]v=([^&#]*)/.exec(String(url ?? ""));
+		return match ? decodeURIComponent(match[1]) : "";
+	}
+	const versionedUrl = (path, version) => (version ? `${path}?v=${encodeURIComponent(version)}` : path);
+
 	function uniformsFor(swatch, seed = 0) {
 		const base = toLinear(swatch.base);
 		const flake = toLinear(swatch.flake || swatch.base);
@@ -286,6 +293,8 @@
 		interiorSwatch,
 		MODES,
 		shaderMode,
+		versionOf,
+		versionedUrl,
 		uniformsFor,
 		seedFor,
 		staticBackground,

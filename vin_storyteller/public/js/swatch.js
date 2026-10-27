@@ -25,7 +25,17 @@
 	const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 	const FINE_POINTER = "(hover: hover) and (pointer: fine)";
 	const EMPTY_DATA = Object.freeze({ paint: {}, interior: {} });
-	let dataSource = "/assets/vin_storyteller/data/swatches.json";
+	// The data carries the same version as this script (?v=<commit>), so a CDN never pairs new code with old data.
+	let dataSource = core.versionedUrl("/assets/vin_storyteller/data/swatches.json", ownVersion());
+
+	// This script's own ?v=, from its script tag or, when it was import()ed, from the page's resource entries.
+	function ownVersion() {
+		const src = document.currentScript?.src
+			|| (globalThis.performance?.getEntriesByType?.("resource") || [])
+				.map((entry) => entry.name)
+				.find((name) => /\/vin_storyteller\/js\/swatch\.js(\?|$)/.test(name));
+		return core.versionOf(src);
+	}
 	let dataPromise = null;
 
 	function loadData() {

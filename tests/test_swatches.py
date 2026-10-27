@@ -193,3 +193,52 @@ def test_shipped_table_is_well_formed():
 	for code, entry in data["interior"].items():
 		assert entry["material"] in {"leather", "cloth", "unknown"}, code
 		assert entry["basis"], code
+
+
+def test_an_alias_takes_its_paint_codes_published_value():
+	from vin_storyteller.swatches import apply_aliases
+
+	paint = {
+		"R38": {
+			"status": "sourced",
+			"hex": "#DA2318",
+			"flake_hex": "",
+			"source": "https://x/r38",
+			"finish": "solid",
+			"notes": "",
+		},
+		"RA8": {
+			"status": "missing",
+			"hex": "",
+			"flake_hex": "",
+			"source": "",
+			"finish": "",
+			"notes": "none found",
+		},
+		"TA7": {
+			"status": "sourced",
+			"hex": "#123456",
+			"flake_hex": "",
+			"source": "https://x/ta7",
+			"finish": "",
+			"notes": "",
+		},
+		"T87": {
+			"status": "sourced",
+			"hex": "#4F8EBF",
+			"flake_hex": "",
+			"source": "https://x/t87",
+			"finish": "",
+			"notes": "",
+		},
+	}
+	apply_aliases(
+		paint, [{"caps_code": "RA8", "paint_code": "R38"}, {"caps_code": "TA7", "paint_code": "T87"}]
+	)
+	assert (
+		paint["RA8"]["hex"] == "#DA2318"
+		and paint["RA8"]["status"] == "sourced"
+		and paint["RA8"]["finish"] == "solid"
+	)
+	assert paint["RA8"]["same_paint_as"] == "R38" and "Same paint as R38" in paint["RA8"]["notes"]
+	assert paint["TA7"]["hex"] == "#123456"  # its own published value is kept

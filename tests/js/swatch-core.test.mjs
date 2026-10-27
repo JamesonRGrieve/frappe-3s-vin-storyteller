@@ -241,3 +241,11 @@ test("pearl paints use their own texture coordinates; metallic, solid and interi
 	assert.equal(core.uniformsFor(core.paintSwatch({ hex: "#4F8EBF", finish: "metallic" }, "")).uvMap, 0);
 	assert.equal(core.uniformsFor(core.paintSwatch({ hex: "#AA0000", finish: "solid" }, "")).uvMap, 0);
 });
+
+test("the swatch data carries its script's version", () => {
+	assert.equal(core.versionOf("https://3shub.ca/assets/vin_storyteller/js/swatch.js?v=03006d8"), "03006d8");
+	assert.equal(core.versionOf("/assets/vin_storyteller/js/swatch.js"), "");
+	assert.equal(core.versionOf(undefined), "");
+	assert.equal(core.versionedUrl("/assets/x.json", "abc1234"), "/assets/x.json?v=abc1234");
+	assert.equal(core.versionedUrl("/assets/x.json", ""), "/assets/x.json");
+});

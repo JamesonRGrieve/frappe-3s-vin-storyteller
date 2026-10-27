@@ -199,9 +199,10 @@
 
 	// What the code is called: a paint by each manufacturer, else its description, else not decoded yet.
 	function codeNamesText(page) {
-		if (page.names && page.names.length) return page.names.map((n) => `${n.manufacturer}: ${n.name}`).join(" · ");
-		if (page.description && page.description !== UNDECODED) return page.description;
-		return "Not yet decoded. If you know what this code means, please email storyteller@3shub.com.";
+		const also = page.same_paint && page.same_paint.length ? ` · Also recorded as ${page.same_paint.join(", ")}` : "";
+		if (page.names && page.names.length) return page.names.map((n) => `${n.manufacturer}: ${n.name}`).join(" · ") + also;
+		if (page.description && page.description !== UNDECODED) return page.description + also;
+		return "Not yet decoded. If you know what this code means, please email storyteller@3shub.com." + also;
 	}
 
 	function spanText(page) {

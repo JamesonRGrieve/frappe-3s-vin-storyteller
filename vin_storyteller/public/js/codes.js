@@ -69,6 +69,23 @@
 		return item;
 	}
 
+	// Card 329: draw each paint or interior swatch hook with swatch.js (globalThis.VinSwatch) once it has loaded;
+	// without it the hooks stay hidden.
+	function fillSwatches(root) {
+		const swatch = globalThis.VinSwatch;
+		if (!swatch) return;
+		root.querySelectorAll(".vst-swatch[data-swatch-kind]").forEach((hook) => {
+			const { swatchKind: kind, swatchCode: code } = hook.dataset;
+			if (!kind || !code) {
+				hook.hidden = true;
+				return;
+			}
+			swatch.render(hook, { kind, code }).then(() => {
+				hook.hidden = false;
+			});
+		});
+	}
+
 	function renderPage(root, page) {
 		const style = root.dataset.codeRoutes;
 		const section = root.querySelector(".vst-code-page");
@@ -170,6 +187,7 @@
 				if (reply.status === "found") {
 					setStatus(root, "");
 					renderPage(root, reply.page);
+					fillSwatches(root);
 					return;
 				}
 				if (reply.status !== "not_found") {
@@ -185,6 +203,7 @@
 			}
 			if (!route.code) setStatus(root, route.invalid ? MESSAGES.invalid : "", "notice");
 			renderIndex(root, route.kind, reply.codes);
+			fillSwatches(root);
 		} catch {
 			setStatus(root, MESSAGES.failed, "error");
 		}

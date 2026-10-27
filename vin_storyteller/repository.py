@@ -120,6 +120,17 @@ class ProductionRecords:
 			)[0]
 		)
 
+	def _earliest(self, where: str, params: tuple) -> str | None:
+		"""The earliest 'YYMMP' build date matching `where`, in calendar order: a 1999 build ('99...') comes before a
+		2000 one ('00...'), which a plain MIN would put first."""
+		row = self._one(
+			"SELECT MIN(CASE WHEN DateOfManufacture >= '5' THEN DateOfManufacture END), "
+			"MIN(CASE WHEN DateOfManufacture < '5' THEN DateOfManufacture END) "
+			f"FROM Production WHERE {where}",
+			params,
+		)
+		return (row[0] or row[1]) if row else None
+
 	def _breakdown(self, scope: str, where: str, params: tuple) -> Breakdown:
 		"""Factory-record cars of every model and market matching `where`, by model (3000GT, Stealth, GTO)."""
 		rows = self._rows(
@@ -246,14 +257,12 @@ class ProductionRecords:
 
 		chassis = market_of(car.model)  # the car's market: positions and totals count within it
 		market = MARKETS[chassis]
-		year_start = self._one(
-			f"SELECT MIN(DateOfManufacture) FROM Production WHERE ModelYear = %s AND {FACTORY} AND {market}",
-			(car.model_year, *FACTORY_PROVENANCES),
+		year_start = (
+			self._earliest(
+				f"ModelYear = %s AND {FACTORY} AND {market}", (car.model_year, *FACTORY_PROVENANCES)
+			),
 		)
-		model_start = self._one(
-			f"SELECT MIN(DateOfManufacture) FROM Production WHERE {same_line} AND {FACTORY}",
-			(*line, *FACTORY_PROVENANCES),
-		)
+		model_start = (self._earliest(f"{same_line} AND {FACTORY}", (*line, *FACTORY_PROVENANCES)),)
 		if car.provenance not in FACTORY_PROVENANCES:
 			return Story(
 				vin=vin,

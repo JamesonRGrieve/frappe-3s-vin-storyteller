@@ -170,3 +170,12 @@ def test_a_gto_on_record_is_not_a_gap_neighbour(connection, records):
 	add_gto(connection, "Z16A-0000010", "0000010", built="92011")
 	gap = records.gap("JA3AM84J3NY000010")
 	assert gap.before.serial == "000009"
+
+
+def test_production_start_is_calendar_order_across_the_century(connection, records):
+	"""A 2000 model year started in 1999: '99071' is earlier than '00011', though it sorts later as text."""
+	add_gto(connection, "Z15A-0600101", "0600101", built="99071", year="00")
+	add_gto(connection, "Z15A-0600102", "0600102", built="00011", year="00")
+	story = records.story("Z15A-0600102")
+	assert story.year_started == "the 1st production period of July, 1999"
+	assert story.model_started == "the 1st production period of July, 1999"

@@ -239,6 +239,14 @@
 			models: listText(entry.by_model.map(modelCountText)),
 		};
 	}
+	// The paint and interior swatches show when the record has either code; a car known only from another
+	// source has neither, and gets no swatches rather than two empty panels.
+	const swatchesShown = (story) => Boolean(story.exterior?.code || story.interior?.code);
+	// What each swatch draws: its kind, the car's code and the record's description for it.
+	const swatchRequests = (story) => [
+		{ kind: "paint", code: story.exterior?.code || "", description: story.exterior?.description || "" },
+		{ kind: "interior", code: story.interior?.code || "", description: story.interior?.description || "" },
+	];
 
 	globalThis.VinStorytellerCore = Object.freeze({
 		CODE_KINDS,
@@ -275,5 +283,7 @@
 		badgeParts,
 		historyParts,
 		timelineText,
+		swatchesShown,
+		swatchRequests,
 	});
 })();

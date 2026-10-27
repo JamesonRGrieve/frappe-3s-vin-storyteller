@@ -181,3 +181,18 @@ test("export frame numbers are accepted and named", () => {
 	assert.equal(core.keyLabel("Z16A-0300250"), "Chassis number");
 	assert.equal(core.keyLabel("DMNZ16APY00001"), "Frame number");
 });
+
+test("swatches show when the record has either code, each with its code and description", () => {
+	const story = { exterior: { code: "R25", description: "Morocco Red Mica" }, interior: { code: "", description: "" } };
+	assert.equal(core.swatchesShown(story), true);
+	assert.equal(core.swatchesShown({ exterior: { code: "", description: "" }, interior: { code: "", description: "" } }), false);
+	assert.equal(core.swatchesShown({}), false);
+	assert.deepEqual(JSON.parse(JSON.stringify(core.swatchRequests(story))), [
+		{ kind: "paint", code: "R25", description: "Morocco Red Mica" },
+		{ kind: "interior", code: "", description: "" },
+	]);
+	assert.deepEqual(JSON.parse(JSON.stringify(core.swatchRequests({}))), [
+		{ kind: "paint", code: "", description: "" },
+		{ kind: "interior", code: "", description: "" },
+	]);
+});

@@ -1,0 +1,49 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Animated paint and interior swatches (swatch.js). Size the element; the canvas fills it. */
+.vsw {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 8 / 5;
+	overflow: hidden;
+	border-radius: 14px;
+	background: #2a2c31 center / cover no-repeat;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 26px -14px rgba(0, 0, 0, 0.7);
+	isolation: isolate;
+}
+.vsw-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.vsw--static .vsw-canvas { display: none; }
+/* "Colour not on file": the neutral panel says so, plainly, so it never reads as the car's colour. */
+.vsw-badge {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	padding: 5px 10px;
+	border-radius: 999px;
+	background: rgba(10, 12, 20, 0.62);
+	color: #eef0f6;
+	font: 600 12px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	pointer-events: none;
+}
+.vsw[data-status="missing"] {
+	background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 10px, transparent 10px 20px);
+}
+.vsw-caption {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 18px 14px 10px;
+	background: linear-gradient(to top, rgba(6, 8, 16, 0.78), rgba(6, 8, 16, 0));
+	color: #eef0f6;
+	font: 400 13px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+	pointer-events: none;
+}
+.vsw-title { font-weight: 700; font-size: 14px; }
+.vsw-detail { opacity: 0.8; font-size: 12px; letter-spacing: 0.04em; }

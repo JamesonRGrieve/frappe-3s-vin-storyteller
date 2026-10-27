@@ -1,0 +1,3131 @@
+{
+	"about": "Paint: published colour values with their source URL, or missing (shown as 'colour not on file'). Interior: leather or cloth, with the basis for each. 3000GT, Stealth and GTO codes only.",
+	"interior": {
+		"01E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"01P": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 25 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"00"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"01X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 126 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"00",
+				"96"
+			],
+			"models": [
+				"Stealth",
+				"GTO"
+			]
+		},
+		"02E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"02H": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 1 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"02P": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 15 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"00"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"02X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 68 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"00",
+				"96"
+			],
+			"models": [
+				"Stealth",
+				"GTO"
+			]
+		},
+		"03A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"03E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"03H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 6,073 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"03X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"04A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"04E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"04H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 9,239 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93",
+				"99"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"04U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"04X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"05A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"05D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"05H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"06A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"06D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"06E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"06H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"06J": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 216 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"97"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"06P": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 94 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"06X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"07A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"07D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"07H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"07J": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 487 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"97"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"07P": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 136 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"08A": {
+			"basis": "description \"Red Cloth, Power Seats\"",
+			"confidence": "decided",
+			"description": "Red Cloth, Power Seats",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"08D": {
+			"basis": "description \"White Cloth, Power Seats\"",
+			"confidence": "decided",
+			"description": "White Cloth, Power Seats",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"08H": {
+			"basis": "description \"Charcoal Cloth, Power Seats\"",
+			"confidence": "decided",
+			"description": "Charcoal Cloth, Power Seats",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"09A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"09H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"09U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"10A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"10H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"11S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"11X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"12S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"12X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"13E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"13H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 37 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"93"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"13J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"13T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"13U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"13W": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 630 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"13X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"14E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"14H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 50 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"93"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"14J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"14T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"14U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"14W": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 1,437 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"14X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"15A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"15D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"15H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"15T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"15U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"16A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"16D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"16H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"16T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"16U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"17A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"17H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"17T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"17U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"17W": {
+			"basis": "suffix letter W: 10,747 of 10,876 decided cars ending W are leather (13W, 14W, 18W); against: 33W, 34W",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"18A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"18D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"18H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"18T": {
+			"basis": "description \"Tan Leather, Power Seats\"",
+			"confidence": "decided",
+			"description": "Tan Leather, Power Seats",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"18U": {
+			"basis": "description \"Red Leather, Power Seats\"",
+			"confidence": "decided",
+			"description": "Red Leather, Power Seats",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"18W": {
+			"basis": "description \"Charcoal Leather, Power Seats\"",
+			"confidence": "decided",
+			"description": "Charcoal Leather, Power Seats",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"19A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"19H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"19T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"19U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"19W": {
+			"basis": "suffix letter W: 10,747 of 10,876 decided cars ending W are leather (13W, 14W, 18W); against: 33W, 34W",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			]
+		},
+		"20A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"20H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"20T": {
+			"basis": "suffix letter T: 3,225 of 3,225 decided cars ending T are leather (18T)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"20W": {
+			"basis": "suffix letter W: 10,747 of 10,876 decided cars ending W are leather (13W, 14W, 18W); against: 33W, 34W",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"21A": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 148 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"21D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"21E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"21H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 4 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"22A": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 56 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"22D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"22E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"22H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 2 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			]
+		},
+		"23A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"23D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"23U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"24A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"24D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"24U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"25A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"25D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"26A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"26D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"27A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"28A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"29H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"29U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"30U": {
+			"basis": "suffix letter U: 1,197 of 1,197 decided cars ending U are leather (18U)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"31H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 972 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"32H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 545 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"94"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"33W": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 43 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"92"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"34W": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 86 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"92"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"36A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"36D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"37A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"37D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"37H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"38H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"39H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"41A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"41D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"42A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"42D": {
+			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"47E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"47J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"47S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"47X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"97"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"50H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"51A": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 72 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"51H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 681 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"52A": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 54 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"52H": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 226 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"55A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"55H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"56A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"57A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"57E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"57J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"57S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"57X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"97"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"58A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"58H": {
+			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"60A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"61A": {
+			"basis": "suffix letter A is mixed: leather 330 cars (21A, 22A, 51A, 52A), cloth 163 (08A)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"95"
+			],
+			"models": [
+				"Stealth"
+			]
+		},
+		"63J": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 73 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"63X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 591 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"64J": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 40 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"64X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 250 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"67E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"67F": {
+			"basis": "no decided code ends in F",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"67J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"67P": {
+			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"77F": {
+			"basis": "no decided code ends in F",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"77P": {
+			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"97",
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"80X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 277 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"98"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"82X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 146 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"98"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"85S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"85X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"86S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"86X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"98"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"90P": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 38 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"90X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 284 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"91P": {
+			"basis": "ASA option K03 (leather seat & room trim) on all 21 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"91X": {
+			"basis": "ASA option K03 (leather seat & room trim) on none of the 126 GTOs with this code",
+			"confidence": "decided",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"GTO"
+			]
+		},
+		"92E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"92F": {
+			"basis": "no decided code ends in F",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"92J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"92P": {
+			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"92S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"92X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"93E": {
+			"basis": "no decided code ends in E",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"93P": {
+			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"93S": {
+			"basis": "no decided code ends in S",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"93X": {
+			"basis": "suffix letter X: 1,868 of 1,868 decided cars ending X are cloth (01X, 02X, 63X, 64X, 80X, 82X, 90X, 91X)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "cloth",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"94F": {
+			"basis": "no decided code ends in F",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"94P": {
+			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
+			"confidence": "inferred",
+			"description": "",
+			"material": "leather",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"95F": {
+			"basis": "no decided code ends in F",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		},
+		"95J": {
+			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"confidence": "",
+			"description": "",
+			"material": "unknown",
+			"model_years": [
+				"99"
+			],
+			"models": [
+				"3000GT"
+			]
+		}
+	},
+	"paint": {
+		"A26": {
+			"dodge_name": "Silver Metallic",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#7B807A",
+			"mitsubishi_name": "Coronado Silver Metallic",
+			"model_years": [
+				"95",
+				"96"
+			],
+			"models": [
+				"Stealth",
+				"GTO"
+			],
+			"name": "Coronado Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. Mitsubishi name 'Coronado Silver Metallic' from AutomotiveTouchup 3000GT 1994-1999 (https://automotivetouchup.com/touch-up-paint/mitsubishi/1996/3000gt). STRONG DISAGREEMENT: PaintScratch Mitsubishi A26 'Coronado Sand Metallic' (1995-2004 Truck, Lancer, Diamante, FTO; not 3000GT) = #E0DBC8 (https://www.paintscratch.com/colors/mitsubishi/coronado-sand-metallic-a26/).",
+			"source": "https://www.paintscratch.com/colors/dodge/silver-metallic-a26pam/",
+			"status": "sourced"
+		},
+		"A71": {
+			"dodge_name": "",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#AEB7AD",
+			"mitsubishi_name": "Seattle Silver Metallic",
+			"model_years": [
+				"00",
+				"97",
+				"98",
+				"99"
+			],
+			"models": [
+				"GTO"
+			],
+			"name": "Seattle Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. CAUTION: source ties A71 to other models, not 3000GT/GTO. Mitsubishi name 'Seattle Silver Metallic' from AutomotiveTouchup 3000GT 1996-1999 (https://automotivetouchup.com/touch-up-paint/mitsubishi/1996/3000gt). Metallic per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/hamilton-silver-metallic-a71/",
+			"status": "sourced"
+		},
+		"B34": {
+			"dodge_name": "Dark Blue Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#4B69A1",
+			"mitsubishi_name": "Danube Blue Mica",
+			"model_years": [
+				"93",
+				"94",
+				"95",
+				"96",
+				"97"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Danube Blue Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per names. STRONG DISAGREEMENT: PaintScratch Dodge B34/PCK 'Blue Pearl' (Stealth 1993-95) = #0E2888 (https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/); the darker Dodge value fits 'Dark Blue Pearl' better.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/mariana-blue-pearl-b34/",
+			"status": "sourced"
+		},
+		"B60": {
+			"dodge_name": "Peacock Green",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "#0D5340",
+			"mitsubishi_name": "",
+			"model_years": [
+				"93",
+				"94"
+			],
+			"models": [
+				"Stealth"
+			],
+			"name": "Peacock Green",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish not stated in name (assumed solid by name only; may be metallic/pearl - unverified). PaintScratch Mitsubishi B60 'Peacock Green' (1992-93 Expo; not 3000GT) = #156D49 (https://www.paintscratch.com/colors/mitsubishi/peacock-green-b60/). No Mitsubishi 3000GT name found.",
+			"source": "https://www.paintscratch.com/colors/dodge/peacock-green-b60pga/",
+			"status": "sourced"
+		},
+		"BA4": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"93"
+			],
+			"models": [
+				"Stealth"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for BA4.",
+			"source": "",
+			"status": "missing"
+		},
+		"G13": {
+			"dodge_name": "",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#146421",
+			"mitsubishi_name": "Zealand Green Pearl",
+			"model_years": [
+				"00",
+				"98",
+				"99"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			],
+			"name": "Zealand Green Pearl",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. AutomotiveTouchup names G13 Zealand Green Pearl on 3000GT 1997-99.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/timber-green-pearl-g13/",
+			"status": "sourced"
+		},
+		"G84": {
+			"dodge_name": "Emerald Green Metallic",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#588059",
+			"mitsubishi_name": "Panama Green Mica",
+			"model_years": [
+				"92",
+				"93",
+				"94",
+				"95",
+				"96",
+				"97"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Panama Green Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish per names (Mica/Pearl). DISAGREES with PaintScratch Dodge page G84/PG2 'Emerald Green Pearl' (Stealth 1992-96) = #075F35 (https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/kilder-green-pearl-g84/",
+			"status": "sourced"
+		},
+		"GA4": {
+			"dodge_name": "Emerald Green Metallic",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Panama Green Mica",
+			"model_years": [
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Panama Green Mica",
+			"notes": "No published hex/RGB found for GA4. Possibly an alternate code for G84 but no source states this; not assumed.",
+			"source": "",
+			"status": "missing"
+		},
+		"H28": {
+			"dodge_name": "Dark Silver Metallic",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#D0C8BA",
+			"mitsubishi_name": "Gentile Silver Metallic",
+			"model_years": [
+				"93",
+				"94"
+			],
+			"models": [
+				"Stealth",
+				"GTO"
+			],
+			"name": "Gentile Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. Mitsubishi name added from this PaintScratch page. STRONG DISAGREEMENT: PaintScratch Dodge H28/PAD 'Dark Silver Pearl' (Stealth 1993-94) = #A1A7A3 (https://www.paintscratch.com/colors/dodge/dark-silver-pearl-h28pad/) - Dodge value fits 'Dark Silver' better; choose deliberately. Dodge name Dark Silver Metallic confirmed by AutomotiveTouchup Stealth 1993-94.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/gentile-silver-metallic-h28/",
+			"status": "sourced"
+		},
+		"H84": {
+			"dodge_name": "",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#E3E2DD",
+			"mitsubishi_name": "Ascot Silver Metallic",
+			"model_years": [
+				"91",
+				"92",
+				"99"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			],
+			"name": "Ascot Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/grace-silver-metallic-h84/",
+			"status": "sourced"
+		},
+		"H89": {
+			"dodge_name": "",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#918A73",
+			"mitsubishi_name": "Sandstone Gray Metallic",
+			"model_years": [
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			],
+			"name": "Sandstone Gray Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/corse-gray-metallic-h89/",
+			"status": "sourced"
+		},
+		"HA4": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"92"
+			],
+			"models": [
+				"3000GT"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for HA4.",
+			"source": "",
+			"status": "missing"
+		},
+		"HA8": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"93"
+			],
+			"models": [
+				"Stealth"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for HA8.",
+			"source": "",
+			"status": "missing"
+		},
+		"HA9": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for HA9.",
+			"source": "",
+			"status": "missing"
+		},
+		"L79": {
+			"dodge_name": "Selva Olive Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#2C4C32",
+			"mitsubishi_name": "Belgium Green Pearl",
+			"model_years": [
+				"96",
+				"97"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Belgium Green Pearl",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. STRONG DISAGREEMENT: PaintScratch Dodge L79/PFN 'Olive Pearl' (Stealth 1996) = #526208 (https://www.paintscratch.com/colors/dodge/olive-pearl-l79pfn/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/olive-pearl-l79/",
+			"status": "sourced"
+		},
+		"P03": {
+			"dodge_name": "",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#B21839",
+			"mitsubishi_name": "Sorrento Red Mica",
+			"model_years": [
+				"94",
+				"95",
+				"96"
+			],
+			"models": [
+				"3000GT"
+			],
+			"name": "Sorrento Red Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Mica/pearl per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/sorrento-red-pearl-p03/",
+			"status": "sourced"
+		},
+		"P82": {
+			"dodge_name": "Orchid Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#BD8FB2",
+			"mitsubishi_name": "Amethyst Pearl",
+			"model_years": [
+				"96"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Amethyst Pearl",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. PaintScratch Dodge P82/PHA 'Orchid Metallic' (Stealth 1996) = #896D80 (https://www.paintscratch.com/colors/dodge/orchid-metallic-p82pha/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/superior-ameth-pearl-p82/",
+			"status": "sourced"
+		},
+		"R25": {
+			"dodge_name": "Covert Red Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#AF1F41",
+			"mitsubishi_name": "Morocco Red Mica",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Morocco Red Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per names (AutomotiveTouchup also calls it Morocco Red Metallic). STRONG DISAGREEMENT: PaintScratch Dodge R25/PRG 'Kutani Red Pearl' (Stealth 1991-95) = #7C0208 (https://www.paintscratch.com/colors/dodge/kutani-red-pearl-r25prg/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/morocco-red-pearl-r25/",
+			"status": "sourced"
+		},
+		"R38": {
+			"dodge_name": "Fire Storm",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "#DA2318",
+			"mitsubishi_name": "Monza Red",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Monza Red",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Solid per name. PaintScratch Dodge R38/PRH 'Scarlet Red' (Stealth 1991-92) = #E12A11 (https://www.paintscratch.com/colors/dodge/scarlet-red-r38prh/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/monza-red-r38/",
+			"status": "sourced"
+		},
+		"R71": {
+			"dodge_name": "Fire Storm",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "#E42B1B",
+			"mitsubishi_name": "Caracas Red",
+			"model_years": [
+				"00",
+				"92",
+				"93",
+				"94",
+				"95",
+				"96",
+				"97",
+				"98",
+				"99"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Caracas Red",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish solid per name (no metallic/pearl). PaintScratch Dodge R71/PE7 'Red' (Stealth 1993-96) = #CF1E0D (https://www.paintscratch.com/colors/dodge/red-r71pe7/). AutomotiveTouchup names it Caracas Red (3000GT 1993-99) and Fire Storm / Firestorm Red (Stealth 1993-96).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/passion-red-r71/",
+			"status": "sourced"
+		},
+		"RA1": {
+			"dodge_name": "",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Passion Red",
+			"model_years": [
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Passion Red",
+			"notes": "No published hex/RGB found for RA1 tied to Mitsubishi. NOTE: PaintScratch has a Dodge 'Dove Gray RA1' page (https://www.paintscratch.com/colors/dodge/dove-gray-ra1/) - a Chrysler code, unrelated. Name only from owner captions (R71/RA1). Name from the 3shub.ca owner-photo captions only.",
+			"source": "",
+			"status": "missing"
+		},
+		"RA5": {
+			"dodge_name": "",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Morocco Red Pearl",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Morocco Red Pearl",
+			"notes": "No published hex/RGB found for RA5. Name only from owner captions (R25/RA5), not a published source. Name from the 3shub.ca owner-photo captions only.",
+			"source": "",
+			"status": "missing"
+		},
+		"RA8": {
+			"dodge_name": "Firestorm Red",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Firestorm Red",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Firestorm Red",
+			"notes": "No published hex/RGB found for RA8.",
+			"source": "",
+			"status": "missing"
+		},
+		"S22": {
+			"dodge_name": "Sandstorm Metallic",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#BBBCA8",
+			"mitsubishi_name": "Nairobi Beige Metallic",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Nairobi Beige Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. PaintScratch Mitsubishi S22 'Wheat Beige Metallic' (1991-93 Diamante, Expo, Galant etc.; not 3000GT) = #C8BDA0 (https://www.paintscratch.com/colors/mitsubishi/wheat-beige-metallic-s22/). Names per AutomotiveTouchup (3000GT 1991 Nairobi Beige Metallic; Stealth 1991-92 Sandstorm Metallic).",
+			"source": "https://www.paintscratch.com/colors/dodge/wheat-beige-metallic-s22pvc/",
+			"status": "sourced"
+		},
+		"SA2": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for SA2.",
+			"source": "",
+			"status": "missing"
+		},
+		"T72": {
+			"dodge_name": "Strata Blue Metallic",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#30CAC8",
+			"mitsubishi_name": "Jamaican Blue Metallic",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Jamaican Blue Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. PaintScratch Dodge T72/PQ4 'Bright Turquoise Metallic' (Stealth 1990-93) = #27A393 (https://www.paintscratch.com/colors/dodge/bright-turquoise-metallic-t72pq4/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/napier-blue-metallic-t72/",
+			"status": "sourced"
+		},
+		"T87": {
+			"dodge_name": "Mystic Blue Metallic",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "#4F8EBF",
+			"mitsubishi_name": "Fiji Blue Metallic",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Fiji Blue Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. STRONG DISAGREEMENT: PaintScratch Dodge T87/PB5 'Bright Blue Metallic' (Stealth 1988-92) = #112888 (https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/fiji-blue-metallic-t87/",
+			"status": "sourced"
+		},
+		"TA2": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for TA2.",
+			"source": "",
+			"status": "missing"
+		},
+		"TA7": {
+			"dodge_name": "Mystic Blue Metallic",
+			"finish": "metallic",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Fiji Blue Metallic",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Fiji Blue Metallic",
+			"notes": "No published hex/RGB found for TA7. Possibly an alternate code for T87 but no source states this; not assumed.",
+			"source": "",
+			"status": "missing"
+		},
+		"W20": {
+			"dodge_name": "White",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "#F9FBFD",
+			"mitsubishi_name": "",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "White",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Dodge name 'White' added from this PaintScratch page. No Mitsubishi name found. Solid per name.",
+			"source": "https://www.paintscratch.com/colors/dodge/white-w20pwe/",
+			"status": "sourced"
+		},
+		"W29": {
+			"dodge_name": "Grayish White Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#DEE1E6",
+			"mitsubishi_name": "Zurich White Mica",
+			"model_years": [
+				"92",
+				"93",
+				"94"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Zurich White Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Tricoat per source; one value only. PaintScratch Dodge W29/PMW 'Grayish White Tri-Coat Pearl' (Stealth 1993-94) = #C1CACA (https://www.paintscratch.com/colors/dodge/grayish-white-tri-coat-pearl-w29pmw/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/misty-white-pearl-tri-coat-w29/",
+			"status": "sourced"
+		},
+		"W2D": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"91"
+			],
+			"models": [
+				"3000GT"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for W2D. (PaintScratch has Dodge 'white-dw2dt1639' - Chrysler DW2/T1639, unrelated.)",
+			"source": "",
+			"status": "missing"
+		},
+		"W32": {
+			"dodge_name": "Brilliant White",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "#F9FBFD",
+			"mitsubishi_name": "Fairy White",
+			"model_years": [
+				"93",
+				"94",
+				"95",
+				"96"
+			],
+			"models": [
+				"Stealth"
+			],
+			"name": "Fairy White",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Solid per name. Mitsubishi name 'Fairy White' from PaintScratch Mitsubishi W32 page (1993-2001 Diamante, Truck, Montero, Montero Sport; not 3000GT) https://www.paintscratch.com/colors/mitsubishi/fairy-white-w32/ which publishes #F5FCF4. Dodge name Brilliant White per AutomotiveTouchup Stealth 1993/1995/1996 (https://automotivetouchup.com/touch-up-paint/dodge/1993/stealth).",
+			"source": "https://www.paintscratch.com/colors/dodge/white-w32pwl/",
+			"status": "sourced"
+		},
+		"W75": {
+			"dodge_name": "Galaxy White Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#E5EDE3",
+			"mitsubishi_name": "Glacier White Pearl",
+			"model_years": [
+				"00",
+				"91",
+				"92",
+				"95",
+				"96",
+				"97",
+				"98",
+				"99"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Glacier White Pearl",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Tricoat per source (is_tricoat=true); only one value published, no mid-coat value. PaintScratch Dodge W75/PWD 'White Tri-Coat Pearl' (Stealth 1991-96) = #DAE1D6 (https://www.paintscratch.com/colors/dodge/white-tri-coat-pearl-w75pwd/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/galaxy-white-pearl-tricoat-w75/",
+			"status": "sourced"
+		},
+		"W9X": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"93",
+				"94",
+				"97"
+			],
+			"models": [
+				"GTO"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for W9X.",
+			"source": "",
+			"status": "missing"
+		},
+		"WA0": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for WA0.",
+			"source": "",
+			"status": "missing"
+		},
+		"WA5": {
+			"dodge_name": "Galaxy White Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Glacier White Pearl",
+			"model_years": [
+				"91",
+				"92"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Glacier White Pearl",
+			"notes": "No published hex/RGB found for code WA5 (PaintScratch sitemap, AutomotiveTouchup 3000GT/Stealth 1991-99, encycolorpedia, web search). Possibly an alternate code for W75 but no source states this; not assumed.",
+			"source": "",
+			"status": "missing"
+		},
+		"WA9": {
+			"dodge_name": "Pearl White",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Pearl White",
+			"model_years": [
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Pearl White",
+			"notes": "No published hex/RGB found for WA9.",
+			"source": "",
+			"status": "missing"
+		},
+		"X02": {
+			"dodge_name": "",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#151618",
+			"mitsubishi_name": "Albany Black Mica",
+			"model_years": [
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			],
+			"name": "Albany Black Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Mica/pearl per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/toscana-black-pearl-x02/",
+			"status": "sourced"
+		},
+		"X08": {
+			"dodge_name": "",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#121219",
+			"mitsubishi_name": "Solano Black Pearl",
+			"model_years": [
+				"00",
+				"96",
+				"97",
+				"98",
+				"99"
+			],
+			"models": [
+				"3000GT",
+				"GTO"
+			],
+			"name": "Solano Black Pearl",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. AutomotiveTouchup names X08 Solano Black Pearl on 3000GT 1996-97.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/pyreness-black-pearl-x08/",
+			"status": "sourced"
+		},
+		"X94": {
+			"dodge_name": "Jet Black",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "#0D1315",
+			"mitsubishi_name": "Lamp Black",
+			"model_years": [
+				"91",
+				"92",
+				"93",
+				"94",
+				"95",
+				"96"
+			],
+			"models": [
+				"3000GT",
+				"Stealth",
+				"GTO"
+			],
+			"name": "Lamp Black",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Solid per name. PaintScratch Dodge X94/PX2 'Lamp Black' (Stealth 1990-96) = #0A110E (https://www.paintscratch.com/colors/dodge/lamp-black-x94px2/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/lamp-black-x94/",
+			"status": "sourced"
+		},
+		"XA2": {
+			"dodge_name": "",
+			"finish": "",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "",
+			"model_years": [
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT"
+			],
+			"name": "",
+			"notes": "No name and no published hex/RGB found for XA2.",
+			"source": "",
+			"status": "missing"
+		},
+		"XA4": {
+			"dodge_name": "Jet Black",
+			"finish": "solid",
+			"flake_hex": "",
+			"hex": "",
+			"mitsubishi_name": "Lamp Black",
+			"model_years": [
+				"91",
+				"92",
+				"93"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Lamp Black",
+			"notes": "No published hex/RGB found for XA4. Possibly an alternate code for X94 but no source states this; not assumed.",
+			"source": "",
+			"status": "missing"
+		},
+		"Y99": {
+			"dodge_name": "Champagne Yellow Pearl",
+			"finish": "pearl",
+			"flake_hex": "",
+			"hex": "#EEF0AE",
+			"mitsubishi_name": "Martinique Yellow Mica",
+			"model_years": [
+				"94",
+				"95"
+			],
+			"models": [
+				"3000GT",
+				"Stealth"
+			],
+			"name": "Martinique Yellow Mica",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Tricoat per source; one value only. PaintScratch Dodge Y99/PY1 'Champagne Yellow Tri-Coat Pearl' (Stealth 1994-95) = #F7F67F (https://www.paintscratch.com/colors/dodge/champagne-yellow-tri-coat-pearl-y99py1/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/yellow-pearl-tricoat-y99/",
+			"status": "sourced"
+		}
+	},
+	"version": 1
+}

@@ -3,6 +3,7 @@
      codes.js reads the kind and code from the address and asks the API for the code's page or the kind's index.
      data-code-routes: "query" (?code=T87, served by the public site router today) or "path" (/storyteller/paint/T87). -->
 <link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css">
+<link rel="stylesheet" href="/assets/vin_storyteller/css/swatch.css">
 <div class="vst vst-codes" data-code-endpoint="/api/method/vin_storyteller.api.code"
 	data-index-endpoint="/api/method/vin_storyteller.api.codes" data-code-routes="query">
 	<header class="vst-head">
@@ -77,5 +78,7 @@
 	<p class="vst-source">The VIN Storyteller is open source under the AGPL-3.0:
 		<a href="https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller" rel="noopener">source on GitHub</a>.</p>
 </div>
+<script src="/assets/vin_storyteller/js/swatch-core.js" defer></script>
+<script src="/assets/vin_storyteller/js/swatch.js" defer></script>
 <script src="/assets/vin_storyteller/js/storyteller-core.js" defer></script>
 <script src="/assets/vin_storyteller/js/codes.js" defer></script>

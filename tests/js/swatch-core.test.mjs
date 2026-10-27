@@ -106,15 +106,22 @@ test("derivedFlake: metallic lifts toward white; a white pearl gets a warm tint"
 test("interiorMaterial: the description wins, then the table's decision, else unknown", () => {
 	assert.deepEqual(plain(core.interiorMaterial({ material: "cloth", basis: "x" }, "Tan Leather, Power Seats")), {
 		material: "leather",
+		confidence: "decided",
 		basis: "description",
 	});
-	assert.deepEqual(plain(core.interiorMaterial(null, "Charcoal Cloth, Power Seats")), { material: "cloth", basis: "description" });
-	assert.deepEqual(plain(core.interiorMaterial({ material: "leather", basis: "K03 on all 1437 GTOs" }, "MISSING")), {
-		material: "leather",
-		basis: "K03 on all 1437 GTOs",
+	assert.deepEqual(plain(core.interiorMaterial(null, "Charcoal Cloth, Power Seats")), {
+		material: "cloth",
+		confidence: "decided",
+		basis: "description",
 	});
-	assert.deepEqual(plain(core.interiorMaterial({ material: "unknown" }, "")), { material: "unknown", basis: "" });
-	assert.deepEqual(plain(core.interiorMaterial(undefined, undefined)), { material: "unknown", basis: "" });
+	assert.deepEqual(
+		plain(core.interiorMaterial({ material: "leather", confidence: "decided", basis: "K03 on all 1437 GTOs" }, "MISSING")),
+		{ material: "leather", confidence: "decided", basis: "K03 on all 1437 GTOs" },
+	);
+	assert.equal(core.interiorMaterial({ material: "cloth" }, "").confidence, "inferred", "a table entry without one is not decided");
+	const none = { material: "unknown", confidence: "", basis: "" };
+	assert.deepEqual(plain(core.interiorMaterial({ material: "unknown" }, "")), none);
+	assert.deepEqual(plain(core.interiorMaterial(undefined, undefined)), none);
 });
 
 test("interiorTone finds the colour word; interiorSwatch says when nothing is on file", () => {
@@ -216,9 +223,13 @@ test("captionParts names the swatch and never implies a colour that isn't on fil
 		title: "Tan Leather, Power Seats · 18T",
 		detail: "Leather · representative shade",
 	});
-	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "cloth" }, "MISSING"), "04H")), {
+	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "cloth", confidence: "decided" }, "MISSING"), "04H")), {
 		title: "Interior · 04H",
 		detail: "Cloth · Colour not on file",
+	});
+	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "leather", confidence: "inferred" }, "MISSING"), "14T")), {
+		title: "Interior · 14T",
+		detail: "Leather (likely) · Colour not on file",
 	});
 	assert.deepEqual(plain(core.captionParts(core.interiorSwatch(null, ""), "")), { title: "Interior", detail: "No interior on record" });
 });

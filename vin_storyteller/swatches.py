@@ -1,0 +1,253 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""The swatches' code tables: paint code -> published colour and finish, interior code -> leather or cloth.
+
+Pure logic, no Frappe. Builds `public/data/swatches.json` (served as
+/assets/vin_storyteller/data/swatches.json and read by `public/js/swatch.js`) from the extracted code lists
+(`paint_codes.tsv`, `interior_codes.tsv`) and the researched colour values (`paint_hex.tsv`):
+
+    python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON
+
+Rules (operator, 2026-10-27):
+- Only 3000GTs, Stealths and GTOs: a code used only by the record's other Nagoya-built cars (the deleted
+  Diamantes) is left out, and the `other_nagoya` column is otherwise ignored. EXT / INT are the record's
+  "not recorded" placeholders, not codes.
+- A paint colour is a published value with its source URL, or it is missing; never a guess.
+- Interior material: an explicit description wins; then, for GTOs, Mitsubishi's leather option K03 on the
+  car; then, as evidence rather than a rule, the code's suffix letter when the decided codes sharing it
+  agree. Each decision records how it was made.
+"""
+
+from __future__ import annotations
+
+import csv
+import json
+import re
+import sys
+from collections import defaultdict
+from collections.abc import Iterable, Mapping
+from pathlib import Path
+
+MODELS = ("3000GT", "Stealth", "GTO")
+PLACEHOLDERS = frozenset({"EXT", "INT"})
+UNKNOWN_NAMES = frozenset({"", "MISSING"})
+HEX = re.compile(r"^#[0-9A-F]{6}$")
+SAFE_URL = re.compile(r"^https?://[^\s<>\"']+$", re.IGNORECASE)
+FINISHES = frozenset({"solid", "metallic", "pearl"})
+# A suffix letter is evidence for a material only when this share of the decided cars carrying it agree.
+LETTER_AGREEMENT = 0.9
+
+
+def read_tsv(path: str | Path) -> list[dict[str, str]]:
+	with open(path, newline="", encoding="utf-8") as handle:
+		return [dict(row) for row in csv.DictReader(handle, delimiter="\t")]
+
+
+def _count(row: Mapping[str, str], column: str) -> int:
+	value = (row.get(column) or "").strip()
+	return int(value) if value else 0
+
+
+def model_counts(row: Mapping[str, str]) -> dict[str, int]:
+	return {model: _count(row, model) for model in MODELS}
+
+
+def in_scope(row: Mapping[str, str]) -> bool:
+	"""A real code used by at least one 3000GT, Stealth or GTO."""
+	code = (row.get("code") or "").strip().upper()
+	return bool(code) and code not in PLACEHOLDERS and sum(model_counts(row).values()) > 0
+
+
+def known(name: str | None) -> str:
+	name = (name or "").strip()
+	return "" if name in UNKNOWN_NAMES else name
+
+
+def finish_from_name(name: str) -> str:
+	"""pearl (Mitsubishi's "Mica", anyone's "Pearl"), metallic, solid; "" when there is no name."""
+	if not name:
+		return ""
+	if re.search(r"\b(pearl|mica)\b", name, re.IGNORECASE):
+		return "pearl"
+	if re.search(r"\bmetallic\b", name, re.IGNORECASE):
+		return "metallic"
+	return "solid"
+
+
+def normalize_hex(value: str | None) -> str:
+	"""'#rrggbb' / 'rrggbb' -> '#RRGGBB'; anything else -> ''."""
+	text = (value or "").strip().upper()
+	if text and not text.startswith("#"):
+		text = f"#{text}"
+	return text if HEX.match(text) else ""
+
+
+def _usage(row: Mapping[str, str]) -> dict:
+	counts = model_counts(row)
+	return {
+		"models": [model for model in MODELS if counts[model]],
+		"model_years": [y for y in (row.get("model_years") or "").split(",") if y],
+	}
+
+
+def paint_table(
+	code_rows: Iterable[Mapping[str, str]], hex_rows: Iterable[Mapping[str, str]]
+) -> dict[str, dict]:
+	"""code -> name, Dodge name, finish, hex (published or ""), flake_hex, source, status, notes, usage."""
+	researched = {(row.get("code") or "").strip().upper(): row for row in hex_rows}
+	table: dict[str, dict] = {}
+	for row in code_rows:
+		if not in_scope(row):
+			continue
+		code = row["code"].strip().upper()
+		found = researched.get(code, {})
+		mitsubishi = known(row.get("mitsubishi_name")) or known(found.get("mitsubishi_name"))
+		dodge = known(row.get("dodge_name")) or known(found.get("dodge_name"))
+		name = mitsubishi or dodge
+		finish = finish_from_name(name) or (found.get("finish") or "").strip().lower()
+		base = normalize_hex(found.get("base_hex"))
+		flake = normalize_hex(found.get("flake_hex"))
+		source = (found.get("source_url") or "").strip()
+		sourced = bool(base) and bool(SAFE_URL.match(source))
+		table[code] = {
+			"name": name,
+			"mitsubishi_name": mitsubishi,
+			"dodge_name": dodge,
+			"finish": finish if finish in FINISHES else "",
+			"hex": base if sourced else "",
+			"flake_hex": flake if sourced else "",
+			"source": source if sourced else "",
+			"status": "sourced" if sourced else "missing",
+			"notes": (found.get("notes") or "").strip(),
+			**_usage(row),
+		}
+	return table
+
+
+def _material_from_description(description: str) -> str:
+	if re.search(r"\bleather\b", description, re.IGNORECASE):
+		return "leather"
+	if re.search(r"\b(cloth|fabric|velour|tricot)\b", description, re.IGNORECASE):
+		return "cloth"
+	return ""
+
+
+def decide_material(row: Mapping[str, str]) -> dict | None:
+	"""The material from the code's own evidence (description, then GTO K03), or None."""
+	description = known(row.get("description"))
+	material = _material_from_description(description)
+	if material:
+		return {"material": material, "confidence": "decided", "basis": f'description "{description}"'}
+	with_k03 = _count(row, "gto_with_leather_option_K03")
+	without_k03 = _count(row, "gto_without_K03")
+	if with_k03 and not without_k03:
+		return {
+			"material": "leather",
+			"confidence": "decided",
+			"basis": f"ASA option K03 (leather seat & room trim) on all {with_k03:,} GTOs with this code",
+		}
+	if without_k03 and not with_k03:
+		return {
+			"material": "cloth",
+			"confidence": "decided",
+			"basis": f"ASA option K03 (leather seat & room trim) on none of the {without_k03:,} GTOs with this code",
+		}
+	return None
+
+
+def evidence_cars(row: Mapping[str, str], decision: Mapping[str, str]) -> int:
+	"""How many cars a decision was observed on: every car for a description, the GTOs for K03."""
+	if decision["basis"].startswith("description"):
+		return sum(model_counts(row).values())
+	return _count(row, "gto_with_leather_option_K03") + _count(row, "gto_without_K03")
+
+
+def _suffix(code: str) -> str:
+	return code[-1:] if code[-1:].isalpha() else ""
+
+
+def letter_evidence(decided: Mapping[str, tuple[dict, int]]) -> dict[str, dict]:
+	"""Per suffix letter: evidence cars by material among the decided codes, and the codes behind them."""
+	evidence: dict[str, dict] = defaultdict(
+		lambda: {"leather": 0, "cloth": 0, "codes": {"leather": [], "cloth": []}}
+	)
+	for code, (decision, cars) in sorted(decided.items()):
+		letter = _suffix(code)
+		if letter:
+			evidence[letter][decision["material"]] += cars
+			evidence[letter]["codes"][decision["material"]].append(code)
+	return dict(evidence)
+
+
+def infer_from_letter(code: str, evidence: Mapping[str, dict]) -> dict:
+	letter = _suffix(code)
+	seen = evidence.get(letter)
+	if not seen:
+		return {
+			"material": "unknown",
+			"confidence": "",
+			"basis": f"no decided code ends in {letter or 'this'}",
+		}
+	total = seen["leather"] + seen["cloth"]
+	for material, other in (("leather", "cloth"), ("cloth", "leather")):
+		if total and seen[material] / total >= LETTER_AGREEMENT:
+			against = f"; against: {', '.join(seen['codes'][other])}" if seen["codes"][other] else ""
+			return {
+				"material": material,
+				"confidence": "inferred",
+				"basis": (
+					f"suffix letter {letter}: {seen[material]:,} of {total:,} decided cars ending {letter} are "
+					f"{material} ({', '.join(seen['codes'][material])}){against}"
+				),
+			}
+	return {
+		"material": "unknown",
+		"confidence": "",
+		"basis": (
+			f"suffix letter {letter} is mixed: leather {seen['leather']:,} cars "
+			f"({', '.join(seen['codes']['leather'])}), cloth {seen['cloth']:,} ({', '.join(seen['codes']['cloth'])})"
+		),
+	}
+
+
+def interior_table(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
+	"""code -> description, material (leather | cloth | unknown), confidence, basis, usage."""
+	rows = [row for row in rows if in_scope(row)]
+	decided: dict[str, tuple[dict, int]] = {}
+	for row in rows:
+		decision = decide_material(row)
+		if decision:
+			decided[row["code"].strip().upper()] = (decision, evidence_cars(row, decision))
+	evidence = letter_evidence(decided)
+	table: dict[str, dict] = {}
+	for row in rows:
+		code = row["code"].strip().upper()
+		decision = decided[code][0] if code in decided else infer_from_letter(code, evidence)
+		table[code] = {"description": known(row.get("description")), **decision, **_usage(row)}
+	return table
+
+
+def build(paint_codes: str | Path, paint_hex: str | Path, interior_codes: str | Path) -> dict:
+	return {
+		"version": 1,
+		"about": (
+			"Paint: published colour values with their source URL, or missing (shown as 'colour not on file'). "
+			"Interior: leather or cloth, with the basis for each. 3000GT, Stealth and GTO codes only."
+		),
+		"paint": paint_table(read_tsv(paint_codes), read_tsv(paint_hex)),
+		"interior": interior_table(read_tsv(interior_codes)),
+	}
+
+
+def main(argv: list[str]) -> int:
+	if len(argv) != 4:
+		print(__doc__, file=sys.stderr)
+		return 2
+	data = build(*argv[:3])
+	Path(argv[3]).write_text(
+		json.dumps(data, indent="\t", sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
+	)
+	return 0
+
+
+if __name__ == "__main__":
+	raise SystemExit(main(sys.argv[1:]))

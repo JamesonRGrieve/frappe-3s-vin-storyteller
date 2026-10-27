@@ -118,12 +118,12 @@
 	// decision (which says how it was made); otherwise unknown.
 	function interiorMaterial(entry, description) {
 		const text = String(description ?? "");
-		if (/\bleather\b/i.test(text)) return { material: "leather", basis: "description" };
-		if (/\b(cloth|fabric|velour|tricot)\b/i.test(text)) return { material: "cloth", basis: "description" };
+		if (/\bleather\b/i.test(text)) return { material: "leather", confidence: "decided", basis: "description" };
+		if (/\b(cloth|fabric|velour|tricot)\b/i.test(text)) return { material: "cloth", confidence: "decided", basis: "description" };
 		if (entry && (entry.material === "leather" || entry.material === "cloth")) {
-			return { material: entry.material, basis: entry.basis || "table" };
+			return { material: entry.material, confidence: entry.confidence || "inferred", basis: entry.basis || "table" };
 		}
-		return { material: "unknown", basis: "" };
+		return { material: "unknown", confidence: "", basis: "" };
 	}
 
 	// Representative tones for the colour word in an interior description. These are generic shades for the
@@ -155,12 +155,13 @@
 	});
 	function interiorSwatch(entry, description) {
 		const named = description && description !== "MISSING" ? description : entry?.description || "";
-		const { material, basis } = interiorMaterial(entry, named);
+		const { material, confidence, basis } = interiorMaterial(entry, named);
 		const tone = interiorTone(named);
 		return {
 			kind: "interior",
 			status: tone ? "named" : "missing",
 			material,
+			confidence,
 			basis,
 			name: named,
 			label: tone ? named : NOT_ON_FILE,
@@ -252,7 +253,8 @@
 			}
 			return { title: coded(swatch.name || "Paint"), detail: FINISH_NAMES[swatch.finish] || "" };
 		}
-		const material = MATERIAL_NAMES[swatch.material];
+		// An inferred material (from the code's suffix letter) is said to be likely, not stated as fact.
+		const material = MATERIAL_NAMES[swatch.material] + (swatch.confidence === "inferred" ? " (likely)" : "");
 		if (swatch.status !== "named") {
 			return { title: coded(swatch.name && swatch.name !== "MISSING" ? swatch.name : "Interior"), detail: code ? `${material} · ${NOT_ON_FILE}` : "No interior on record" };
 		}

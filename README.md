@@ -30,9 +30,46 @@ original storyteller, so uses can be audited for errors. Each visitor gets 3 loo
 | `vin_storyteller/migrations.py`, `sql/migrations/` | Versioned schema migrations for the production-record database. |
 | `vin_storyteller/commands.py` | `bench --site <site> vin-storyteller-migrate`. |
 | `templates/includes/storyteller.html`, `public/js`, `public/css` | The page. `storyteller-core.js` holds the pure helpers; `storyteller.js` renders with text nodes only. |
+| `public/js/swatch.js`, `swatch-core.js`, `public/css/swatch.css`, `public/data/swatches.json` | Animated paint and interior swatches, used by the story result and by any page on the ERP (see below). |
+| `vin_storyteller/swatches.py` | Builds `swatches.json` from the extracted code lists and the researched paint colours. No Frappe. |
 
 The production record lives in its own MariaDB database (for 3S Hub, `3s_production` on the same server as
 ERPNext), not in the Frappe site's database.
+
+## Swatches
+
+The story result leads with the car's paint and interior, drawn as animated swatches: paint from a bump map
+(orange peel) and a spectral flake map (metallic or pearl flake, interference colour, clearcoat highlight);
+interiors as perforated leather or cloth weave. The light follows the cursor on desktop and the scroll on touch
+screens, and holds still under `prefers-reduced-motion`. One shared WebGL context draws every swatch on a page;
+without WebGL a swatch is a still CSS gradient. No dependencies.
+
+Any page served by the ERP can use them:
+
+```html
+<link rel="stylesheet" href="/assets/vin_storyteller/css/swatch.css">
+<div data-swatch="paint" data-code="W75" data-caption></div>
+<div data-swatch="interior" data-code="18W" data-description="Charcoal Leather, Power Seats" data-caption></div>
+<script>import("/assets/vin_storyteller/js/swatch-core.js").then(() => import("/assets/vin_storyteller/js/swatch.js"));</script>
+```
+
+`data-description` is optional (the record's name for the code; it wins over the table's). `data-caption` overlays
+the name, code and finish or material. Elements present when the script loads are drawn; for markup added later
+call `VinSwatch.mountAll(root)`, or draw one element with
+`VinSwatch.render(element, {kind, code, description, caption})`, which resolves to the swatch model (`status`
+`sourced`/`missing` for paint, `named`/`missing` for interiors, `name`, `finish` or `material`, `confidence`,
+`basis`). `VinSwatchCore.captionParts(model, code)` gives the caption text for your own markup.
+
+The code tables (`public/data/swatches.json`) are rebuilt with
+`python -m vin_storyteller.swatches paint_codes.tsv paint_hex.tsv interior_codes.tsv vin_storyteller/public/data/swatches.json`:
+
+- **Paint:** a colour is a published value with its source URL, or it is missing and drawn as a neutral panel
+  marked "colour not on file"; never a guess.
+- **Interior material:** the description if it says leather or cloth; else, for GTOs, Mitsubishi's leather option
+  K03 on every car with the code (or on none); else the code's last letter, when at least 90% of the decided cars
+  sharing it agree (marked *likely*). Each entry records its basis.
+- **Interior colour:** no trim colour values exist yet, so a swatch takes a generic shade for the colour word in
+  its description (labelled "representative shade"), or the neutral panel.
 
 ## API
 

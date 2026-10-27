@@ -20,6 +20,10 @@ production record, which lives in its own MariaDB database (not the Frappe site 
 - `vin_storyteller/templates/includes/storyteller.html`, `public/js/storyteller-core.js` (pure helpers on
   `globalThis.VinStorytellerCore`, loaded first), `public/js/storyteller.js` (DOM only, text nodes, never
   innerHTML), `public/css/storyteller.css`: the page. The footer links the AGPL source on GitHub.
+- `public/js/swatch-core.js` (pure, `globalThis.VinSwatchCore`), `public/js/swatch.js` (`globalThis.VinSwatch`,
+  WebGL + DOM), `public/css/swatch.css`, `public/data/swatches.json` (built by `vin_storyteller/swatches.py`): the
+  animated paint/interior swatches (README: Swatches). Paint colours are published values with a source URL or
+  missing, never guessed (operator, 2026-10-27).
 - `vin_storyteller/migrations.py` + `sql/migrations/NNNN_*.sql`: versioned schema migrations, applied in
   order and recorded in `SchemaMigration`; `{autoincrement}` is the only dialect token. Run by
   `commands.py` (`bench --site <site> vin-storyteller-migrate`) with write credentials from the environment

@@ -101,6 +101,8 @@ test("derivedFlake: metallic lifts toward white; a white pearl gets a warm tint"
 	assert.ok(core.luminance(core.derivedFlake(base, "metallic")) > core.luminance(base));
 	const whitePearl = core.derivedFlake(core.parseHex("#F2F2F0"), "pearl");
 	assert.ok(whitePearl.r > whitePearl.b, "warm");
+	const blackPearl = core.derivedFlake(core.parseHex("#101010"), "pearl");
+	assert.ok(core.luminance(blackPearl) < core.luminance(whitePearl), "a black pearl's tint stays darker than a white pearl's");
 });
 
 test("interiorMaterial: the description wins, then the table's decision, else unknown", () => {

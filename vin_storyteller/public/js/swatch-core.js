@@ -93,7 +93,7 @@
 	function derivedFlake(base, finish) {
 		if (finish === "pearl") {
 			const hsl = rgbToHsl(base);
-			const shifted = hsl.s < 0.08 ? hslToRgb({ h: 40, s: 0.35, l: Math.max(hsl.l, 0.75) }) : rotateHue(base, 28);
+			const shifted = hsl.s < 0.08 ? hslToRgb({ h: 40, s: 0.35, l: clamp(hsl.l + 0.3, 0.3, 0.85) }) : rotateHue(base, 28);
 			return mix(shifted, { r: 1, g: 1, b: 1 }, 0.35);
 		}
 		return mix(base, { r: 1, g: 1, b: 1 }, 0.45);

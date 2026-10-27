@@ -16,10 +16,9 @@
 /* "Colour not on file": the neutral panel says so, plainly, so it never reads as the car's colour. */
 .vsw-badge {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	padding: 6px 12px;
+	top: 12px;
+	left: 12px;
+	padding: 5px 10px;
 	border-radius: 999px;
 	background: rgba(10, 12, 20, 0.62);
 	color: #eef0f6;

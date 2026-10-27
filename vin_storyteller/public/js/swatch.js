@@ -148,32 +148,36 @@ void main() {
 		float strength = uFinish.z;
 		float pearl = uFinish.w;
 		// Flop: metallic and pearl paint is brighter facing the highlight and darker away from it.
-		float flop = mix(1.0, mix(0.45, 1.3, pow(ndoth, 3.0)), clamp(density + pearl, 0.0, 1.0));
+		float flop = mix(1.0, mix(0.55, 1.2, pow(ndoth, 3.0)), clamp(density + pearl, 0.0, 1.0));
 		vec3 body = uBase * (0.18 + 0.82 * diffuse) * flop;
 		// Spectral map: the interference colour shifts with the angle to the light.
 		float t = dot(n, hv) * 1.6 + vUv.x * 0.35 + uLight.x * 0.25;
 		vec3 spectrum = 0.5 + 0.5 * cos(6.28318 * (vec3(0.0, 0.33, 0.67) + t));
 		vec3 pearlTint = mix(uFlake, uFlake * (0.55 + 0.9 * spectrum), 0.45);
-		body = mix(body, pearlTint * (0.25 + 1.1 * pow(ndoth, 6.0)), pearl * 0.55);
+		body = mix(body, pearlTint * (0.1 + 1.1 * pow(ndoth, 6.0)), pearl * 0.45);
 		// Flake map: each cell may hold a flake with its own tilt; a flake sparkles when it faces the half-vector.
 		vec3 sparkle = vec3(0.0);
 		for (int layer = 0; layer < 2; layer++) {
-			float scale = size * (layer == 0 ? 1.0 : 2.3);
-			vec2 cell = floor(p / scale) + float(layer) * 31.0;
+			float scale = size * (layer == 0 ? 1.0 : 1.7);
+			vec2 q = p / scale + float(layer) * 31.0;
+			vec2 cell = floor(q);
 			vec2 r = hash2(cell);
-			float present = step(1.0 - density * (layer == 0 ? 1.0 : 0.5), r.x);
+			float present = step(1.0 - density * (layer == 0 ? 1.0 : 0.45), r.x);
+			// A round flake at a jittered spot in its cell.
+			vec2 centre = 0.25 + 0.5 * hash2(cell + 3.7);
+			float disc = 1.0 - smoothstep(0.18, 0.34, length(fract(q) - centre));
 			vec3 fn = normalize(n0 + vec3((hash2(cell + 7.3) - 0.5) * 0.9, 0.0));
-			float glint = pow(max(dot(fn, hv), 0.0), 90.0 + 160.0 * r.y);
+			float glint = pow(max(dot(fn, hv), 0.0), 80.0 + 160.0 * r.y);
 			vec3 tint = mix(uFlake, uFlake * (0.4 + 1.2 * spectrum), pearl);
-			sparkle += tint * glint * present * strength * (layer == 0 ? 1.6 : 2.2);
+			sparkle += tint * glint * present * disc * strength * (layer == 0 ? 1.8 : 2.4);
 		}
-		// Clearcoat: a sharp highlight over the peel, a broad sheen, and a dim sky reflection.
+		// Clearcoat: a crisp highlight over the peel, a soft lobe round it, and a dim sky reflection.
 		float gloss = uSurface.x;
 		float fresnel = 0.04 + 0.96 * pow(1.0 - ndotv, 5.0);
-		float coat = pow(ndoth, mix(60.0, 900.0, gloss)) * (2.4 + 3.0 * gloss);
-		float sheen = pow(ndoth, 14.0) * 0.12;
+		float coat = pow(ndoth, mix(120.0, 1400.0, gloss)) * 1.4 + pow(ndoth, 45.0) * 0.18;
+		float sheen = pow(ndoth, 10.0) * 0.06;
 		vec3 sky = mix(vec3(0.02, 0.025, 0.03), vec3(0.22, 0.25, 0.3), vUv.y) * (0.25 + fresnel);
-		colour = body + sparkle + vec3(coat + sheen) + sky * 0.35;
+		colour = body + sparkle + vec3(coat + sheen) + sky * 0.2;
 	} else if (uMode == 1) {
 		float hole = perforation(p);
 		float tone = 0.88 + 0.18 * fbm(p * 0.04);

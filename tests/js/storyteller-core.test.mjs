@@ -196,3 +196,8 @@ test("swatches show when the record has either code, each with its code and desc
 		{ kind: "interior", code: "", description: "" },
 	]);
 });
+
+test("featuresText says a feature came from the factory", () => {
+	assert.deepEqual([...core.featuresText(["Headlamp washers"])], ["Headlamp washers · fitted at the factory (parts catalogue)"]);
+	assert.deepEqual([...core.featuresText(undefined)], []);
+});

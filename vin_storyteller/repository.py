@@ -212,6 +212,20 @@ class ProductionRecords:
 			items.append(Coded(code, label[0] if label else MISSING))
 		return tuple(items)
 
+	def features(self, car: Car, items: tuple[Coded, ...]) -> tuple[str, ...]:
+		"""Factory-fitted equipment the parts catalogues give the car's grade at its build date (and, for a feature
+		tied to an option item, only when its option code includes that item)."""
+		built = _full_date(car.built)
+		if not built or not car.classification:
+			return ()
+		rows = self._rows(
+			"SELECT DISTINCT Feature, OptionItem FROM FactoryFeature WHERE ModelCode = %s AND Classification = %s "
+			"AND StartDate <= %s AND EndDate >= %s ORDER BY Feature",
+			(car.model_code, car.classification.strip(), built, built),
+		)
+		codes = {item.code for item in items}
+		return tuple(dict.fromkeys(feature for feature, item in rows if not item or item in codes))
+
 	def car(self, vin: str) -> Car | None:
 		row = self._one(
 			"SELECT SerialNumber, Model, ModelCode, Equipment, Exterior, Interior, DateOfManufacture, ModelYear, "
@@ -327,7 +341,8 @@ class ProductionRecords:
 			),
 			classification=self.classification(car),
 			model_code=car.model_code,
-			equipment_items=self.equipment_items(car),
+			equipment_items=(items := self.equipment_items(car)),
+			features=self.features(car, items),
 			breakdowns=self.breakdowns(car),
 		)
 

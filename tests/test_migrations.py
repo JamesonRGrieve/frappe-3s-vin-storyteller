@@ -26,6 +26,7 @@ SHIPPED = [
 	"0006_code_labels",
 	"0007_export_models",
 	"0008_option_code_index",
+	"0009_factory_features",
 ]
 
 

@@ -372,6 +372,9 @@ class Story:
 		""  # the chassis model code (Z11A, Z15A, Z16A): an option code means something per model code
 	)
 	equipment_items: tuple[Coded, ...] = ()  # what the equipment (option) code fits, item by item
+	features: tuple[
+		str, ...
+	] = ()  # factory-fitted equipment the parts catalogue gives its grade and build date
 	breakdowns: tuple[Breakdown, ...] = ()  # across every model: same colour, same period, ...
 
 	@property

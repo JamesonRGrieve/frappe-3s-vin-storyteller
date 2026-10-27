@@ -96,3 +96,33 @@ def test_answer_explains_an_export_key_not_on_record(connection):
 		and "frame number" in body["message"]
 	)
 	assert "export-market" in not_found_message("JMAMJZ16AVY009999", None)
+
+
+def feature(
+	connection, start="1996061", end="1997053", item="", name="Headlamp washers", classification="MJGFR6"
+):
+	connection.execute(
+		"INSERT INTO FactoryFeature (Source, ModelCode, Classification, StartDate, EndDate, OptionItem, Feature) "
+		"VALUES ('ASA General 2008', 'Z16A', ?, ?, ?, ?, ?)",
+		(classification, start, end, item, name),
+	)
+
+
+def test_a_factory_feature_applies_by_grade_and_build_date(connection, records):
+	feature(connection)
+	add_export(connection, EXPORT_VIN, "VY000101", built="96123")  # inside the window
+	add_export(connection, "JMAMJZ16AWY000101", "WY000101", built="97061", year="98")  # after it
+	assert records.story(EXPORT_VIN).features == ("Headlamp washers",)
+	assert records.story("JMAMJZ16AWY000101").features == ()
+
+
+def test_a_feature_tied_to_an_option_item_needs_that_item(connection, records):
+	feature(connection, item="K03", name="Leather trim")
+	connection.execute(
+		"INSERT INTO OptionContent (Source, ModelCode, OptionCode, Classification, ModelYear, StartDate, EndDate, Items) "
+		"VALUES ('ASA General 2008', 'Z16A', 'T01', 'MJGFR6', '97', '1996061', '1997053', 'K03,XA3')"
+	)
+	add_export(connection, EXPORT_VIN, "VY000101")
+	assert records.story(EXPORT_VIN).features == ("Leather trim",)
+	connection.execute("UPDATE OptionContent SET Items = 'XA3'")
+	assert records.story(EXPORT_VIN).features == ()

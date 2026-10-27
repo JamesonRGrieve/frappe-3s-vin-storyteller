@@ -84,6 +84,8 @@
 	const keyLabel = (key) => (key.length === 17 ? "VIN" : /^Z1[56]A-/.test(key) ? "Chassis number" : "Frame number");
 	// What the equipment code fits, item by item, for the spec table.
 	const equipmentItemsText = (items) => items.map(codedText);
+	// Factory-fitted equipment the parts catalogue gives the car's grade and build date (e.g. headlamp washers).
+	const featuresText = (features) => (features || []).map((f) => `${f} · fitted at the factory (parts catalogue)`);
 
 	// Live feedback while typing: the count so far and, once something is wrong, why. `ready` means the VIN
 	// can be looked up; nothing here blocks submitting (the submit handler validates again).
@@ -280,6 +282,7 @@
 		listText,
 		breakdownParts,
 		equipmentItemsText,
+		featuresText,
 		badgeParts,
 		historyParts,
 		timelineText,

@@ -186,7 +186,7 @@
 			),
 			specRow(core.keyLabel(story.vin), story.vin),
 		);
-		const items = core.equipmentItemsText(story.equipment_items || []);
+		const items = [...core.equipmentItemsText(story.equipment_items || []), ...core.featuresText(story.features)];
 		const fitted = result.querySelector(".vst-equipment");
 		fitted.querySelector(".vst-equipment-list").replaceChildren(...items.map((text) => element("li", "", text)));
 		fitted.hidden = items.length === 0;

@@ -2264,8 +2264,8 @@
 			"dodge_name": "Silver Metallic",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#7B807A",
+			"mitsubishi_name": "Coronado Silver Metallic",
 			"model_years": [
 				"95",
 				"96"
@@ -2274,17 +2274,17 @@
 				"Stealth",
 				"GTO"
 			],
-			"name": "Silver Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"name": "Coronado Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. Mitsubishi name 'Coronado Silver Metallic' from AutomotiveTouchup 3000GT 1994-1999 (https://automotivetouchup.com/touch-up-paint/mitsubishi/1996/3000gt). STRONG DISAGREEMENT: PaintScratch Mitsubishi A26 'Coronado Sand Metallic' (1995-2004 Truck, Lancer, Diamante, FTO; not 3000GT) = #E0DBC8 (https://www.paintscratch.com/colors/mitsubishi/coronado-sand-metallic-a26/).",
+			"source": "https://www.paintscratch.com/colors/dodge/silver-metallic-a26pam/",
+			"status": "sourced"
 		},
 		"A71": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#AEB7AD",
+			"mitsubishi_name": "Seattle Silver Metallic",
 			"model_years": [
 				"00",
 				"97",
@@ -2294,16 +2294,16 @@
 			"models": [
 				"GTO"
 			],
-			"name": "",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"name": "Seattle Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. CAUTION: source ties A71 to other models, not 3000GT/GTO. Mitsubishi name 'Seattle Silver Metallic' from AutomotiveTouchup 3000GT 1996-1999 (https://automotivetouchup.com/touch-up-paint/mitsubishi/1996/3000gt). Metallic per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/hamilton-silver-metallic-a71/",
+			"status": "sourced"
 		},
 		"B34": {
 			"dodge_name": "Dark Blue Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#4B69A1",
 			"mitsubishi_name": "Danube Blue Mica",
 			"model_years": [
 				"93",
@@ -2318,15 +2318,15 @@
 				"GTO"
 			],
 			"name": "Danube Blue Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per names. STRONG DISAGREEMENT: PaintScratch Dodge B34/PCK 'Blue Pearl' (Stealth 1993-95) = #0E2888 (https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/); the darker Dodge value fits 'Dark Blue Pearl' better.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/mariana-blue-pearl-b34/",
+			"status": "sourced"
 		},
 		"B60": {
 			"dodge_name": "Peacock Green",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#0D5340",
 			"mitsubishi_name": "",
 			"model_years": [
 				"93",
@@ -2336,9 +2336,9 @@
 				"Stealth"
 			],
 			"name": "Peacock Green",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish not stated in name (assumed solid by name only; may be metallic/pearl - unverified). PaintScratch Mitsubishi B60 'Peacock Green' (1992-93 Expo; not 3000GT) = #156D49 (https://www.paintscratch.com/colors/mitsubishi/peacock-green-b60/). No Mitsubishi 3000GT name found.",
+			"source": "https://www.paintscratch.com/colors/dodge/peacock-green-b60pga/",
+			"status": "sourced"
 		},
 		"BA4": {
 			"dodge_name": "",
@@ -2353,7 +2353,7 @@
 				"Stealth"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for BA4.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2361,7 +2361,7 @@
 			"dodge_name": "",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#146421",
 			"mitsubishi_name": "Zealand Green Pearl",
 			"model_years": [
 				"00",
@@ -2373,15 +2373,15 @@
 				"GTO"
 			],
 			"name": "Zealand Green Pearl",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. AutomotiveTouchup names G13 Zealand Green Pearl on 3000GT 1997-99.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/timber-green-pearl-g13/",
+			"status": "sourced"
 		},
 		"G84": {
 			"dodge_name": "Emerald Green Metallic",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#588059",
 			"mitsubishi_name": "Panama Green Mica",
 			"model_years": [
 				"92",
@@ -2397,9 +2397,9 @@
 				"GTO"
 			],
 			"name": "Panama Green Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish per names (Mica/Pearl). DISAGREES with PaintScratch Dodge page G84/PG2 'Emerald Green Pearl' (Stealth 1992-96) = #075F35 (https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/kilder-green-pearl-g84/",
+			"status": "sourced"
 		},
 		"GA4": {
 			"dodge_name": "Emerald Green Metallic",
@@ -2416,7 +2416,7 @@
 				"Stealth"
 			],
 			"name": "Panama Green Mica",
-			"notes": "",
+			"notes": "No published hex/RGB found for GA4. Possibly an alternate code for G84 but no source states this; not assumed.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2424,8 +2424,8 @@
 			"dodge_name": "Dark Silver Metallic",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#D0C8BA",
+			"mitsubishi_name": "Gentile Silver Metallic",
 			"model_years": [
 				"93",
 				"94"
@@ -2434,16 +2434,16 @@
 				"Stealth",
 				"GTO"
 			],
-			"name": "Dark Silver Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"name": "Gentile Silver Metallic",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. Mitsubishi name added from this PaintScratch page. STRONG DISAGREEMENT: PaintScratch Dodge H28/PAD 'Dark Silver Pearl' (Stealth 1993-94) = #A1A7A3 (https://www.paintscratch.com/colors/dodge/dark-silver-pearl-h28pad/) - Dodge value fits 'Dark Silver' better; choose deliberately. Dodge name Dark Silver Metallic confirmed by AutomotiveTouchup Stealth 1993-94.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/gentile-silver-metallic-h28/",
+			"status": "sourced"
 		},
 		"H84": {
 			"dodge_name": "",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#E3E2DD",
 			"mitsubishi_name": "Ascot Silver Metallic",
 			"model_years": [
 				"91",
@@ -2455,15 +2455,15 @@
 				"GTO"
 			],
 			"name": "Ascot Silver Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/grace-silver-metallic-h84/",
+			"status": "sourced"
 		},
 		"H89": {
 			"dodge_name": "",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#918A73",
 			"mitsubishi_name": "Sandstone Gray Metallic",
 			"model_years": [
 				"92",
@@ -2474,9 +2474,9 @@
 				"GTO"
 			],
 			"name": "Sandstone Gray Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/corse-gray-metallic-h89/",
+			"status": "sourced"
 		},
 		"HA4": {
 			"dodge_name": "",
@@ -2491,7 +2491,7 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for HA4.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2508,7 +2508,7 @@
 				"Stealth"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for HA8.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2526,7 +2526,7 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for HA9.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2534,7 +2534,7 @@
 			"dodge_name": "Selva Olive Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#2C4C32",
 			"mitsubishi_name": "Belgium Green Pearl",
 			"model_years": [
 				"96",
@@ -2545,15 +2545,15 @@
 				"Stealth"
 			],
 			"name": "Belgium Green Pearl",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. STRONG DISAGREEMENT: PaintScratch Dodge L79/PFN 'Olive Pearl' (Stealth 1996) = #526208 (https://www.paintscratch.com/colors/dodge/olive-pearl-l79pfn/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/olive-pearl-l79/",
+			"status": "sourced"
 		},
 		"P03": {
 			"dodge_name": "",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#B21839",
 			"mitsubishi_name": "Sorrento Red Mica",
 			"model_years": [
 				"94",
@@ -2564,15 +2564,15 @@
 				"3000GT"
 			],
 			"name": "Sorrento Red Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Mica/pearl per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/sorrento-red-pearl-p03/",
+			"status": "sourced"
 		},
 		"P82": {
 			"dodge_name": "Orchid Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#BD8FB2",
 			"mitsubishi_name": "Amethyst Pearl",
 			"model_years": [
 				"96"
@@ -2583,15 +2583,15 @@
 				"GTO"
 			],
 			"name": "Amethyst Pearl",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. PaintScratch Dodge P82/PHA 'Orchid Metallic' (Stealth 1996) = #896D80 (https://www.paintscratch.com/colors/dodge/orchid-metallic-p82pha/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/superior-ameth-pearl-p82/",
+			"status": "sourced"
 		},
 		"R25": {
 			"dodge_name": "Covert Red Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#AF1F41",
 			"mitsubishi_name": "Morocco Red Mica",
 			"model_years": [
 				"91",
@@ -2604,15 +2604,15 @@
 				"GTO"
 			],
 			"name": "Morocco Red Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per names (AutomotiveTouchup also calls it Morocco Red Metallic). STRONG DISAGREEMENT: PaintScratch Dodge R25/PRG 'Kutani Red Pearl' (Stealth 1991-95) = #7C0208 (https://www.paintscratch.com/colors/dodge/kutani-red-pearl-r25prg/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/morocco-red-pearl-r25/",
+			"status": "sourced"
 		},
 		"R38": {
 			"dodge_name": "Fire Storm",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#DA2318",
 			"mitsubishi_name": "Monza Red",
 			"model_years": [
 				"91",
@@ -2624,15 +2624,15 @@
 				"GTO"
 			],
 			"name": "Monza Red",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Solid per name. PaintScratch Dodge R38/PRH 'Scarlet Red' (Stealth 1991-92) = #E12A11 (https://www.paintscratch.com/colors/dodge/scarlet-red-r38prh/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/monza-red-r38/",
+			"status": "sourced"
 		},
 		"R71": {
 			"dodge_name": "Fire Storm",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#E42B1B",
 			"mitsubishi_name": "Caracas Red",
 			"model_years": [
 				"00",
@@ -2651,16 +2651,16 @@
 				"GTO"
 			],
 			"name": "Caracas Red",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish solid per name (no metallic/pearl). PaintScratch Dodge R71/PE7 'Red' (Stealth 1993-96) = #CF1E0D (https://www.paintscratch.com/colors/dodge/red-r71pe7/). AutomotiveTouchup names it Caracas Red (3000GT 1993-99) and Fire Storm / Firestorm Red (Stealth 1993-96).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/passion-red-r71/",
+			"status": "sourced"
 		},
 		"RA1": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "solid",
 			"flake_hex": "",
 			"hex": "",
-			"mitsubishi_name": "",
+			"mitsubishi_name": "Passion Red",
 			"model_years": [
 				"93"
 			],
@@ -2668,17 +2668,17 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "",
-			"notes": "",
+			"name": "Passion Red",
+			"notes": "No published hex/RGB found for RA1 tied to Mitsubishi. NOTE: PaintScratch has a Dodge 'Dove Gray RA1' page (https://www.paintscratch.com/colors/dodge/dove-gray-ra1/) - a Chrysler code, unrelated. Name only from owner captions (R71/RA1). Name from the 3shub.ca owner-photo captions only.",
 			"source": "",
 			"status": "missing"
 		},
 		"RA5": {
 			"dodge_name": "",
-			"finish": "",
+			"finish": "pearl",
 			"flake_hex": "",
 			"hex": "",
-			"mitsubishi_name": "",
+			"mitsubishi_name": "Morocco Red Pearl",
 			"model_years": [
 				"91",
 				"92",
@@ -2688,8 +2688,8 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "",
-			"notes": "",
+			"name": "Morocco Red Pearl",
+			"notes": "No published hex/RGB found for RA5. Name only from owner captions (R25/RA5), not a published source. Name from the 3shub.ca owner-photo captions only.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2709,7 +2709,7 @@
 				"Stealth"
 			],
 			"name": "Firestorm Red",
-			"notes": "",
+			"notes": "No published hex/RGB found for RA8.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2717,7 +2717,7 @@
 			"dodge_name": "Sandstorm Metallic",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#BBBCA8",
 			"mitsubishi_name": "Nairobi Beige Metallic",
 			"model_years": [
 				"91",
@@ -2729,9 +2729,9 @@
 				"Stealth"
 			],
 			"name": "Nairobi Beige Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. PaintScratch Mitsubishi S22 'Wheat Beige Metallic' (1991-93 Diamante, Expo, Galant etc.; not 3000GT) = #C8BDA0 (https://www.paintscratch.com/colors/mitsubishi/wheat-beige-metallic-s22/). Names per AutomotiveTouchup (3000GT 1991 Nairobi Beige Metallic; Stealth 1991-92 Sandstorm Metallic).",
+			"source": "https://www.paintscratch.com/colors/dodge/wheat-beige-metallic-s22pvc/",
+			"status": "sourced"
 		},
 		"SA2": {
 			"dodge_name": "",
@@ -2748,7 +2748,7 @@
 				"Stealth"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for SA2.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2756,7 +2756,7 @@
 			"dodge_name": "Strata Blue Metallic",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#30CAC8",
 			"mitsubishi_name": "Jamaican Blue Metallic",
 			"model_years": [
 				"91"
@@ -2766,15 +2766,15 @@
 				"Stealth"
 			],
 			"name": "Jamaican Blue Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. PaintScratch Dodge T72/PQ4 'Bright Turquoise Metallic' (Stealth 1990-93) = #27A393 (https://www.paintscratch.com/colors/dodge/bright-turquoise-metallic-t72pq4/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/napier-blue-metallic-t72/",
+			"status": "sourced"
 		},
 		"T87": {
 			"dodge_name": "Mystic Blue Metallic",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#4F8EBF",
 			"mitsubishi_name": "Fiji Blue Metallic",
 			"model_years": [
 				"91",
@@ -2786,9 +2786,9 @@
 				"GTO"
 			],
 			"name": "Fiji Blue Metallic",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. STRONG DISAGREEMENT: PaintScratch Dodge T87/PB5 'Bright Blue Metallic' (Stealth 1988-92) = #112888 (https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/fiji-blue-metallic-t87/",
+			"status": "sourced"
 		},
 		"TA2": {
 			"dodge_name": "",
@@ -2804,7 +2804,7 @@
 				"Stealth"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for TA2.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2823,15 +2823,15 @@
 				"Stealth"
 			],
 			"name": "Fiji Blue Metallic",
-			"notes": "",
+			"notes": "No published hex/RGB found for TA7. Possibly an alternate code for T87 but no source states this; not assumed.",
 			"source": "",
 			"status": "missing"
 		},
 		"W20": {
-			"dodge_name": "",
-			"finish": "",
+			"dodge_name": "White",
+			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#F9FBFD",
 			"mitsubishi_name": "",
 			"model_years": [
 				"91",
@@ -2841,16 +2841,16 @@
 				"3000GT",
 				"Stealth"
 			],
-			"name": "",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"name": "White",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Dodge name 'White' added from this PaintScratch page. No Mitsubishi name found. Solid per name.",
+			"source": "https://www.paintscratch.com/colors/dodge/white-w20pwe/",
+			"status": "sourced"
 		},
 		"W29": {
 			"dodge_name": "Grayish White Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#DEE1E6",
 			"mitsubishi_name": "Zurich White Mica",
 			"model_years": [
 				"92",
@@ -2863,9 +2863,9 @@
 				"GTO"
 			],
 			"name": "Zurich White Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Tricoat per source; one value only. PaintScratch Dodge W29/PMW 'Grayish White Tri-Coat Pearl' (Stealth 1993-94) = #C1CACA (https://www.paintscratch.com/colors/dodge/grayish-white-tri-coat-pearl-w29pmw/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/misty-white-pearl-tri-coat-w29/",
+			"status": "sourced"
 		},
 		"W2D": {
 			"dodge_name": "",
@@ -2880,7 +2880,7 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for W2D. (PaintScratch has Dodge 'white-dw2dt1639' - Chrysler DW2/T1639, unrelated.)",
 			"source": "",
 			"status": "missing"
 		},
@@ -2888,8 +2888,8 @@
 			"dodge_name": "Brilliant White",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
-			"mitsubishi_name": "",
+			"hex": "#F9FBFD",
+			"mitsubishi_name": "Fairy White",
 			"model_years": [
 				"93",
 				"94",
@@ -2899,16 +2899,16 @@
 			"models": [
 				"Stealth"
 			],
-			"name": "Brilliant White",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"name": "Fairy White",
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Solid per name. Mitsubishi name 'Fairy White' from PaintScratch Mitsubishi W32 page (1993-2001 Diamante, Truck, Montero, Montero Sport; not 3000GT) https://www.paintscratch.com/colors/mitsubishi/fairy-white-w32/ which publishes #F5FCF4. Dodge name Brilliant White per AutomotiveTouchup Stealth 1993/1995/1996 (https://automotivetouchup.com/touch-up-paint/dodge/1993/stealth).",
+			"source": "https://www.paintscratch.com/colors/dodge/white-w32pwl/",
+			"status": "sourced"
 		},
 		"W75": {
 			"dodge_name": "Galaxy White Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#E5EDE3",
 			"mitsubishi_name": "Glacier White Pearl",
 			"model_years": [
 				"00",
@@ -2926,9 +2926,9 @@
 				"GTO"
 			],
 			"name": "Glacier White Pearl",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Tricoat per source (is_tricoat=true); only one value published, no mid-coat value. PaintScratch Dodge W75/PWD 'White Tri-Coat Pearl' (Stealth 1991-96) = #DAE1D6 (https://www.paintscratch.com/colors/dodge/white-tri-coat-pearl-w75pwd/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/galaxy-white-pearl-tricoat-w75/",
+			"status": "sourced"
 		},
 		"W9X": {
 			"dodge_name": "",
@@ -2945,7 +2945,7 @@
 				"GTO"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for W9X.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2963,7 +2963,7 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for WA0.",
 			"source": "",
 			"status": "missing"
 		},
@@ -2982,7 +2982,7 @@
 				"Stealth"
 			],
 			"name": "Glacier White Pearl",
-			"notes": "",
+			"notes": "No published hex/RGB found for code WA5 (PaintScratch sitemap, AutomotiveTouchup 3000GT/Stealth 1991-99, encycolorpedia, web search). Possibly an alternate code for W75 but no source states this; not assumed.",
 			"source": "",
 			"status": "missing"
 		},
@@ -3000,7 +3000,7 @@
 				"Stealth"
 			],
 			"name": "Pearl White",
-			"notes": "",
+			"notes": "No published hex/RGB found for WA9.",
 			"source": "",
 			"status": "missing"
 		},
@@ -3008,7 +3008,7 @@
 			"dodge_name": "",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#151618",
 			"mitsubishi_name": "Albany Black Mica",
 			"model_years": [
 				"92",
@@ -3019,15 +3019,15 @@
 				"GTO"
 			],
 			"name": "Albany Black Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Mica/pearl per name.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/toscana-black-pearl-x02/",
+			"status": "sourced"
 		},
 		"X08": {
 			"dodge_name": "",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#121219",
 			"mitsubishi_name": "Solano Black Pearl",
 			"model_years": [
 				"00",
@@ -3041,15 +3041,15 @@
 				"GTO"
 			],
 			"name": "Solano Black Pearl",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per name. AutomotiveTouchup names X08 Solano Black Pearl on 3000GT 1996-97.",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/pyreness-black-pearl-x08/",
+			"status": "sourced"
 		},
 		"X94": {
 			"dodge_name": "Jet Black",
 			"finish": "solid",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#0D1315",
 			"mitsubishi_name": "Lamp Black",
 			"model_years": [
 				"91",
@@ -3065,9 +3065,9 @@
 				"GTO"
 			],
 			"name": "Lamp Black",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Solid per name. PaintScratch Dodge X94/PX2 'Lamp Black' (Stealth 1990-96) = #0A110E (https://www.paintscratch.com/colors/dodge/lamp-black-x94px2/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/lamp-black-x94/",
+			"status": "sourced"
 		},
 		"XA2": {
 			"dodge_name": "",
@@ -3083,7 +3083,7 @@
 				"3000GT"
 			],
 			"name": "",
-			"notes": "",
+			"notes": "No name and no published hex/RGB found for XA2.",
 			"source": "",
 			"status": "missing"
 		},
@@ -3103,7 +3103,7 @@
 				"Stealth"
 			],
 			"name": "Lamp Black",
-			"notes": "",
+			"notes": "No published hex/RGB found for XA4. Possibly an alternate code for X94 but no source states this; not assumed.",
 			"source": "",
 			"status": "missing"
 		},
@@ -3111,7 +3111,7 @@
 			"dodge_name": "Champagne Yellow Pearl",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "",
+			"hex": "#EEF0AE",
 			"mitsubishi_name": "Martinique Yellow Mica",
 			"model_years": [
 				"94",
@@ -3122,9 +3122,9 @@
 				"Stealth"
 			],
 			"name": "Martinique Yellow Mica",
-			"notes": "",
-			"source": "",
-			"status": "missing"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Tricoat per source; one value only. PaintScratch Dodge Y99/PY1 'Champagne Yellow Tri-Coat Pearl' (Stealth 1994-95) = #F7F67F (https://www.paintscratch.com/colors/dodge/champagne-yellow-tri-coat-pearl-y99py1/).",
+			"source": "https://www.paintscratch.com/colors/mitsubishi/yellow-pearl-tricoat-y99/",
+			"status": "sourced"
 		}
 	},
 	"version": 1

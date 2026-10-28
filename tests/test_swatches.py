@@ -495,3 +495,31 @@ def test_a_dodge_name_cited_from_dodge_literature_wins(tmp_path):
 	entry = swatches.paint_table(swatches.read_tsv(codes), swatches.read_tsv(researched))["R71"]
 	assert entry["dodge_name"] == "Firestorm Red" and entry["dodge_name_source"] == "1994 brochure"
 	assert entry["mitsubishi_name"] == "Caracas Red"
+
+
+def test_a_factory_document_or_agreeing_sellers_decide_the_material(tmp_path):
+	interiors = write(
+		tmp_path,
+		"interior_codes.tsv",
+		INTERIOR_COLUMNS,
+		[
+			interior_row("95F", "MISSING", gt=9),
+			interior_row("15A", "MISSING", stealth=4),
+			interior_row("18W", "Charcoal Leather", stealth=3),
+		],
+	)
+	materials = [
+		{"code": "95F", "source": "document", "material": "leather", "basis": "window sticker"},
+		{"code": "15A", "source": "listings", "material": "cloth", "basis": "2 of 2 listings"},
+		{"code": "18W", "source": "document", "material": "cloth", "basis": "would lose to the description"},
+		{"code": "01A", "source": "guess", "material": "cloth", "basis": "ignored"},
+	]
+	table = swatches.interior_table(swatches.read_tsv(interiors), (), (), materials)
+	assert (table["95F"]["material"], table["95F"]["confidence"], table["95F"]["basis"]) == (
+		"leather",
+		"decided",
+		"window sticker",
+	)
+	assert table["15A"]["material"] == "cloth"
+	assert table["18W"]["material"] == "leather"  # a recorded description still wins
+	assert "01A" not in swatches.interior_materials(materials)

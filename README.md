@@ -70,7 +70,8 @@ The code tables (`public/data/swatches.json`) are rebuilt with
   Dodge's, any other in Mitsubishi's. A code with no published value or name may be `derived` from evidence that
   names its colour (BA4/HA8 = B34/H28 on the 1993 Stealth R/T grades; W9X = the white/black patrol-car GTOs); it
   is captioned "approximate colour" and records its derivation (operator, 2026-10-27).
-- **Interior material:** the description if it says leather or cloth; else, for GTOs, Mitsubishi's leather option
+- **Interior material:** the description if it says leather or cloth; else a car's factory document (window sticker,
+  equipment list) or its sellers' agreeing words (`interior_materials.tsv`); else, for GTOs, Mitsubishi's leather option
   K03 on every car with the code (or on none); else the code's last letter, when at least 90% of the decided cars
   sharing it agree (marked *likely*). Each entry records its basis.
 - **Interior colour:** no trim colour values exist, so a swatch takes a generic shade for a colour word (labelled

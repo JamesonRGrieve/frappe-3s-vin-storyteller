@@ -261,11 +261,11 @@
 			]
 		},
 		"05H": {
-			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code say cloth (e.g. dark gray cloth upholstery)",
 			"colour": "Charcoal",
 			"colour_basis": "US trim letter H: every named, catalogued or listed US H interior is charcoal",
 			"colour_confidence": "letter",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
 			"model_years": [
@@ -311,13 +311,13 @@
 			]
 		},
 		"06E": {
-			"basis": "no decided code ends in E",
+			"basis": "factory document: Dodge window sticker: \"Interior Color: Black & Tan; Seats - Leather & Vinyl Front Buckets\" (1996 Stealth R/T Turbo) (VIN JB3AN74K9TY002721)",
 			"colour": "Black & Tan",
 			"colour_basis": "1 factory document(s): Dodge window sticker: \"Interior Color: Black & Tan; Seats - Leather & Vinyl Front Buckets\" (1996 Stealth R/T Turbo)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"96"
 			],
@@ -415,11 +415,11 @@
 			]
 		},
 		"07H": {
-			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code say cloth (e.g. gray cloth upholstery w/patterned inserts)",
 			"colour": "Charcoal",
 			"colour_basis": "US trim letter H: every named, catalogued or listed US H interior is charcoal",
 			"colour_confidence": "letter",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
 			"model_years": [
@@ -579,11 +579,11 @@
 			]
 		},
 		"10H": {
-			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code say cloth (e.g. gray cloth upholstery)",
 			"colour": "Gray",
 			"colour_basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Gray Cloth Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
 			"model_years": [
@@ -646,7 +646,7 @@
 			]
 		},
 		"13E": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 545 US 3000GTs with this code",
+			"basis": "factory document: Mitsubishi window sticker: \"TAN LEATHER INTERIOR\" (1996 3000GT VR-4) (VIN JA3AN74K9TY003932)",
 			"colour": "Tan",
 			"colour_basis": "1 factory document(s): Mitsubishi window sticker: \"TAN LEATHER INTERIOR\" (1996 3000GT VR-4)",
 			"colour_confidence": "document",
@@ -795,7 +795,7 @@
 			]
 		},
 		"14T": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 7,199 US 3000GTs with this code",
+			"basis": "19 of 19 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. beige leather upholstery)",
 			"colour": "Ivory",
 			"colour_basis": "12 of 18 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Beige Leather Upholstery)",
 			"colour_confidence": "listings",
@@ -829,7 +829,7 @@
 			]
 		},
 		"14W": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 9,310 US 3000GTs with this code",
+			"basis": "factory document: Mitsubishi window sticker: \"R38 / 14W ... TRIM : GRAY LEATHER\" (1992 3000GT VR-4) (VIN JA3XE74C4NY028520)",
 			"colour": "Gray",
 			"colour_basis": "3 factory document(s): Mitsubishi window sticker: \"R38 / 14W ... TRIM : GRAY LEATHER\" (1992 3000GT VR-4); Mitsubishi window sticker: \"TRIM : GRAY\" (1993 3000GT VR-4); Mitsubishi window sticker: \"R71 / 14W ... TRIM : GRAY\" (1993 3000GT VR-4)",
 			"colour_confidence": "document",
@@ -861,13 +861,13 @@
 			]
 		},
 		"15A": {
-			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"basis": "factory document: Dodge window sticker: \"Interior Trim & Color: BEIGE; SEATS-CLOTH/VINYL RECLINING BUCKET\" (1994 Stealth) (VIN JB3AM44H4RY006397)",
 			"colour": "Beige",
 			"colour_basis": "1 factory document(s): Dodge window sticker: \"Interior Trim & Color: BEIGE; SEATS-CLOTH/VINYL RECLINING BUCKET\" (1994 Stealth)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "cloth",
 			"model_years": [
 				"94"
 			],
@@ -1213,11 +1213,11 @@
 			]
 		},
 		"19H": {
-			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code say cloth (e.g. gray cloth upholstery)",
 			"colour": "Gray",
 			"colour_basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Gray Cloth Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
 			"model_years": [
@@ -1341,7 +1341,7 @@
 			"sampled_hex": "#38393F"
 		},
 		"21A": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,980 US 3000GTs with this code",
+			"basis": "3 of 3 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. gray leather upholstery)",
 			"colour": "Gray",
 			"colour_basis": "3 of 3 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Gray Leather Upholstery)",
 			"colour_confidence": "listings",
@@ -1359,7 +1359,7 @@
 			"sampled_hex": "#8F8F8D"
 		},
 		"21D": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 2,391 US 3000GTs with this code",
+			"basis": "7 of 7 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. ivory leather upholstery)",
 			"colour": "Ivory",
 			"colour_basis": "legacy 3sgto.org storyteller Interior table: (Mitsubishi) Ivory Leather",
 			"colour_confidence": "named",
@@ -1436,13 +1436,13 @@
 			"sampled_hex": "#A0A0A0"
 		},
 		"22E": {
-			"basis": "no decided code ends in E",
+			"basis": "factory document: Mitsubishi window sticker: \"TAN LEATHER INTERIOR\" (1996 3000GT Spyder VR-4) (VIN JA3AW75KXTY800265)",
 			"colour": "Tan",
 			"colour_basis": "1 factory document(s): Mitsubishi window sticker: \"TAN LEATHER INTERIOR\" (1996 3000GT Spyder VR-4)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"96"
 			],
@@ -1539,7 +1539,7 @@
 			]
 		},
 		"24U": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,021 US 3000GTs with this code",
+			"basis": "factory document: Mitsubishi window sticker: \"W75 / 24U ... TRIM : RED\" (1991 3000GT VR-4) (VIN JA3XE74C1MY018364)",
 			"colour": "Red",
 			"colour_basis": "1 factory document(s): Mitsubishi window sticker: \"W75 / 24U ... TRIM : RED\" (1991 3000GT VR-4)",
 			"colour_confidence": "document",
@@ -1613,13 +1613,13 @@
 			]
 		},
 		"27A": {
-			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"basis": "factory document: Dodge window sticker: \"Interior Trim & Color: DARK GRAY; SEATS-LEATHER BUCKETS\" (1994 Stealth R/T) (VIN JB3AM64J1RY032678)",
 			"colour": "Dark Gray",
 			"colour_basis": "1 factory document(s): Dodge window sticker: \"Interior Trim & Color: DARK GRAY; SEATS-LEATHER BUCKETS\" (1994 Stealth R/T)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"94"
 			],
@@ -1741,13 +1741,13 @@
 			]
 		},
 		"36A": {
-			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"basis": "factory document: Mitsubishi window sticker: \"GRAY LEATHER INTERIOR\" (1995 3000GT Spyder VR-4) (VIN JA3AW75KXSY828680)",
 			"colour": "Gray",
 			"colour_basis": "2 factory document(s): Mitsubishi window sticker: \"GRAY LEATHER INTERIOR\" (1995 3000GT Spyder VR-4); Mitsubishi window sticker: \"GRAY LEATHER INTERIOR\" (1995 3000GT Spyder VR-4)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1758,13 +1758,13 @@
 			"sampled_hex": "#575659"
 		},
 		"36D": {
-			"basis": "suffix letter D: 276 of 276 decided cars ending D are cloth (08D)",
+			"basis": "7 of 7 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. ivory leather upholstery)",
 			"colour": "Ivory",
 			"colour_basis": "7 of 7 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Ivory Leather Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
-			"material": "cloth",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1775,13 +1775,13 @@
 			"sampled_hex": "#B0ACA9"
 		},
 		"37A": {
-			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"basis": "factory document: Mitsubishi window sticker: \"GRAY LEATHER INTERIOR\" (1995 3000GT Spyder SL) (VIN JA3AV65J1SY830158)",
 			"colour": "Gray",
 			"colour_basis": "1 factory document(s): Mitsubishi window sticker: \"GRAY LEATHER INTERIOR\" (1995 3000GT Spyder SL)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -1839,11 +1839,11 @@
 			]
 		},
 		"39H": {
-			"basis": "suffix letter H: 19,151 of 19,152 decided cars ending H are cloth (03H, 04H, 08H, 13H, 14H, 21H, 22H, 31H, 32H, 51H, 52H); against: 02H",
+			"basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code say cloth (e.g. gray cloth upholstery)",
 			"colour": "Gray",
 			"colour_basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Gray Cloth Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
 			"material": "cloth",
 			"model_years": [
@@ -1856,7 +1856,7 @@
 			"sampled_hex": "#5E606B"
 		},
 		"41A": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,623 US 3000GTs with this code",
+			"basis": "factory document: Mitsubishi window sticker: \"TRIM: GRAY LEATHER\" (1995 3000GT VR-4) (VIN JA3AN74K6SY003725)",
 			"colour": "Gray",
 			"colour_basis": "2 factory document(s): Mitsubishi window sticker: \"TRIM: GRAY LEATHER\" (1995 3000GT VR-4); Mitsubishi window sticker: \"GRAY LEATHER INTERIOR\" (1995 3000GT VR-4)",
 			"colour_confidence": "document",
@@ -1873,7 +1873,7 @@
 			"sampled_hex": "#525152"
 		},
 		"41D": {
-			"basis": "ASA USA leather-seat option item (K03 / K67) on all 1,862 US 3000GTs with this code",
+			"basis": "6 of 6 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. ivory leather upholstery)",
 			"colour": "Ivory",
 			"colour_basis": "4 of 6 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Ivory Leather Upholstery)",
 			"colour_confidence": "listings",
@@ -2164,13 +2164,13 @@
 			]
 		},
 		"60A": {
-			"basis": "suffix letter A is mixed: leather 126 cars (51A, 52A), cloth 163 (08A)",
+			"basis": "4 of 4 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. black leather upholstery)",
 			"colour": "Black",
 			"colour_basis": "3 of 4 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Black Leather Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"95"
 			],
@@ -2245,13 +2245,13 @@
 			]
 		},
 		"67E": {
-			"basis": "no decided code ends in E",
+			"basis": "14 of 14 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. saddle leather upholstery)",
 			"colour": "Tan",
 			"colour_basis": "10 of 13 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Beige Leather Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -2263,13 +2263,13 @@
 			"sampled_hex": "#C5B39F"
 		},
 		"67F": {
-			"basis": "no decided code ends in F",
+			"basis": "3 of 3 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. tan leather upholstery)",
 			"colour": "Tan",
 			"colour_basis": "3 of 3 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Tan Leather Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -2296,11 +2296,11 @@
 			"sampled_hex": "#2F2F31"
 		},
 		"67P": {
-			"basis": "suffix letter P: 329 of 329 decided cars ending P are leather (01P, 02P, 06P, 07P, 90P, 91P)",
+			"basis": "factory document: Mitsubishi window sticker: \"BLACK LEATHER INTERIOR\" (1998 3000GT SL) (VIN JA3AM84J8WY001920)",
 			"colour": "Black",
 			"colour_basis": "1 factory document(s): Mitsubishi window sticker: \"BLACK LEATHER INTERIOR\" (1998 3000GT SL)",
 			"colour_confidence": "document",
-			"confidence": "inferred",
+			"confidence": "decided",
 			"description": "",
 			"material": "leather",
 			"model_years": [
@@ -2314,13 +2314,13 @@
 			"sampled_hex": "#3E3E44"
 		},
 		"77F": {
-			"basis": "no decided code ends in F",
+			"basis": "3 of 3 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. beige leather upholstery)",
 			"colour": "Tan",
 			"colour_basis": "2 of 3 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Beige Leather Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"97",
 				"98"
@@ -2488,13 +2488,13 @@
 			"sampled_hex": "#9B9487"
 		},
 		"92F": {
-			"basis": "no decided code ends in F",
+			"basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code say leather (e.g. tan leather upholstery)",
 			"colour": "Tan",
 			"colour_basis": "2 of 2 Bring a Trailer / Cars & Bids listings for cars with this code describe it so (e.g. Tan Leather Upholstery)",
 			"colour_confidence": "listings",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"99"
 			],
@@ -2623,13 +2623,13 @@
 			]
 		},
 		"95F": {
-			"basis": "no decided code ends in F",
+			"basis": "factory document: Mitsubishi Original Equipment List: \"Color GLACIER WHITE PEARL TAN\" (1999 3000GT VR-4) (VIN JA3AN74K0XY001556)",
 			"colour": "Tan",
 			"colour_basis": "2 factory document(s): Mitsubishi Original Equipment List: \"Color GLACIER WHITE PEARL TAN\" (1999 3000GT VR-4); Mitsubishi Original Equipment List: \"Color CARACAS RED TAN\" (1999 3000GT VR-4)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"99"
 			],
@@ -2640,13 +2640,13 @@
 			"sampled_hex": "#B8AE94"
 		},
 		"95J": {
-			"basis": "suffix letter J is mixed: leather 113 cars (63J, 64J), cloth 703 (06J, 07J)",
+			"basis": "factory document: Mitsubishi window sticker: \"BLACK LEATHER INTERIOR\" (1999 3000GT VR-4) (VIN JA3AN74K1XY002103)",
 			"colour": "Black",
 			"colour_basis": "1 factory document(s): Mitsubishi window sticker: \"BLACK LEATHER INTERIOR\" (1999 3000GT VR-4)",
 			"colour_confidence": "document",
-			"confidence": "",
+			"confidence": "decided",
 			"description": "",
-			"material": "unknown",
+			"material": "leather",
 			"model_years": [
 				"99"
 			],

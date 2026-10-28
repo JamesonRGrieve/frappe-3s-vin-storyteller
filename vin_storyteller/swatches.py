@@ -6,7 +6,7 @@ Pure logic, no Frappe. Builds `public/data/swatches.json` (served as
 (`paint_codes.tsv`, `interior_codes.tsv`) and the researched colour values (`paint_hex.tsv`):
 
     python -m vin_storyteller.swatches PAINT_CODES PAINT_HEX INTERIOR_CODES OUT_JSON [PAINT_ALIASES [INTERIOR_COLOURS
-        [INTERIOR_SAMPLED]]]
+        [INTERIOR_SAMPLED [INTERIOR_MATERIALS]]]]
 
 Rules (operator, 2026-10-27):
 - Only 3000GTs, Stealths and GTOs: a code used only by the record's other Nagoya-built cars (the deleted
@@ -163,12 +163,35 @@ def _material_from_description(description: str) -> str:
 	return ""
 
 
-def decide_material(row: Mapping[str, str]) -> dict | None:
-	"""The material from the code's own evidence (description, then GTO K03), or None."""
+MATERIAL_SOURCES = frozenset({"document", "listings"})
+
+
+def interior_materials(rows: Iterable[Mapping[str, str]]) -> dict[str, dict]:
+	"""code -> leather or cloth from a car's factory document or its sellers' agreeing words (interior_materials.tsv)."""
+	materials: dict[str, dict] = {}
+	for row in rows:
+		code = (row.get("code") or "").strip().upper()
+		material = (row.get("material") or "").strip().lower()
+		source = (row.get("source") or "").strip().lower()
+		if code and material in ("leather", "cloth") and source in MATERIAL_SOURCES:
+			materials[code] = {
+				"material": material,
+				"confidence": "decided",
+				"basis": (row.get("basis") or "").strip(),
+			}
+	return materials
+
+
+def decide_material(row: Mapping[str, str], cited: Mapping[str, dict] | None = None) -> dict | None:
+	"""The material from the code's own evidence (description, a car's factory document or its sellers' agreeing words,
+	US leather-seat items, then GTO K03), or None."""
 	description = known(row.get("description"))
 	material = _material_from_description(description)
 	if material:
 		return {"material": material, "confidence": "decided", "basis": f'description "{description}"'}
+	code = (row.get("code") or "").strip().upper()
+	if cited and code in cited:
+		return dict(cited[code])
 	# US Mitsubishi 3000GTs: ASA USA's option items say when a car has leather seats (K03, K67 ...). Only "every car
 	# with this code has one" is evidence: leather standard on a grade needs no option item, so its absence is not
 	# evidence of cloth.
@@ -288,20 +311,25 @@ def interior_table(
 	rows: Iterable[Mapping[str, str]],
 	colour_rows: Iterable[Mapping[str, str]] = (),
 	sample_rows: Iterable[Mapping[str, str]] = (),
+	material_rows: Iterable[Mapping[str, str]] = (),
 ) -> dict[str, dict]:
 	"""code -> description, material (leather | cloth | unknown), confidence, basis, colour word, usage."""
 	rows = [row for row in rows if in_scope(row)]
+	cited = interior_materials(material_rows)
 	colours = interior_colours(colour_rows)
 	samples = interior_samples(sample_rows)
 	decided: dict[str, tuple[dict, int]] = {}
 	for row in rows:
-		decision = decide_material(row)
+		decision = decide_material(row, cited)
 		if decision:
 			decided[row["code"].strip().upper()] = (decision, evidence_cars(row, decision))
 	# The suffix-letter rule learns only from descriptions and the GTO K03 evidence: US leather-seat items decide their
 	# own codes, but leather is option-driven there, so letting them vote would flip unrelated codes (a Stealth
 	# base/ES "D" interior, which ASA USA doesn't cover, would turn leather).
-	evidence = letter_evidence({c: d for c, d in decided.items() if not d[0]["basis"].startswith("ASA USA")})
+	# The same goes for single cars' documents and sellers' words: per-car, option-driven evidence.
+	evidence = letter_evidence(
+		{c: d for c, d in decided.items() if not d[0]["basis"].startswith("ASA USA") and d[0] != cited.get(c)}
+	)
 	table: dict[str, dict] = {}
 	for row in rows:
 		code = row["code"].strip().upper()
@@ -361,6 +389,7 @@ def build(
 	paint_aliases: str | Path | None = None,
 	interior_colour_rows: str | Path | None = None,
 	interior_sample_rows: str | Path | None = None,
+	interior_material_rows: str | Path | None = None,
 ) -> dict:
 	paint = paint_table(read_tsv(paint_codes), read_tsv(paint_hex))
 	if paint_aliases:
@@ -377,15 +406,16 @@ def build(
 			read_tsv(interior_codes),
 			read_tsv(interior_colour_rows) if interior_colour_rows else (),
 			read_tsv(interior_sample_rows) if interior_sample_rows else (),
+			read_tsv(interior_material_rows) if interior_material_rows else (),
 		),
 	}
 
 
 def main(argv: list[str]) -> int:
-	if len(argv) not in (4, 5, 6, 7):
+	if len(argv) not in (4, 5, 6, 7, 8):
 		print(__doc__, file=sys.stderr)
 		return 2
-	data = build(*argv[:3], *argv[4:7])
+	data = build(*argv[:3], *argv[4:8])
 	Path(argv[3]).write_text(
 		json.dumps(data, indent="\t", sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
 	)

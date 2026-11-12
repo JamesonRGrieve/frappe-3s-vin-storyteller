@@ -95,13 +95,15 @@
 		<section class="vst-stats-section vst-stats-search" aria-labelledby="vst-stats-search-h">
 			<h3 id="vst-stats-search-h" class="vst-stats-h">Find cars</h3>
 			<p class="vst-note">Search every car on record by any part of its VIN or chassis number, or by a paint, interior
-				or option code. The model, market, region and year filters above apply too. Click a VIN to tell its story.</p>
+				or option code. The model, market, region and year filters above apply too. Click a VIN to tell its story.
+				Rows in red are VINs missing from the factory records: if you own one, please send us a photo of its VIN tag.</p>
 			<form class="vst-stats-search-form" role="search">
 				<label class="vst-stats-field">VIN or code <input type="search" name="q" autocomplete="off" maxlength="17"
 					placeholder="e.g. JA3AN74K or Z16A-001 or T87"></label>
 				<label class="vst-stats-field">Paint <input name="paint" autocomplete="off" maxlength="4" size="5"></label>
 				<label class="vst-stats-field">Interior <input name="interior" autocomplete="off" maxlength="4" size="5"></label>
 				<label class="vst-stats-field">Option <input name="option" autocomplete="off" maxlength="4" size="5"></label>
+				<label class="vst-stats-chip vst-stats-missing-toggle"><input type="checkbox" name="missing"><span>Missing VINs only</span></label>
 				<button type="submit" class="vst-stats-csv">Search</button>
 				<button type="button" class="vst-stats-csv vst-stats-search-csv" hidden>Download results (CSV)</button>
 			</form>

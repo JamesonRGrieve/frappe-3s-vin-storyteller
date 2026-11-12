@@ -859,6 +859,7 @@
 			const { section } = this.search;
 			const form = section.querySelector(".vst-stats-search-form");
 			const fields = Object.fromEntries(["q", "paint", "interior", "option"].map((n) => [n, form.elements[n].value]));
+			fields.missing = form.elements.missing.checked;
 			const status = section.querySelector(".vst-stats-search-status");
 			const query = core.searchParams(this.filter, fields, page);
 			this.search.active = true;
@@ -872,20 +873,29 @@
 			}
 			if (body?.status !== "found") {
 				status.textContent = body?.message || MESSAGES.failed;
-				this.showResults([], 0, 1, 1, false);
+				this.showResults([], 0, 1, 1, false, [], 0);
 				return;
 			}
-			this.showResults(body.cars, body.total, body.page, body.pages, body.truncated);
+			this.showResults(body.cars, body.total, body.page, body.pages, body.truncated, body.missing || [], body.missing_total || 0);
 		}
 
-		showResults(cars, total, page, pages, truncated) {
+		showResults(cars, total, page, pages, truncated, missing = [], missingTotal = 0) {
 			const { section } = this.search;
 			this.search.cars = cars;
 			this.search.page = page;
 			const status = section.querySelector(".vst-stats-search-status");
-			status.textContent = total
-				? `${core.formatNumber(total)} ${total === 1 ? "car" : "cars"}${truncated ? " (search cut short: narrow it to see every match)" : ""}.`
-				: "No cars match.";
+			const parts = [];
+			if (total || !missingTotal)
+				parts.push(
+					total
+						? `${core.formatNumber(total)} ${total === 1 ? "car" : "cars"}${truncated ? " (search cut short: narrow it to see every match)" : ""}`
+						: "No cars on record match",
+				);
+			if (missingTotal)
+				parts.push(
+					`${core.formatNumber(missingTotal)} missing ${missingTotal === 1 ? "range" : "ranges"} in red${missing.length < missingTotal ? ` (first ${missing.length} shown; narrow the filters for the rest)` : ""}`,
+				);
+			status.textContent = `${parts.join("; ")}.`;
 			const table = section.querySelector(".vst-stats-results");
 			const head = element("tr");
 			for (const title of core.SEARCH_COLUMNS) {
@@ -918,7 +928,25 @@
 					return tr;
 				}),
 			);
-			section.querySelector(".vst-stats-table-wrap").hidden = !cars.length;
+			table.querySelector("tbody").append(
+				...missing.map((entry) => {
+					const tr = element("tr", "vst-missing");
+					core.missingCells(entry).forEach((cell, i) => {
+						const td = element(i === 0 ? "th" : "td");
+						if (i === 0) td.scope = "row";
+						if (i === 4) {
+							const link = element("a", "", "Send your VIN tag");
+							link.href = core.tagMailto(entry);
+							td.colSpan = 4;
+							td.append(link);
+						} else if (i > 4 && i < 8) return;
+						else td.textContent = cell;
+						tr.append(td);
+					});
+					return tr;
+				}),
+			);
+			section.querySelector(".vst-stats-table-wrap").hidden = !cars.length && !missing.length;
 			section.querySelector(".vst-stats-search-csv").hidden = !cars.length;
 			const pager = section.querySelector(".vst-stats-pager");
 			pager.hidden = pages <= 1;

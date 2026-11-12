@@ -181,7 +181,11 @@ def search_answer(
 		return {"status": "invalid", "message": SEARCH_TOO_BROAD}
 	try:
 		with open_records() as records:
-			cars, total, truncated = records.search_cars(query)
+			if query.missing_only:
+				cars, total, truncated = (), 0, False
+			else:
+				cars, total, truncated = records.search_cars(query)
+			missing, missing_total = records.missing_ranges(query)
 	except database_errors as error:
 		raise RecordsUnavailable from error
 	return {
@@ -191,4 +195,6 @@ def search_answer(
 		"pages": max(1, -(-total // PAGE_SIZE)),
 		"truncated": truncated,
 		"cars": [asdict(car) for car in cars],
+		"missing": [asdict(entry) for entry in missing],
+		"missing_total": missing_total,
 	}

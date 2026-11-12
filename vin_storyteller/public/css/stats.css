@@ -118,6 +118,12 @@
 .vst-stats-search-form input[size] { min-width: 5rem; width: 6rem; }
 .vst-stats-results th, .vst-stats-results td { width: auto; white-space: nowrap; padding: 7px 10px; font-size: 13.5px; }
 .vst-stats-results tbody th { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.vst-stats-results tr.vst-missing th, .vst-stats-results tr.vst-missing td {
+	background: rgba(207, 0, 23, 0.16); color: #ffd7dc; border-top-color: rgba(255, 79, 98, 0.35);
+}
+.vst-stats-results tr.vst-missing th { box-shadow: inset 3px 0 0 var(--vst-red-hi); }
+.vst-stats-results tr.vst-missing a { color: #ffb3bc; font-weight: 700; }
+.vst-stats-missing-toggle span::before { background: var(--vst-red-hi); }
 .vst-stats-pager { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 14px; color: var(--vst-soft); }
 
 /* The numbers. */

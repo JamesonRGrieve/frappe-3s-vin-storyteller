@@ -28,7 +28,7 @@ SHIPPED = [
 	"0008_option_code_index",
 	"0009_factory_features",
 	"0010_paint_aliases",
-	"0011_australian_model",
+	"0011_new_records",
 ]
 
 

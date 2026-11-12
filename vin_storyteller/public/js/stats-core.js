@@ -385,6 +385,7 @@
 			if (text) params.set(key, text);
 		};
 		add("q", fields.q);
+		if (fields.missing) params.set("missing", "1");
 		add("paint", fields.paint);
 		add("interior", fields.interior);
 		add("option", fields.option);
@@ -419,6 +420,26 @@
 			builtLabel(car.built),
 			car.provenance,
 		];
+	}
+
+	const TAG_ADDRESS = "storyteller@3shub.com";
+	const MARKET_NAMES = { us: "North America", au: "Australia" };
+
+	// A missing range's table cells, in SEARCH_COLUMNS order: the VIN or range, its year, what is missing.
+	function missingCells(entry) {
+		const what = entry.count > 1 ? `${entry.count} serials missing` : "Missing from the factory records";
+		return [entry.vin, entry.model_year, what, MARKET_NAMES[entry.market] || entry.market, "", "", "", "", entry.note];
+	}
+
+	// A mailto link asking the owner for a photo of the VIN tag, the VIN (or range) in the subject.
+	function tagMailto(entry) {
+		const subject = `VIN tag for ${entry.vin}`;
+		const body = [
+			`My car's VIN is ${entry.count > 1 ? "(please type it here)" : entry.vin}.`,
+			"A photo of its VIN tag (dash plate or door sticker) is attached.",
+			"Anything else I know about it (colour, options, history):",
+		].join("\n");
+		return `mailto:${TAG_ADDRESS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 	}
 
 	// --- the address: a filtered view is shareable -----------------------------------------------------------
@@ -548,6 +569,8 @@
 		searchParams,
 		builtLabel,
 		carCells,
+		missingCells,
+		tagMailto,
 		parseState,
 		stateQuery,
 		csvCell,

@@ -11,7 +11,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
-from vin_storyteller.search import MAX_SCAN, PAGE_SIZE, FoundCar, SearchQuery, found_car
+from vin_storyteller.search import (
+	AUSTRALIAN_YEARS,
+	MAX_SCAN,
+	MISSING_MAX,
+	PAGE_SIZE,
+	FoundCar,
+	MissingEntry,
+	SearchQuery,
+	found_car,
+	missing_entry,
+	missing_markets,
+	searched_serial,
+)
 from vin_storyteller.stats import Catalogue, StatsRow, destination_code, destination_digits, region_of
 from vin_storyteller.story import (
 	ASA_GENERAL,
@@ -20,6 +32,7 @@ from vin_storyteller.story import (
 	MARKET_MODELS,
 	MISSING,
 	PLACEHOLDER_CODES,
+	YEAR_CODES,
 	Breakdown,
 	Coded,
 	CodeIndexEntry,
@@ -720,6 +733,47 @@ class ProductionRecords:
 			cars.append(found_car(row, region))
 		start = (query.page - 1) * PAGE_SIZE
 		return tuple(cars[start : start + PAGE_SIZE]), len(cars), truncated
+
+	def missing_ranges(self, query: SearchQuery) -> tuple[tuple[MissingEntry, ...], int]:
+		"""The known missing VIN ranges a search covers (for a full VIN not on record, a serial, or "missing only"),
+		at most MISSING_MAX, and how many there are."""
+		named = searched_serial(query.text) if query.text else None
+		if not named and not query.missing_only:
+			return (), 0
+		markets = missing_markets(query)
+		if named and named[0]:
+			markets = tuple(m for m in markets if m == named[0])
+		if not markets:
+			return (), 0
+		if (
+			named
+			and len(query.text) == 17
+			and self._one("SELECT 1 FROM Production WHERE VIN = %s", (query.text,))
+		):
+			return (), 0  # on record: not missing
+		where = ["Market IN (" + ", ".join(["%s"] * len(markets)) + ")"]
+		params: list = list(markets)
+		if query.year_from or query.year_to:
+			years = list(query.model_years())
+			if not years:
+				return (), 0
+			australian = bool(set(years) & AUSTRALIAN_YEARS)
+			where.append("(ModelYear IN (" + ", ".join(["%s"] * len(years)) + ") OR ModelYear = %s)")
+			params += [*years, "" if australian else "-"]
+		if named:
+			market, letter, serial = named
+			where.append("FirstSerial <= %s AND LastSerial >= %s")
+			params += [serial, serial]
+			if letter and market == "us":
+				where.append("ModelYear = %s")
+				params.append(YEAR_CODES.get(letter, ""))
+		rows = self._rows(
+			"SELECT Market, ModelYear, VinPattern, FirstSerial, LastSerial, Note FROM MissingRange "
+			f"WHERE {' AND '.join(where)} ORDER BY Market DESC, ModelYear, FirstSerial",
+			tuple(params),
+		)
+		full_vin = query.text if named and len(query.text) == 17 else ""
+		return tuple(missing_entry(row, full_vin) for row in rows[:MISSING_MAX]), len(rows)
 
 	def record_story(self, vin: str, name: str, at: datetime) -> None:
 		"""Log a story told, as the original storyteller did: the VIN, the visitor's name, the hour and the time."""

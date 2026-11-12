@@ -36,6 +36,7 @@ class SearchQuery:
 	interior: str = ""
 	option: str = ""
 	page: int = 1
+	missing_only: bool = False  # list the known missing VIN ranges the filters cover
 
 	@property
 	def narrowed(self) -> bool:
@@ -49,6 +50,7 @@ class SearchQuery:
 			or self.markets
 			or self.year_from
 			or self.year_to
+			or self.missing_only
 		)
 
 	def model_years(self) -> tuple[str, ...]:
@@ -109,6 +111,7 @@ def parse_query(params: dict) -> SearchQuery:
 		interior=_code(params, "interior"),
 		option=_code(params, "option"),
 		page=page,
+		missing_only=str(params.get("missing") or "").strip().lower() in ("1", "true", "yes"),
 	)
 
 
@@ -163,4 +166,67 @@ def found_car(row: tuple, region) -> FoundCar:
 		region=region.name,
 		market=region.market,
 		provenance=provenance or "",
+	)
+
+
+MISSING_MAX = 500  # missing ranges one answer lists
+NORTH_AMERICAN_REGIONS = {"Federal (49-state)", "California", "Canada"}
+AUSTRALIAN_YEARS = {"92", "93", "94", "95"}  # the 117 Australian cars' year letters N, P, R, S
+FULL_VIN = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")
+
+
+@dataclass(frozen=True)
+class MissingEntry:
+	"""A known missing VIN range (or the one VIN searched for inside one): shown red, for owners to send their tag."""
+
+	market: str  # 'us' / 'au'
+	model_year: str  # '1991', '' when not known (Australia)
+	vin: str  # the VIN searched for, or the range as a pattern: 'J?3??????MY000518-000704'
+	first: str
+	last: str
+	count: int
+	note: str
+
+
+def missing_markets(query: SearchQuery) -> tuple[str, ...]:
+	"""Which missing-range markets ('us', 'au') the query's model, market and region filters can cover."""
+	markets = {"us", "au"}
+	if query.models:
+		if "Stealth" not in query.models and "3000GT" not in query.models:
+			return ()
+		if "3000GT" not in query.models:
+			markets.discard("au")  # the Australian cars are 3000GTs
+	chosen = set(query.markets) | {
+		"North America" if r in NORTH_AMERICAN_REGIONS or r.startswith("North America") else r
+		for r in query.regions
+	}
+	if chosen:
+		markets &= {m for m, name in (("us", "North America"), ("au", "Australia")) if name in chosen}
+	return tuple(sorted(markets))
+
+
+def searched_serial(text: str) -> tuple[str, str, str] | None:
+	"""(market or '', year letter or '', serial) a search text names: a full US/Australian VIN, or a 6-digit serial."""
+	if FULL_VIN.match(text):
+		if text.startswith(("JA3", "JB3")):
+			return "us", text[9], text[11:]
+		if text.startswith("JMF"):
+			return "au", text[9], text[11:]
+		return None
+	if re.fullmatch(r"[0-9]{6}", text):
+		return "", "", text
+	return None
+
+
+def missing_entry(row: tuple, vin: str = "") -> MissingEntry:
+	market, year, pattern, first, last, note = row
+	span = first if first == last else f"{first}-{last}"
+	return MissingEntry(
+		market=market,
+		model_year=full_year(year) if year else "",
+		vin=vin or f"{pattern}{span}",
+		first=first,
+		last=last,
+		count=int(last) - int(first) + 1,
+		note=note,
 	)

@@ -101,3 +101,40 @@ def test_results_run_in_calendar_order(connection, records):
 	)
 	years = [c["model_year"] for c in run(records, paint="T87")["cars"]]
 	assert years == sorted(years) and years[-1] == "2000"
+
+
+# Known missing VIN ranges (migration 0011): shown red so owners can send their VIN tag.
+
+
+def test_a_full_vin_inside_a_known_gap_comes_back_missing(records):
+	body = run(
+		records, q="JB3AN74K9SY008484"
+	)  # a 1995 gap serial (found at a Copart auction, not yet loaded)
+	assert body["cars"] == [] and body["missing_total"] == 1
+	(gap,) = body["missing"]
+	assert gap["vin"] == "JB3AN74K9SY008484" and gap["model_year"] == "1995" and gap["market"] == "us"
+	assert "Stealth R/T Turbo" in gap["note"]
+	assert run(records, q="JB3AN74K9MY008484")["missing_total"] == 0  # 1991 has that serial on record
+
+
+def test_a_serial_alone_finds_its_gaps_and_filters_narrow_them(records):
+	body = run(records, q="000600")
+	assert {(g["model_year"], g["vin"]) for g in body["missing"]} >= {("1991", "J?3??????MY000518-000704")}
+	assert run(records, q="000600", model="GTO")["missing_total"] == 0
+	assert run(records, q="000600", market="Japan")["missing_total"] == 0
+
+
+def test_missing_only_lists_the_gaps_the_filters_cover(records):
+	body = run(records, missing="1", **{"from": "1995", "to": "1995"})
+	assert body["cars"] == [] and body["missing_total"] > 1000
+	assert {g["model_year"] for g in body["missing"]} <= {"1995", ""}
+	assert len(body["missing"]) <= 500
+	australia = run(records, missing="1", market="Australia")
+	assert australia["missing"] and {g["market"] for g in australia["missing"]} == {"au"}
+	assert all(g["vin"].startswith("JMFJF5S24?J") for g in australia["missing"])
+	assert run(records, missing="1", **{"from": "1997", "to": "1997"})["missing_total"] == 0
+
+
+def test_an_australian_vin_in_a_gap_and_a_car_on_record_is_never_missing(records):
+	assert run(records, q="JMFJF5S24NJ000002")["missing"][0]["market"] == "au"
+	assert run(records, q="JA3AM84J3NY000001")["missing_total"] == 0

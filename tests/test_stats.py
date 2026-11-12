@@ -39,6 +39,10 @@ def test_an_export_option_item_names_the_market():
 def test_an_export_grade_text_names_the_gulf_market():
 	assert grade_market("DOHC(TURBO/4WD/4WS),5FM/T GCC") == "Gulf states (GCC)"
 	assert grade_market("DOHC(TURBO/4WD/4WS),6FM/T") is None
+	# ASA General's own texts: Brazil names a market, a drive side does not.
+	assert grade_market("DOHC(TURBO/4WD/4WS),6FM/T            BRAZIL") == "Brazil"
+	assert grade_market("DOHC(TURBO/4WD/4WS),6FM/T            RHD") is None
+	assert grade_market("DOHC(TURBO/4WD/4WS),5FM/T            LHD") is None
 	assert grade_market(None) is None
 
 
@@ -72,6 +76,12 @@ def test_regions_follow_the_record():
 	assert region_of("EL", "J", "", ["BRITISH ARMY SPEC IN WEST GERMANY"]).country == "Germany"
 	assert region_of("EL", "J", "", (), "…,5FM/T GCC") == Region("Gulf states (GCC)", "Export", "")
 	assert region_of("ER", "J", "").name == "Export, market not recorded (right-hand drive)"
+	assert region_of("EL", "J", "", (), "DOHC(TURBO/4WD/4WS),6FM/T  BRAZIL") == Region(
+		"Brazil", "Export", "Brazil"
+	)
+	assert region_of("ER", "J", "", (), "DOHC(TURBO/4WD/4WS),6FM/T  RHD").name.startswith(
+		"Export, market not recorded"
+	)
 	assert region_of("M1", "6", "FED") == Region("Australia", "Australia", "Australia")
 	assert region_of("M1", "J", "CAL") == Region("California", "North America", "United States of America")
 	assert region_of("M1", "J", "FED").name == "Federal (49-state)"

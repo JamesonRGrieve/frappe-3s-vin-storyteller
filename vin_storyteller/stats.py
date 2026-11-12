@@ -57,6 +57,8 @@ SMALL_WORDS = {"in", "of", "and", "the"}
 ACRONYMS = {"EC", "EU", "UK", "GCC", "USA", "US"}
 
 GRADE_MARKETS = {"GCC": "Gulf states (GCC)"}
+# What ASA General's grade texts put after the transmission besides a market: the drive side ("…,6FM/T RHD").
+NOT_MARKETS = {"LHD", "RHD"}
 # A market's country on the world map (world-atlas names); a market that is itself a map name needs no entry.
 MAP_COUNTRIES = {
 	"England": "United Kingdom",
@@ -180,9 +182,12 @@ def spec_market(descriptions: Iterable[str]) -> str | None:
 
 
 def grade_market(label: str | None) -> str | None:
-	"""The market an export grade's text names after its transmission ("...,5FM/T GCC" -> Gulf states (GCC))."""
+	"""The market an export grade's text names after its transmission ("...,5FM/T GCC" -> Gulf states (GCC),
+	"...,6FM/T BRAZIL" -> Brazil); a drive side there ("RHD") is no market."""
 	match = GRADE_MARKET.search((label or "").strip().upper())
-	return GRADE_MARKETS.get(match["market"], match["market"]) if match else None
+	if not match or match["market"] in NOT_MARKETS:
+		return None
+	return GRADE_MARKETS.get(match["market"]) or _title(match["market"])
 
 
 def transmission(label: str | None) -> str:

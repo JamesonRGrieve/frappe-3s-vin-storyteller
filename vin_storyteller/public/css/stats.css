@@ -1,0 +1,135 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* VIN Storyteller production statistics (/storyteller/stats). Builds on storyteller.css (the .vst navy surface).
+   Chart colours: the dark categorical palette, validated on the navy surface (all checks pass: worst adjacent CVD
+   ΔE 8.4, normal-vision 19.3, every slot >= 3:1); stats.js reads them from these properties. */
+.vst-production {
+	max-width: 1240px;
+	--vst-series-1: #3987e5; /* blue */
+	--vst-series-2: #d95926; /* orange */
+	--vst-series-3: #199e70; /* aqua */
+	--vst-series-4: #c98500; /* yellow */
+	--vst-series-5: #d55181; /* magenta */
+	--vst-series-6: #008300; /* green */
+	--vst-series-7: #9085e9; /* violet */
+	--vst-series-8: #e66767; /* red */
+	--vst-other: #6b7393; /* "Other", recessive */
+	--vst-seq-low: #184f95; /* sequential blue: near zero recedes toward the navy surface */
+	--vst-seq-high: #cde2fb;
+	--vst-grid: rgba(203, 201, 198, 0.12);
+	--vst-surface: #0e1539;
+}
+
+.vst-visually-hidden {
+	position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+	clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Filters: one row above the charts. */
+.vst-stats-filters {
+	display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px;
+	position: sticky; top: 0; z-index: 2;
+	margin: 0 0 24px; padding: 14px 16px;
+	border: 1px solid var(--vst-line); border-radius: 14px;
+	background: rgba(10, 17, 50, 0.94);
+	backdrop-filter: blur(6px);
+}
+.vst-stats-models { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; border: 0; }
+.vst-stats-models legend, .vst-stats-field {
+	font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--vst-soft);
+}
+.vst-stats-models legend { padding: 0 0 6px; }
+.vst-stats-chip { position: relative; }
+.vst-stats-chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.vst-stats-chip span {
+	display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 14px;
+	border: 1px solid var(--vst-line); border-radius: 999px;
+	font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--vst-soft);
+}
+.vst-stats-chip span::before {
+	content: ""; width: 10px; height: 10px; border-radius: 50%;
+	background: var(--chip-colour, var(--vst-series-1)); opacity: 0.35;
+}
+.vst-stats-chip input:checked + span { color: var(--vst-text); border-color: var(--vst-soft); background: rgba(255, 255, 255, 0.06); }
+.vst-stats-chip input:checked + span::before { opacity: 1; }
+.vst-stats-chip input:focus-visible + span { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
+.vst-stats-field { display: flex; flex-direction: column; gap: 6px; }
+.vst-stats-field select, .vst-stats-field input {
+	min-height: 36px; min-width: 9rem; padding: 6px 10px;
+	border: 1px solid var(--vst-line); border-radius: 8px;
+	background: var(--vst-navy); color: var(--vst-text);
+	font: 500 14px/1.2 inherit; letter-spacing: 0; text-transform: none;
+}
+.vst-stats-field select:focus-visible, .vst-stats-field input:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
+.vst-stats-reset, .vst-stats-csv {
+	min-height: 36px; padding: 6px 14px; border: 1px solid var(--vst-line); border-radius: 8px;
+	background: transparent; color: var(--vst-fiji-hi); font: 700 14px/1.2 inherit; cursor: pointer;
+}
+.vst-stats-reset:hover, .vst-stats-csv:hover { border-color: var(--vst-fiji-hi); }
+.vst-stats-filter-note { flex-basis: 100%; margin: 0; font-size: 13px; color: var(--vst-soft); }
+.vst-stats-filter-note:empty { display: none; }
+
+/* (?) explanations: a toggletip; the note shows beside its button while open. */
+.vst-help { position: relative; display: inline-flex; vertical-align: middle; }
+.vst-help-button {
+	display: inline-grid; place-items: center; width: 22px; height: 22px; padding: 0;
+	border: 1px solid var(--vst-soft); border-radius: 50%; background: transparent;
+	color: var(--vst-soft); font: 700 12px/1 inherit; cursor: help;
+}
+.vst-help-button[aria-expanded="true"] { color: var(--vst-navy); background: var(--vst-fiji-hi); border-color: var(--vst-fiji-hi); }
+.vst-help-note:empty { display: none; }
+.vst-help-note {
+	position: absolute; z-index: 3; left: 50%; top: calc(100% + 8px); transform: translateX(-50%);
+	width: max-content; max-width: min(300px, 80vw); padding: 10px 12px;
+	border: 1px solid var(--vst-line); border-radius: 10px; background: var(--vst-navy);
+	color: var(--vst-text); font-size: 13px; font-weight: 400; line-height: 1.45; letter-spacing: 0; text-transform: none;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Totals. */
+.vst-stats-tiles {
+	display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, calc(50% - 6px)), 1fr)); gap: 12px;
+	margin: 0 0 32px; padding: 0; list-style: none;
+}
+.vst-stats-tiles li { padding: 16px; border: 1px solid var(--vst-line); border-radius: 14px; background: rgba(255, 255, 255, 0.03); }
+.vst-stats-tiles .vst-n { display: block; font-size: 30px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.vst-stats-tiles .vst-l { display: block; margin-top: 4px; font-size: 13px; color: var(--vst-soft); }
+
+/* Charts. */
+.vst-stats-section { margin: 0 0 36px; }
+.vst-stats-h { margin: 0 0 6px; font-size: 22px; }
+.vst-stats-section > .vst-note { margin-bottom: 14px; max-width: 80ch; }
+.vst-stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.vst-chart {
+	margin: 0; padding: 14px 14px 8px; min-width: 0;
+	border: 1px solid var(--vst-line); border-radius: 14px; background: var(--vst-surface);
+}
+.vst-chart figcaption { font-size: 14px; font-weight: 700; color: var(--vst-text); }
+.vst-chart figcaption .vst-stats-field { flex-direction: row; align-items: center; gap: 10px; }
+.vst-chart figcaption select { max-width: min(420px, 70vw); }
+.vst-chart-plot { width: 100%; height: 340px; }
+.vst-chart-tall .vst-chart-plot { height: 520px; }
+.vst-chart-wide { grid-column: 1 / -1; }
+.vst-chart-unmapped { margin: 4px 0 6px; font-size: 13px; }
+.vst-chart-empty { display: grid; place-items: center; height: 100%; color: var(--vst-soft); font-size: 14px; }
+
+/* The numbers. */
+.vst-stats-table-tools { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; margin-bottom: 12px; }
+.vst-stats-table-wrap { max-height: 560px; overflow: auto; border: 1px solid var(--vst-line); border-radius: 12px; }
+.vst-stats-table { margin: 0; }
+.vst-stats-table thead th { position: sticky; top: 0; background: var(--vst-navy-2); }
+.vst-stats-table thead button {
+	all: unset; cursor: pointer; display: inline-flex; gap: 6px; align-items: center;
+}
+.vst-stats-table thead button:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
+.vst-stats-table thead th[aria-sort="ascending"] button::after { content: "▲"; font-size: 9px; }
+.vst-stats-table thead th[aria-sort="descending"] button::after { content: "▼"; font-size: 9px; }
+.vst-stats-table td.vst-num, .vst-stats-table th.vst-num { text-align: right; }
+
+@media (max-width: 860px) {
+	.vst-stats-grid { grid-template-columns: minmax(0, 1fr); }
+	.vst-chart-plot { height: 300px; }
+	.vst-chart-tall .vst-chart-plot { height: 460px; }
+	.vst-stats-filters { position: static; }
+	.vst-stats-tiles li { padding: 12px; }
+	.vst-stats-tiles .vst-n { font-size: 24px; }
+}

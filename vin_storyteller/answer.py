@@ -12,6 +12,7 @@ from contextlib import AbstractContextManager
 from dataclasses import asdict
 
 from vin_storyteller.repository import ProductionRecords
+from vin_storyteller.stats import build_stats
 from vin_storyteller.story import (
 	CHASSIS_NOT_ON_RECORD,
 	CODE_KINDS,
@@ -139,3 +140,23 @@ def index_answer(
 	except database_errors as error:
 		raise RecordsUnavailable from error
 	return {"status": "found", "kind": kind, "codes": [asdict(e) for e in entries]}
+
+
+# The production statistics page.
+STATS_EMPTY = "There are no factory records to count yet."
+
+
+def stats_answer(
+	open_records: Callable[[], AbstractContextManager[ProductionRecords]],
+	database_errors: tuple[type[BaseException], ...],
+) -> dict:
+	"""The API response body for the stats page: status found (with the stats) | not_found."""
+	try:
+		with open_records() as records:
+			rows = records.stats_rows()
+			catalogue = records.stats_catalogue()
+	except database_errors as error:
+		raise RecordsUnavailable from error
+	if not rows:
+		return {"status": "not_found", "message": STATS_EMPTY}
+	return {"status": "found", "stats": build_stats(rows, catalogue)}

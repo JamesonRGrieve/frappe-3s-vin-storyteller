@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """The storyteller's public endpoints: GET /api/method/vin_storyteller.api.tell?vin=… (a VIN's story), and the
-per-code pages' code?kind=…&code=…[&model=…] and codes?kind=… (card 330).
+per-code pages' code?kind=…&code=…[&model=…] and codes?kind=… (card 330), and the stats page's stats.
 
 Guests may call it, LOOKUPS_PER_WINDOW times an hour per client (client.client_address: Cloudflare's
 CF-Connecting-IP, since Frappe's request_ip is forgeable and, behind the reverse proxy, shared by every
@@ -26,6 +26,7 @@ from vin_storyteller.answer import (
 	code_answer,
 	index_answer,
 	page_key,
+	stats_answer,
 )
 from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
@@ -159,6 +160,14 @@ def codes(kind: str = "") -> dict:
 	_count_lookup("code_pages", CODE_PAGES_PER_WINDOW, CODE_PAGES_LIMITED)
 	key = f"index:{kind}" if kind in CODE_KINDS else None
 	return _cached(key, lambda: index_answer(kind, _records, (pymysql.MySQLError,)))
+
+
+@frappe.whitelist(allow_guest=True, methods=["GET"])
+def stats() -> dict:
+	"""The production statistics page's data: every factory-record car, counted by model year, model, region,
+	paint, interior, model line, transmission, build month, colour pair and exact-spec rarity."""
+	_count_lookup("code_pages", CODE_PAGES_PER_WINDOW, CODE_PAGES_LIMITED)
+	return _cached("stats", lambda: stats_answer(_records, (pymysql.MySQLError,)))
 
 
 def sitemap_routes(site) -> list[tuple[str, None]]:

@@ -1,0 +1,135 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- The production statistics page (/storyteller/stats): stats.js asks vin_storyteller.api.stats for every factory-record
+     car counted by model year, model, region, paint, interior, model line, transmission, build month, colour pair and
+     exact-spec rarity, and draws it with Apache ECharts (vendored, Apache-2.0). Filters live in the address. -->
+<link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css?v={{ vin_storyteller_asset_version() }}">
+<link rel="stylesheet" href="/assets/vin_storyteller/css/stats.css?v={{ vin_storyteller_asset_version() }}">
+<div class="vst vst-production" data-stats-endpoint="/api/method/vin_storyteller.api.stats"
+	data-swatches="/assets/vin_storyteller/data/swatches.json?v={{ vin_storyteller_asset_version() }}"
+	data-world="/assets/vin_storyteller/data/countries-110m.json?v={{ vin_storyteller_asset_version() }}">
+	<header class="vst-head">
+		<p class="vst-kicker">3000GT &middot; Stealth &middot; GTO</p>
+		<h2 class="vst-title">Production statistics</h2>
+		<p class="vst-lede">Every car in Mitsubishi's factory production records, counted by where it was built for, when,
+			and how. Filter by model, market, region and model year; every chart and table follows.</p>
+		<nav class="vst-code-nav" aria-label="Storyteller">
+			<a href="/storyteller">VIN Storyteller</a>
+			<a href="/storyteller/paint">Paint codes</a>
+			<a href="/storyteller/interior">Interior codes</a>
+			<a href="/storyteller/option">Option codes</a>
+		</nav>
+	</header>
+
+	<p class="vst-status" role="status" aria-live="polite" hidden></p>
+
+	<form class="vst-stats-filters" aria-label="Filter the statistics" hidden>
+		<fieldset class="vst-stats-models">
+			<legend>Model</legend>
+		</fieldset>
+		<label class="vst-stats-field">Market
+			<select name="market"><option value="">Every market</option></select>
+		</label>
+		<label class="vst-stats-field">Region
+			<select name="region"><option value="">Every region</option></select>
+		</label>
+		<label class="vst-stats-field">From
+			<select name="from"><option value="">First year</option></select>
+		</label>
+		<label class="vst-stats-field">To
+			<select name="to"><option value="">Last year</option></select>
+		</label>
+		<button type="reset" class="vst-stats-reset">Clear filters</button>
+		<p class="vst-stats-filter-note" aria-live="polite"></p>
+	</form>
+
+	<div class="vst-stats-body" hidden>
+		<ul class="vst-stats-tiles" aria-label="Totals"></ul>
+
+		<section class="vst-stats-section" aria-labelledby="vst-stats-where">
+			<h3 id="vst-stats-where" class="vst-stats-h">Where they were built for</h3>
+			<p class="vst-note">A North American car's region is its grade's emissions destination (Federal or California),
+				not its country; an export car's is the market its option code or grade names. Click a bar to filter.</p>
+			<div class="vst-stats-grid">
+				<figure class="vst-chart vst-chart-tall" data-chart="regions"><figcaption>Cars by region</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart vst-chart-tall" data-chart="map"><figcaption>Cars by country</figcaption><div class="vst-chart-plot"></div>
+					<p class="vst-note vst-chart-unmapped" hidden></p></figure>
+				<figure class="vst-chart" data-chart="markets"><figcaption>Market, region and model</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart" data-chart="regionYears"><figcaption>Regions by model year</figcaption><div class="vst-chart-plot"></div></figure>
+			</div>
+		</section>
+
+		<section class="vst-stats-section" aria-labelledby="vst-stats-when">
+			<h3 id="vst-stats-when" class="vst-stats-h">When they were built</h3>
+			<div class="vst-stats-grid">
+				<figure class="vst-chart" data-chart="years"><figcaption>Cars by model year</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart" data-chart="rarity"><figcaption>Cars by how many identical cars were built</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart vst-chart-wide" data-chart="months"><figcaption>Cars by build month (drag the slider to zoom)</figcaption><div class="vst-chart-plot"></div></figure>
+			</div>
+		</section>
+
+		<section class="vst-stats-section" aria-labelledby="vst-stats-how">
+			<h3 id="vst-stats-how" class="vst-stats-h">How they were built</h3>
+			<div class="vst-stats-grid">
+				<figure class="vst-chart vst-chart-tall" data-chart="paints"><figcaption>Paints (drawn in their own colour)</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart vst-chart-tall" data-chart="interiors"><figcaption>Interiors</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart" data-chart="paintYears"><figcaption>Paint share by model year</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart" data-chart="transmissionYears"><figcaption>Transmissions by model year</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart vst-chart-wide vst-chart-tall" data-chart="colours"><figcaption>Paint and interior pairs</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart vst-chart-wide" data-chart="lines"><figcaption>Model lines</figcaption><div class="vst-chart-plot"></div></figure>
+			</div>
+		</section>
+
+		<section class="vst-stats-section" aria-labelledby="vst-stats-options-h">
+			<h3 id="vst-stats-options-h" class="vst-stats-h">Factory options by region</h3>
+			<p class="vst-note vst-stats-options-note">Which equipment each market got, from what Mitsubishi's catalogues say each
+				car's option code fits. Click a column, or pick an item, to compare it across regions.</p>
+			<div class="vst-stats-grid">
+				<figure class="vst-chart vst-chart-wide vst-chart-tall" data-chart="options"><figcaption>Option items by region (share of the region's cars)</figcaption><div class="vst-chart-plot"></div></figure>
+				<figure class="vst-chart vst-chart-wide" data-chart="option">
+					<figcaption><label class="vst-stats-field">Option item <select name="option"></select></label></figcaption>
+					<div class="vst-chart-plot"></div></figure>
+			</div>
+		</section>
+
+		<section class="vst-stats-section vst-stats-data" aria-labelledby="vst-stats-data-h">
+			<h3 id="vst-stats-data-h" class="vst-stats-h">The numbers</h3>
+			<div class="vst-stats-table-tools">
+				<label class="vst-stats-field">Count by
+					<select name="facet">
+						<option value="paint">Paint</option>
+						<option value="interior">Interior</option>
+						<option value="line">Model line</option>
+						<option value="transmission">Transmission</option>
+						<option value="month">Build month</option>
+						<option value="colours">Paint and interior pair</option>
+						<option value="rarity">Exact-spec run</option>
+						<option value="generation">Generation</option>
+						<option value="options">Option item (a car counts once per item)</option>
+						<option value="option_records">Option contents on record</option>
+					</select>
+				</label>
+				<label class="vst-stats-field">Search <input type="search" name="search" autocomplete="off"></label>
+				<button type="button" class="vst-stats-csv" data-table="summary">Download this table (CSV)</button>
+				<button type="button" class="vst-stats-csv" data-table="raw">Download every filtered group (CSV)</button>
+			</div>
+			<div class="vst-stats-table-wrap">
+				<table class="vst-spec vst-code-table vst-stats-table">
+					<caption class="vst-visually-hidden">Filtered cars by the chosen count</caption>
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</section>
+
+		<p class="vst-provenance">Counted from Mitsubishi's factory production records: the 1999 and 2004 CAPS builds, the 2007 ASA USA
+			and the 2008 ASA Japan and ASA General catalogues. Charts: <a href="https://echarts.apache.org" rel="noopener">Apache ECharts</a>;
+			map: <a href="https://www.naturalearthdata.com" rel="noopener">Natural Earth</a> via world-atlas.</p>
+	</div>
+
+	<p class="vst-source">The VIN Storyteller is open source under the AGPL-3.0:
+		<a href="https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller" rel="noopener">source on GitHub</a>.</p>
+</div>
+<script src="/assets/vin_storyteller/js/vendor/echarts.min.js?v={{ vin_storyteller_asset_version() }}" defer></script>
+<script src="/assets/vin_storyteller/js/vendor/topojson-client.min.js?v={{ vin_storyteller_asset_version() }}" defer></script>
+<script src="/assets/vin_storyteller/js/stats-core.js?v={{ vin_storyteller_asset_version() }}" defer></script>
+<script src="/assets/vin_storyteller/js/stats.js?v={{ vin_storyteller_asset_version() }}" defer></script>

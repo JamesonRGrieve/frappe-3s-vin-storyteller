@@ -18,6 +18,12 @@ production record, which lives in its own MariaDB database (not the Frappe site 
   endpoints `api.code` / `api.codes` (guest GET, 120/hour per client apart from VIN lookups, cached 1 h, never
   logged), `templates/includes/codes.html` + `public/js/codes.js`. Addressed by query (`?code=`, `&model=`) since the
   public site router serves only exact Web Page routes; the path form is read too, for when it serves dynamic ones.
+- Production statistics: `vin_storyteller/stats.py` (pure: a car's region from its record, `build_stats` folds the
+  repository's `stats_rows` / `stats_catalogue` into facets), `answer.stats_answer`, endpoint `api.stats` (cached 1 h,
+  counted with the code pages), `templates/includes/stats.html`, `public/js/stats-core.js` (pure,
+  `globalThis.VinStatsCore`), `public/js/stats.js` (DOM + ECharts; every tooltip value escaped), `public/css/stats.css`.
+  Charts use the vendored Apache ECharts and world map in `public/js/vendor` (README there: versions, checksums,
+  licences); copy upstream files unmodified. A region is only ever what the record names; never infer a country.
 - `vin_storyteller/api.py`: `tell(vin)` and the code endpoints, kept thin: guest, GET, rate-limited per IP;
   opens a read-only PyMySQL session from site-config keys `vin_storyteller_db_*` and calls `answer`; logs
   database failures, returns a generic message.

@@ -11,7 +11,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
+from vin_storyteller.stats import Catalogue, StatsRow, destination_code
 from vin_storyteller.story import (
+	ASA_GENERAL,
 	CODE_KINDS,
 	FACTORY_PROVENANCES,
 	MARKET_MODELS,
@@ -581,6 +583,80 @@ class ProductionRecords:
 			}
 		table, key = LABEL_TABLES[kind]
 		return {code: d for code, d in self._rows(f"SELECT {key}, Description FROM {table}", ())}
+
+	# The production statistics page (stats.py): factory-record cars only, every model and market.
+
+	def stats_rows(self) -> tuple[StatsRow, ...]:
+		"""Factory-record cars grouped by every dimension the stats page counts by."""
+		columns = (
+			"p.ModelYear, p.Model, m.Manufacturer, m.Model, m.Trim, p.ModelCode, p.Classification, p.Equipment, "
+			"p.Exterior, p.Interior, SUBSTR(p.DateOfManufacture, 1, 4), SUBSTR(p.VIN, 1, 1)"
+		)
+		rows = self._rows(
+			f"SELECT {columns}, COUNT(*) FROM Production p LEFT JOIN Model m ON m.ModelCode = p.Model "
+			f"WHERE p.{FACTORY} GROUP BY {columns}",
+			FACTORY_PROVENANCES,
+		)
+		return tuple(
+			StatsRow(year or "", key or "", manufacturer, model, trim, *(v or "" for v in codes), int(n))
+			for year, key, manufacturer, model, trim, *codes, n in rows
+		)
+
+	def stats_catalogue(self) -> Catalogue:
+		"""Mitsubishi's labels the stats page needs: grade texts and destinations, the market items of the export
+		option codes (ASA General), paint aliases, and paint and interior names."""
+		grades: dict[tuple[str, str], str] = {}
+		destinations: dict[tuple[str, str], str] = {}
+		for model_code, grade, description, destination in self._rows(
+			"SELECT ModelCode, Classification, Description, Destination FROM ClassificationLabel "
+			"WHERE Language = %s ORDER BY Source DESC",
+			(LANGUAGE,),
+		):
+			key = (model_code.strip(), grade.strip())
+			grades.setdefault(key, description)
+			if destination_code(destination):
+				destinations.setdefault(key, destination_code(destination))
+		spec_items = {
+			code: description
+			for code, description in self._rows(
+				"SELECT ItemCode, Description FROM OptionItem WHERE Language = %s AND Description LIKE %s "
+				"ORDER BY Source DESC",
+				(LANGUAGE, "% SPEC%"),
+			)
+		}
+		market_items: dict[tuple[str, str, str], set[str]] = {}
+		for model_code, option, grade, items in self._rows(
+			"SELECT ModelCode, OptionCode, Classification, Items FROM OptionContent WHERE Source = %s",
+			(ASA_GENERAL,),
+		):
+			named = {spec_items[i] for i in (items or "").split(",") if i in spec_items}
+			market_items.setdefault((model_code.strip(), option.strip(), grade.strip()), set()).update(named)
+		option_items: dict[tuple[str, str, str, str], tuple[str, ...]] = {}
+		for model_code, option, grade, year, items in self._rows(
+			"SELECT ModelCode, OptionCode, Classification, ModelYear, Items FROM OptionContent "
+			"ORDER BY Source DESC, StartDate",
+			(),
+		):
+			option_items.setdefault(
+				(model_code.strip(), option.strip(), grade.strip(), year.strip()),
+				tuple(i for i in (items or "").split(",") if i),
+			)
+		item_names: dict[str, str] = {}
+		for code, description in self._rows(
+			"SELECT ItemCode, Description FROM OptionItem WHERE Language = %s ORDER BY Source DESC",
+			(LANGUAGE,),
+		):
+			item_names.setdefault(code.strip(), description)
+		return Catalogue(
+			option_items=option_items,
+			item_names=item_names,
+			grades=grades,
+			destinations=destinations,
+			market_items={key: tuple(sorted(found)) for key, found in market_items.items()},
+			paint_aliases=self._paint_aliases(),
+			paint_names={c.strip(): d for c, d in self._descriptions("paint").items()},
+			interior_names={c.strip(): d for c, d in self._descriptions("interior").items()},
+		)
 
 	def record_story(self, vin: str, name: str, at: datetime) -> None:
 		"""Log a story told, as the original storyteller did: the VIN, the visitor's name, the hour and the time."""

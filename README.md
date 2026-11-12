@@ -133,6 +133,46 @@ Pages (frappe-public-site-router doesn't yet), so the shipped default is `query`
 Paint and interior pages, pairings and index rows carry an empty, hidden `.vst-swatch` with `data-swatch-kind`
 and `data-swatch-code` for a colour swatch to fill.
 
+## Production statistics
+
+`/storyteller/stats` counts every factory-record car (every model and market) and charts it, with
+[Apache ECharts](https://echarts.apache.org) (Apache-2.0) and a [Natural Earth](https://www.naturalearthdata.com)
+world map (world-atlas + topojson-client, ISC). They are vendored in `public/js/vendor` (see its README for versions
+and checksums), so the page needs no build step or CDN.
+
+- **Filters** (model, market, region, model year range) apply to every chart and table, live in the address
+  (`?model=GTO&market=Export&from=1994`) so a filtered view can be shared, and clicking a region's bar filters to it.
+- **Totals and highlights:** cars, model years, regions, paints, interiors, cars per generation (split at the 1994
+  model year facelift), the commonest and scarcest paints, and the regions with the most and fewest cars. A **(?)**
+  beside a figure explains it.
+- **Where:** cars by region, by country on the world map, as market → region → model (sunburst), and by region per
+  model year.
+- **When:** cars per model year by model, per calendar build month (zoomable), and by how many identical cars were
+  built (the story's exact-spec run: one of one, fewer than 10 … 100 or more).
+- **How:** paints (drawn in their own colour from the swatch data; click for the code's page), interiors, paint share
+  and transmissions per model year, paint × interior pairs, model lines.
+- **Factory options by region:** each option item's share of a region's cars whose option contents are in
+  Mitsubishi's catalogues (Japanese GTOs and export 3000GTs), and one item compared across regions.
+- **The numbers:** any count as a searchable, sortable table, downloadable as CSV (that table, or every filtered
+  group); every chart can also show its data, or be saved as an image.
+
+A car's **region** comes from its factory record (`stats.region_of`):
+
+| Market | Region |
+|---|---|
+| Japan (ASA Japan GTOs) | Japan |
+| Export (ASA General) | the market its option code names (`ENGLAND SPEC` → England, `BRITISH ARMY SPEC IN WEST GERMANY` …), else the one its grade names (`… GCC` → Gulf states), else its drive side |
+| North America (CAPS) | its grade's emissions destination in CAPS's grade table (`FED` → Federal (49-state), `CAL` → California); a grade missing from the table takes the destination its 6th character (the destination digit) carries in the table's other grades (2 = FED, 7 = CAL); a digit the table names no destination for is shown as such (e.g. "destination digit 3", all Dodges) |
+| Australia | a CAPS car with a VIN starting `6` (Mitsubishi Australia, `6MM`) |
+
+`GET /api/method/vin_storyteller.api.stats` (guest, rate-limited with the code pages, cached for an hour) answers
+`status` `found` with `stats`: `total`, `years`, `models`, `regions` (`name`, `market`, `country` on the world map or
+`""`, `note`), and `facets`: per facet (`paint`, `interior`, `line`, `transmission`, `month`, `colours`, `rarity`,
+`generation`, `options`, `option_records`) its `values` and `rows` of `[year, model, region, value, cars]` (indexes into
+`years`, `models`, `regions` and the facet's `values`). Every facet but `options` counts each car once; `options`
+counts a car under each item its option code fits (market items such as `ENGLAND SPEC` left out, being the region),
+and `option_records` says whose option contents are on record. About 120 KB for the whole record.
+
 ## Data model
 
 The CAPS dump provides `Production` (one row per car) and the lookup tables `Model`, `Exterior`,
@@ -272,6 +312,10 @@ read smaller than it really was. The page says so.
    `<prefix>/storyteller/interior/<code>` and `<prefix>/storyteller/option/<model>/<code>`. frappe-public-site-router
    serves dynamic-route Web Pages and, through this app's `public_site_sitemap_routes` hook, lists every code page in
    the site's sitemap. The templates write path links (`data-code-routes="path"`); `?code=` addresses still work.
+
+7. **The statistics page.** A published Web Page `<prefix>/storyteller/stats` with
+   `{% include "vin_storyteller/templates/includes/stats.html" %}` as its `main_section_html` (dynamic template, like
+   the page above).
 
 ## Development
 

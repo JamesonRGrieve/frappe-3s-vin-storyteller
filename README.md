@@ -169,10 +169,10 @@ and is cached for an hour.
 
 **Missing VINs** (migration 0011, table `MissingRange`): the serials missing from every record we hold (US gaps from
 NA9199 + CAPS 2004, from 000101 up; the Australian serials no listing has given) are searchable too and shown in **red**
-with a *Send your VIN tag* link (an email to storyteller@3shub.com with the VIN in the subject) so owners can help fill
+with a *Send your VIN tag* link (an email to lostvin@3shub.ca with the VIN in the subject) so owners can help fill
 them. A full VIN not on record whose serial falls in a gap, or a bare 6-digit serial, returns its gap; *Missing VINs
 only* (`missing=1`) lists the gaps the filters cover (at most 500 an answer). The search answer adds `missing`
-(`market`, `model_year`, `vin` (the VIN, or the range as a pattern such as `J?3??????MY000518-000704`), `first`,
+(`market`, `model_year`, `vin` (the VIN, or the range as a pattern such as `J*3******MY000518-000704` (`*` for an unknown character)), `first`,
 `last`, `count`, `note`) and `missing_total`. The ranges are regenerated whenever found cars are loaded.
 
 A car's **region** comes from its factory record (`stats.region_of`):

@@ -350,12 +350,12 @@ test("a found car's cells follow the columns, VIN uncensored", () => {
 
 test("missing ranges read as red rows with a mailto asking for the VIN tag", () => {
 	const one = { market: "us", model_year: "1995", vin: "JB3AN74K9SY008484", first: "008484", last: "008484", count: 1, note: "1995 gap" };
-	const many = { market: "au", model_year: "", vin: "JMFJF5S24?J000011-000017", first: "000011", last: "000017", count: 7, note: "Australian" };
+	const many = { market: "au", model_year: "", vin: "JMFJF5S24*J000011-000017", first: "000011", last: "000017", count: 7, note: "Australian" };
 	assert.deepEqual(plain(core.missingCells(one)).slice(0, 4), ["JB3AN74K9SY008484", "1995", "Missing from the factory records", "North America"]);
 	assert.equal(core.missingCells(many)[2], "7 serials missing");
 	assert.equal(core.missingCells(many).length, core.SEARCH_COLUMNS.length);
 	const mail = core.tagMailto(one);
-	assert.ok(mail.startsWith("mailto:storyteller@3shub.com?subject=VIN%20tag%20for%20JB3AN74K9SY008484&body="));
+	assert.ok(mail.startsWith("mailto:lostvin@3shub.ca?subject=VIN%20tag%20for%20JB3AN74K9SY008484&body="));
 	assert.ok(decodeURIComponent(mail).includes("My car's VIN is JB3AN74K9SY008484."));
 	assert.ok(decodeURIComponent(core.tagMailto(many)).includes("(please type it here)"));
 	assert.equal(core.searchParams(core.emptyFilter(), { missing: true }, 1), "missing=1");

@@ -181,7 +181,7 @@ class MissingEntry:
 
 	market: str  # 'us' / 'au'
 	model_year: str  # '1991', '' when not known (Australia)
-	vin: str  # the VIN searched for, or the range as a pattern: 'J?3??????MY000518-000704'
+	vin: str  # the VIN searched for, or the range as a pattern: 'J*3******MY000518-000704'
 	first: str
 	last: str
 	count: int

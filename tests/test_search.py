@@ -119,7 +119,7 @@ def test_a_full_vin_inside_a_known_gap_comes_back_missing(records):
 
 def test_a_serial_alone_finds_its_gaps_and_filters_narrow_them(records):
 	body = run(records, q="000600")
-	assert {(g["model_year"], g["vin"]) for g in body["missing"]} >= {("1991", "J?3??????MY000518-000704")}
+	assert {(g["model_year"], g["vin"]) for g in body["missing"]} >= {("1991", "J*3******MY000518-000704")}
 	assert run(records, q="000600", model="GTO")["missing_total"] == 0
 	assert run(records, q="000600", market="Japan")["missing_total"] == 0
 
@@ -131,7 +131,7 @@ def test_missing_only_lists_the_gaps_the_filters_cover(records):
 	assert len(body["missing"]) <= 500
 	australia = run(records, missing="1", market="Australia")
 	assert australia["missing"] and {g["market"] for g in australia["missing"]} == {"au"}
-	assert all(g["vin"].startswith("JMFJF5S24?J") for g in australia["missing"])
+	assert all(g["vin"].startswith("JMFJF5S24*J") for g in australia["missing"])
 	assert run(records, missing="1", **{"from": "1997", "to": "1997"})["missing_total"] == 0
 
 

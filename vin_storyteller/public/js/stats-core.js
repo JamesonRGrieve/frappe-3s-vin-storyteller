@@ -422,7 +422,7 @@
 		];
 	}
 
-	const TAG_ADDRESS = "storyteller@3shub.com";
+	const TAG_ADDRESS = "lostvin@3shub.ca"; // lost-VIN reports (operator, 2026-11-12)
 	const MARKET_NAMES = { us: "North America", au: "Australia" };
 
 	// A missing range's table cells, in SEARCH_COLUMNS order: the VIN or range, its year, what is missing.

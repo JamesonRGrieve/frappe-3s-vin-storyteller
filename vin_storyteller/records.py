@@ -10,10 +10,13 @@ are never touched. No Frappe import.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from vin_storyteller.repository import PARAMSTYLES
 from vin_storyteller.story import (
+	AUSTRALIAN_MODEL,
+	AUSTRALIAN_VIN_PREFIX,
 	CHASSIS_MODELS,
 	FACTORY_PROVENANCES,
 	has_valid_check_digit,
@@ -109,3 +112,86 @@ def _add_chassis(connection, chassis: str, provenance: str, mark: str) -> AddedR
 		cursor.close()
 	connection.commit()
 	return AddedRecord(chassis, model, family, "", "", provenance, "")
+
+
+# A listed Australian car (card 388): only what the listing and its VIN establish.
+LISTED_VIN = re.compile(r"^JMF[A-HJ-NPR-Z0-9]{14}$")
+# "JMFJF5S24NJ000001<tab>Red<tab>WA*": VIN, a one-word colour (or ?), then the location (tabs or spaces).
+LISTING_ROW = re.compile(r"^\s*(JMF[A-Z0-9]{14})\s+(\S+)(?:\s+(\S.*?))?\s*$")
+HISTORY_TITLE_MAX = 200  # VehicleHistory.Title
+
+
+@dataclass(frozen=True)
+class Listed:
+	"""One car in an owners' listing: its VIN and what the listing says about it."""
+
+	vin: str
+	colour: str  # as written ('Red', 'white'); '' for '?' or blank
+	location: str  # as written ('Vic', 'WA*')
+	url: str  # the listing page that names it
+
+
+def parse_listing(text: str, url: str) -> list[Listed]:
+	"""Rows of a VIN / colour / location table pasted into a forum post (3SI's Aus-delivered list), first mention
+	of each VIN kept. A malformed VIN (wrong length, I/O/Q, no model-year letter in position 10) is skipped."""
+	found: dict[str, Listed] = {}
+	for line in text.splitlines():
+		match = LISTING_ROW.match(line)
+		if not match:
+			continue
+		vin, colour, location = match.group(1).upper(), match.group(2).strip(), (match.group(3) or "").strip()
+		if LISTED_VIN.match(vin) and year_code(vin) and vin not in found:
+			found[vin] = Listed(vin, "" if colour in ("?", "") else colour, location, url)
+	return list(found.values())
+
+
+def add_listed_record(
+	connection, listed: Listed, provenance: str, source: str, paramstyle: str = "format"
+) -> AddedRecord:
+	"""Insert an Australian-delivered 3000GT from an owners' listing: Model AU, its model year from the VIN's year
+	letter, chassis Z16A where the VIN spells it, every code empty (a partial story outside every count); and a
+	VehicleHistory row citing the listing page with the colour and location it gives."""
+	provenance = " ".join((provenance or "").split())
+	if not provenance or provenance.upper() in FACTORY_NAMES or len(provenance) > PROVENANCE_MAX:
+		raise RecordRefused(
+			f"provenance must name the source in 1-{PROVENANCE_MAX} characters, and not be a factory export"
+		)
+	vin = listed.vin
+	if not vin.startswith(AUSTRALIAN_VIN_PREFIX) or not LISTED_VIN.match(vin):
+		raise RecordRefused(f"{vin}: not an Australian (JMF) VIN")
+	year = year_code(vin)
+	if year is None:
+		raise RecordRefused(f"{vin}: position 10 isn't a 1991-1999 model year")
+	model_code = "Z16A" if "Z16A" in vin[3:9] else ""
+	mark = PARAMSTYLES[paramstyle]
+	details = "; ".join(
+		part
+		for part in (
+			f"colour {listed.colour}" if listed.colour else "",
+			f"location {listed.location}" if listed.location else "",
+		)
+		if part
+	)
+	title = f"Listed among the Australian-delivered 3000GTs{f' ({details})' if details else ''}"[
+		:HISTORY_TITLE_MAX
+	]
+	cursor = connection.cursor()
+	try:
+		cursor.execute(f"SELECT 1 FROM Production WHERE VIN = {mark}", (vin,))
+		if cursor.fetchone():
+			raise RecordRefused(f"{vin} is already on record")
+		cursor.execute(
+			"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, "
+			"Interior, DateOfManufacture, ModelYear, Provenance) "
+			f"VALUES ({mark}, {mark}, {mark}, {mark}, '', '', '', '', '', {mark}, {mark})",
+			(vin[9:], vin, AUSTRALIAN_MODEL, model_code, year, provenance),
+		)
+		cursor.execute(
+			"INSERT INTO VehicleHistory (VIN, RecordType, Title, URL, Source, Provenance) "
+			f"VALUES ({mark}, 'other', {mark}, {mark}, {mark}, {mark})",
+			(vin, title, listed.url, source, provenance),
+		)
+	finally:
+		cursor.close()
+	connection.commit()
+	return AddedRecord(vin, AUSTRALIAN_MODEL, model_code, "", year, provenance, "")

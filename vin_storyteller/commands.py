@@ -3,7 +3,9 @@
 
 - `bench --site <site> vin-storyteller-migrate`: apply pending schema migrations;
 - `bench --site <site> vin-storyteller-add-record <VIN> <PROVENANCE>`: add a car the CAPS export is missing, from
-  another source (records.add_record), e.g. `vin-storyteller-add-record JB3AN74K1SY008527 "Price label"`.
+  another source (records.add_record), e.g. `vin-storyteller-add-record JB3AN74K1SY008527 "Price label"`;
+- `bench --site <site> vin-storyteller-add-listed <TSV> <PROVENANCE> <SOURCE>`: add the Australian-delivered cars of an
+  owners' listing, each cited to its listing page (records.add_listed_record).
 
 Host, port and database come from the site config (as the API uses them). The schema changes need a user
 that may ALTER and CREATE, which the read-only API user must not be, so those credentials come only from
@@ -77,4 +79,37 @@ def add_production_record(context, vin, provenance):
 	)
 
 
-commands = [migrate_production_record, add_production_record]
+@click.command("vin-storyteller-add-listed")
+@click.argument("listing", type=click.Path(exists=True, dir_okay=False))
+@click.argument("provenance")
+@click.argument("source")
+@pass_context
+def add_listed_records(context, listing, provenance, source):
+	"""Add the Australian-delivered cars of an owners' listing: a TSV of vin, colour, location, url (the listing page),
+	each car cited to that page. Cars already on record are skipped and reported."""
+	import csv
+
+	from vin_storyteller.records import Listed, RecordRefused, add_listed_record
+
+	with open(listing, newline="") as handle:
+		rows = [
+			Listed(r["vin"], r["colour"], r["location"], r["url"])
+			for r in csv.DictReader(handle, delimiter="\t")
+		]
+
+	def work(connection):
+		added, refused = [], []
+		for row in rows:
+			try:
+				added.append(add_listed_record(connection, row, provenance, source))
+			except RecordRefused as error:
+				refused.append(str(error))
+		return added, refused
+
+	added, refused = _with_admin_connection(context, work)
+	click.echo(f"added {len(added)}, refused {len(refused)}")
+	for reason in refused:
+		click.echo(f"  refused: {reason}")
+
+
+commands = [migrate_production_record, add_production_record, add_listed_records]

@@ -104,17 +104,28 @@ CHASSIS_MODELS = {"Z15A": "G5", "Z16A": "G6"}  # chassis family -> Model key (mi
 
 
 EXPORT_MODELS = {"EL": "LHD", "ER": "RHD"}  # export-market 3000GT Model keys by drive side (migration 0007)
-MARKET_MODELS = {"jdm": tuple(CHASSIS_MODELS.values()), "export": tuple(EXPORT_MODELS)}
+AUSTRALIAN_MODEL = "AU"  # Australian-delivered 3000GTs (migration 0011)
+MARKET_MODELS = {
+	"jdm": tuple(CHASSIS_MODELS.values()),
+	"export": tuple(EXPORT_MODELS),
+	"au": (AUSTRALIAN_MODEL,),
+}
 
 
 def market_of(model: str) -> str:
-	"""Which numbering a car's positions and totals count within: 'us', 'jdm' (GTO) or 'export'."""
+	"""Which numbering a car's positions and totals count within: 'us', 'jdm' (GTO), 'export' or 'au'."""
 	return next((market for market, models in MARKET_MODELS.items() if model in models), "us")
 
 
 # Export-market 3000GTs (ASA General): 17-character VINs from JMA/JMY without an ISO check digit, or, for 1992-94
 # cars, a 14-character frame number such as DMNZ16APY00001 (card 331).
 EXPORT_VIN_PREFIXES = ("JMA", "JMY")
+AUSTRALIAN_VIN_PREFIX = "JMF"  # Mitsubishi Australia (3SI's Aus-delivered list: JMFJF5S24...J000001-000117)
+AUSTRALIAN_NOT_ON_RECORD = (
+	"That's an Australian-delivered Mitsubishi 3000GT VIN (JMF). Mitsubishi's catalogues we can read hold no "
+	"Australian cars, so they're added from owners' listings; this one isn't listed yet. Please email "
+	"storyteller@3shub.com with your VIN, colour and state."
+)
 FRAME_PATTERN = re.compile(r"^(?=[A-Z0-9]{14}$)[A-Z]{2,3}Z16A[A-Z0-9]+$")
 EXPORT_NOT_ON_RECORD = (
 	"That's an export-market Mitsubishi 3000GT {kind}, but it isn't in Mitsubishi's record of the export cars (the "
@@ -191,6 +202,8 @@ def not_found_message(vin: str, gap: Gap | None) -> str | None:
 	"""Why a well-formed VIN has no production record, when the VIN or the record around it says; None otherwise."""
 	if vin[:3] in EXPORT_VIN_PREFIXES:
 		return EXPORT_NOT_ON_RECORD.format(kind="VIN")
+	if vin.startswith(AUSTRALIAN_VIN_PREFIX):
+		return AUSTRALIAN_NOT_ON_RECORD
 	maker = MANUFACTURER_CODES.get(vin[:3])
 	if maker is None:
 		return (

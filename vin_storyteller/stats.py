@@ -117,7 +117,9 @@ REGION_NOTES = {
 	"Stealths built to Canadian standards car for car.",
 	"Gulf states (GCC)": "Export grades whose catalogue text names the Gulf Cooperation Council market.",
 	"Japan": "Japanese-market GTOs, from Mitsubishi's ASA Japan catalogue.",
-	"Australia": "North American-catalogue cars with an Australian VIN (world manufacturer region 6).",
+	"Australia": "Cars with an Australian VIN (world manufacturer region 6) in Mitsubishi's North American catalogue. "
+	"The Australian-delivered 3000GTs (VIN JMF) are known only from owners' listings, not factory records, so the "
+	"factory counts here leave them out.",
 }
 
 
@@ -222,6 +224,8 @@ def region_of(
 	"""A factory-record car's region, from its Model key (market), the first character of its VIN, its grade's
 	destination code (FED/CAL; North America only), its option items (export only) and its grade text."""
 	market = market_of(model_key)
+	if market == "au":
+		return Region(AUSTRALIA, AUSTRALIA, AUSTRALIA)
 	if market == "jdm":
 		return Region(JAPAN, JAPAN, JAPAN)
 	if market == "export":

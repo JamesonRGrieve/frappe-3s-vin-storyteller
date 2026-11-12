@@ -238,6 +238,14 @@ non-1991–99 model year, or a VIN no CAPS car resembles. Such a car is told as 
 VIN, "not in Mitsubishi's factory export … on record from <source>"), and every position, total and rarity counts
 CAPS cars only.
 
+**Australian-delivered 3000GTs** (VINs `JMF…`, Mitsubishi Australia) are in no Mitsubishi record we can read: not on
+our discs, and not on the online catalogues (PartsSouq, Amayama, 7zap). They come from owners' listings, chiefly 3SI's
+"Aus delivered 3000GT database!" thread (117 cars, `JMFJF5S24<year>J000001`–`000117`). `bench --site <site>
+vin-storyteller-add-listed <TSV> "<provenance>" "<source>"` loads a listing (columns `vin`, `colour`, `location`,
+`url`): Model `AU` (migration 0011, its own market), the model year from the VIN's year letter, chassis `Z16A` where
+the VIN spells it, every code empty, and a `VehicleHistory` row citing the listing page with the colour and location
+as written. They tell as partial stories; an unlisted `JMF` VIN gets its own not-found answer.
+
 A Japanese-market GTO is added the same way by its chassis number (`Z15A-`/`Z16A-` and seven digits, stored in
 canonical `Z16A-0011452` form in the VIN column): its family gives the Model (`G5` / `G6`, migration 0004,
 Mitsubishi GTO with no trim), the seven digits are its serial, and model year, build date and codes stay empty.

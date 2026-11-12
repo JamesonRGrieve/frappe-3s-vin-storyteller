@@ -162,7 +162,7 @@ A car's **region** comes from its factory record (`stats.region_of`):
 |---|---|
 | Japan (ASA Japan GTOs) | Japan |
 | Export (ASA General) | the market its option code names (`ENGLAND SPEC` → England, `BRITISH ARMY SPEC IN WEST GERMANY` …), else the one its grade names (`… GCC` → Gulf states), else its drive side |
-| North America (CAPS) | its grade's emissions destination in CAPS's grade table (`FED` → Federal (49-state), `CAL` → California); a grade missing from the table takes the destination its 6th character (the destination digit) carries in the table's other grades (2 = FED, 7 = CAL); a digit the table names no destination for is shown as such (e.g. "destination digit 3", all Dodges) |
+| North America (CAPS) | its grade's emissions destination in CAPS's grade table (`FED` → Federal (49-state), `CAL` → California); a grade missing from the table takes the destination its 6th character (the destination digit) carries in the table's other grades (2 = FED, 7 = CAL), else digit 3 = Canada (CAPS labels digit-3 grades CANADA on Mitsubishi's other North American models, and the 3,280 digit-3 Stealths match Michael Reid's Canadian-emissions count exactly); any other unlabelled digit is shown as such |
 | Australia | a CAPS car with a VIN starting `6` (Mitsubishi Australia, `6MM`) |
 
 `GET /api/method/vin_storyteller.api.stats` (guest, rate-limited with the code pages, cached for an hour) answers

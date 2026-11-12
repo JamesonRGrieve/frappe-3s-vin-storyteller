@@ -9,9 +9,9 @@ A car's region comes from the factory record itself, never a guess:
 - an export 3000GT (ASA General) takes the market its option code names ("ENGLAND SPEC", "GERMANY SPEC",
   "BRITISH ARMY SPEC IN WEST GERMANY"), else the market its grade text names ("... GCC"), else its drive side;
 - a CAPS car with an Australian VIN (world manufacturer region 6) is Australia;
-- any other CAPS car takes its grade's emissions destination from CAPS's grade table (HLP_RUI: FED or CAL). A grade
-  missing from the table takes the destination its destination digit carries in the table's other grades (2 = FED,
-  7 = CAL in every 1999 and 2004 build).
+- any other CAPS car takes its grade's emissions destination from CAPS's grade table (HLP_RUI: FED, CAL or CANADA). A
+  grade missing from the table takes the destination its destination digit carries in the table's other grades (2 =
+  FED, 7 = CAL in every 1999 and 2004 build), else the documented digit 3 = Canada (DOCUMENTED_DIGITS).
 """
 
 from __future__ import annotations
@@ -35,7 +35,13 @@ EXPORT = "Export"
 AUSTRALIA = "Australia"
 MARKET_GROUPS = {"jdm": JAPAN, "export": EXPORT, "us": NORTH_AMERICA}
 
-DESTINATIONS = {"FED": "Federal (49-state)", "CAL": "California"}
+DESTINATIONS = {"FED": "Federal (49-state)", "CAL": "California", "CAN": "Canada"}
+# Destination digits the 3S grade labels don't carry. 3 = Canada: CAPS 2004's HLP_RUI labels digit-3 grades CANADA on
+# Mitsubishi's other North American models (Lancer CS6A SNHEL3M, Outlander CU4W, Montero Sport K96W/K99W, Montero
+# V77W), and Michael Reid's "Canada Emissions Stealth Production" (stealth316.com, from the same CAPS VIN table) is
+# exactly the 3,280 digit-3 Stealths of the 1999 export, year by year and trim by trim. Only Dodges carry it: the
+# 3000GT was not sold in Canada (operator-approved research, card 388, 2026-11-12).
+DOCUMENTED_DIGITS = {"3": "CAN"}
 UNNAMED_DIGIT = "digit "  # a destination digit the grade table names no destination for, e.g. "digit 3"
 DESTINATION_DIGIT = 5  # MNHEL2M: the 6th character of a North American grade is its destination digit
 AUSTRALIAN_VIN_REGION = "6"  # ISO 3780: a VIN starting 6 was built for Australia (Mitsubishi Australia: 6MM)
@@ -63,6 +69,7 @@ MAP_COUNTRIES = {
 	"Swiss": "Switzerland",
 	"Federal (49-state)": WORLD_USA,
 	"California": WORLD_USA,
+	"Canada": "Canada",
 	JAPAN: JAPAN,
 	AUSTRALIA: AUSTRALIA,
 }
@@ -103,6 +110,9 @@ REGION_NOTES = {
 	"Federal (49-state)": "Mitsubishi's FED grade destination: built to US federal emissions rules. The factory "
 	"records give a North American car's emissions destination, not the country it was sold in.",
 	"California": "Mitsubishi's CAL grade destination: built to California's emissions rules.",
+	"Canada": "Grades with destination digit 3, which Mitsubishi's grade table marks CANADA on its other North American "
+	"models; every one is a Dodge Stealth (the 3000GT wasn't sold in Canada), and they match Michael Reid's count of "
+	"Stealths built to Canadian standards car for car.",
 	"Gulf states (GCC)": "Export grades whose catalogue text names the Gulf Cooperation Council market.",
 	"Japan": "Japanese-market GTOs, from Mitsubishi's ASA Japan catalogue.",
 	"Australia": "North American-catalogue cars with an Australian VIN (world manufacturer region 6).",
@@ -297,7 +307,11 @@ class Catalogue:
 		if len(grade) <= DESTINATION_DIGIT:
 			return ""
 		digit = grade[DESTINATION_DIGIT]
-		return digits.get(digit) or (f"{UNNAMED_DIGIT}{digit}" if digit.isdigit() else "")
+		return (
+			digits.get(digit)
+			or DOCUMENTED_DIGITS.get(digit)
+			or (f"{UNNAMED_DIGIT}{digit}" if digit.isdigit() else "")
+		)
 
 
 def _line_name(row: StatsRow) -> str:

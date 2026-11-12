@@ -78,6 +78,7 @@ def test_regions_follow_the_record():
 	assert region_of("M1", "J", "XYZ") == Region("North America (XYZ)", "North America", "")
 	assert region_of("M1", "J", "").name == "North America, destination not recorded"
 	assert region_of("D1", "J", "digit 3").name == "North America, destination digit 3"
+	assert region_of("D1", "J", "CAN") == Region("Canada", "North America", "Canada")
 
 
 def test_generations_split_at_the_1994_facelift():
@@ -260,3 +261,16 @@ def test_option_items_count_per_region_against_the_cars_with_records(connection,
 	assert facet(stats, "option_records") == {"on_record": 1, "not_on_record": 13}
 	assert facet(stats, "generation") == {"1st generation (to 1993)": 13, "2nd generation (1994 on)": 1}
 	assert {r["name"]: r["note"] for r in stats["regions"]}["Japan"].startswith("Japanese-market")
+
+
+def test_destination_digit_3_is_canada(connection, records):
+	"""Digit 3 has no 3S grade label, but is Canada (DOCUMENTED_DIGITS); an unknown digit stays a digit."""
+	catalogue(connection)
+	add_car(connection, "JB3XE74C5MY000002", "M1", "MNGFL3D", "XA1", "T87", "12A", "90041", "91", "CAPS 1999")
+	add_car(connection, "JB3XE74C5MY000003", "M1", "MNGFL4D", "XA1", "T87", "12A", "90041", "91", "CAPS 1999")
+	stats = stats_answer(lambda: _session(records), (sqlite3.Error,))["stats"]
+	regions = by(stats, "regions")
+	assert regions["Canada"] == 1
+	assert regions["North America, destination digit 4"] == 1
+	assert {r["name"]: r["country"] for r in stats["regions"]}["Canada"] == "Canada"
+	assert "CANADA" in {r["name"]: r["note"] for r in stats["regions"]}["Canada"]

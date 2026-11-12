@@ -76,6 +76,7 @@ MAP_COUNTRIES = {
 	AUSTRALIA: AUSTRALIA,
 }
 DRIVE_SIDES = {"EL": "left-hand drive", "ER": "right-hand drive"}
+NOT_COUNTRIES = {"Non-EC"}  # market items that name no one country
 
 RARITY_ORDER = ("one_of_one", "sub10", "sub25", "sub50", "sub100", "common")
 RARITY_NAMES = {
@@ -231,7 +232,8 @@ def region_of(
 	if market == "export":
 		named = spec_market(market_items) or grade_market(grade_label)
 		if named:
-			on_map = named not in GRADE_MARKETS.values()  # the Gulf states are several countries
+			# The Gulf states are several countries; "Non-EC" (outside the European Community) is none.
+			on_map = named not in GRADE_MARKETS.values() and named not in NOT_COUNTRIES
 			return Region(named, EXPORT, MAP_COUNTRIES.get(named, named) if on_map else "")
 		side = DRIVE_SIDES.get(model_key, "")
 		return Region(f"Export, market not recorded{f' ({side})' if side else ''}", EXPORT)

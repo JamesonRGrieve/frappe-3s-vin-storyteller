@@ -74,6 +74,7 @@ def test_regions_follow_the_record():
 	assert region_of("G6", "Z", "") == Region("Japan", "Japan", "Japan")
 	assert region_of("ER", "C", "", ["ENGLAND SPEC"]) == Region("England", "Export", "United Kingdom")
 	assert region_of("EL", "J", "", ["BRITISH ARMY SPEC IN WEST GERMANY"]).country == "Germany"
+	assert region_of("ER", "J", "", ["NON-EC SPEC"]) == Region("Non-EC", "Export", "")
 	assert region_of("EL", "J", "", (), "…,5FM/T GCC") == Region("Gulf states (GCC)", "Export", "")
 	assert region_of("ER", "J", "").name == "Export, market not recorded (right-hand drive)"
 	assert region_of("EL", "J", "", (), "DOHC(TURBO/4WD/4WS),6FM/T  BRAZIL") == Region(

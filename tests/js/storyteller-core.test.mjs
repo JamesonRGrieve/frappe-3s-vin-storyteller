@@ -6,7 +6,7 @@ import { test } from "node:test";
 import vm from "node:vm";
 
 const source = readFileSync(new URL("../../vin_storyteller/public/js/storyteller-core.js", import.meta.url), "utf8");
-const sandbox = {};
+const sandbox = { URLSearchParams };
 vm.createContext(sandbox);
 vm.runInContext(source, sandbox);
 const core = sandbox.VinStorytellerCore;
@@ -205,4 +205,12 @@ test("featuresText says a feature came from the factory", () => {
 test("a paint page names its other codes", () => {
 	const text = core.codeNamesText({ names: [{ manufacturer: "Mitsubishi", name: "Fiji Blue Metallic" }], same_paint: ["TA7"] });
 	assert.equal(text, "Mitsubishi: Fiji Blue Metallic · Also recorded as TA7");
+});
+
+test("a VIN handed in the address is taken only when it is a VIN, chassis or frame number", () => {
+	assert.equal(core.vinFromAddress("?vin=ja3am84j3ny000001"), "JA3AM84J3NY000001");
+	assert.equal(core.vinFromAddress("?vin=Z16A-0014160"), "Z16A-0014160");
+	assert.equal(core.vinFromAddress("?vin=<script>"), "");
+	assert.equal(core.vinFromAddress("?vin=JA3AM84J3NY00000I"), "");
+	assert.equal(core.vinFromAddress(""), "");
 });

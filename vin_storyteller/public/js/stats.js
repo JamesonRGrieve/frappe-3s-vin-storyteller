@@ -195,6 +195,7 @@
 			this.buildFilters();
 			this.buildTable();
 			this.buildOptionPicker();
+			this.buildSearch();
 			this.root.querySelector(".vst-stats-filters").hidden = false;
 			this.root.querySelector(".vst-stats-body").hidden = false;
 			this.render();
@@ -288,6 +289,7 @@
 			history.replaceState(null, "", `${location.pathname}${core.stateQuery(filter)}${location.hash}`);
 			this.syncFilters();
 			this.render();
+			if (this.search?.active) this.runSearch(1);
 		}
 
 		syncFilters() {
@@ -827,6 +829,104 @@
 			});
 		}
 
+		// --- car search ---
+
+		buildSearch() {
+			const section = this.root.querySelector(".vst-stats-search");
+			if (!section) return;
+			this.search = { active: false, page: 1, cars: [], section };
+			const form = section.querySelector(".vst-stats-search-form");
+			form.addEventListener("submit", (event) => {
+				event.preventDefault();
+				this.runSearch(1);
+			});
+			section.querySelector('[data-page="prev"]').addEventListener("click", () => this.runSearch(this.search.page - 1));
+			section.querySelector('[data-page="next"]').addEventListener("click", () => this.runSearch(this.search.page + 1));
+			section.querySelector(".vst-stats-search-csv").addEventListener("click", () => {
+				const rows = this.search.cars.map((car) => core.carCells(car));
+				const blob = new Blob([`\ufeff${core.toCsv(core.SEARCH_COLUMNS, rows)}`], { type: "text/csv;charset=utf-8" });
+				const link = element("a");
+				link.href = URL.createObjectURL(blob);
+				link.download = `3s-cars-search-page-${this.search.page}.csv`;
+				document.body.append(link);
+				link.click();
+				link.remove();
+				setTimeout(() => URL.revokeObjectURL(link.href), 0);
+			});
+		}
+
+		async runSearch(page) {
+			const { section } = this.search;
+			const form = section.querySelector(".vst-stats-search-form");
+			const fields = Object.fromEntries(["q", "paint", "interior", "option"].map((n) => [n, form.elements[n].value]));
+			const status = section.querySelector(".vst-stats-search-status");
+			const query = core.searchParams(this.filter, fields, page);
+			this.search.active = true;
+			status.textContent = MESSAGES.busy;
+			let body;
+			try {
+				body = (await fetchJson(`${this.root.dataset.searchEndpoint}?${query}`)).message;
+			} catch (error) {
+				status.textContent = error.status === HTTP_TOO_MANY_REQUESTS ? MESSAGES.limited : MESSAGES.failed;
+				return;
+			}
+			if (body?.status !== "found") {
+				status.textContent = body?.message || MESSAGES.failed;
+				this.showResults([], 0, 1, 1, false);
+				return;
+			}
+			this.showResults(body.cars, body.total, body.page, body.pages, body.truncated);
+		}
+
+		showResults(cars, total, page, pages, truncated) {
+			const { section } = this.search;
+			this.search.cars = cars;
+			this.search.page = page;
+			const status = section.querySelector(".vst-stats-search-status");
+			status.textContent = total
+				? `${core.formatNumber(total)} ${total === 1 ? "car" : "cars"}${truncated ? " (search cut short: narrow it to see every match)" : ""}.`
+				: "No cars match.";
+			const table = section.querySelector(".vst-stats-results");
+			const head = element("tr");
+			for (const title of core.SEARCH_COLUMNS) {
+				const th = element("th", "", title);
+				th.scope = "col";
+				head.append(th);
+			}
+			table.querySelector("thead").replaceChildren(head);
+			table.querySelector("tbody").replaceChildren(
+				...cars.map((car) => {
+					const tr = element("tr");
+					core.carCells(car).forEach((cell, i) => {
+						const td = element(i === 0 ? "th" : "td");
+						if (i === 0) td.scope = "row";
+						const href =
+							i === 0
+								? `/storyteller?vin=${encodeURIComponent(car.vin)}`
+								: i === 4
+									? codeHref("paint", cell)
+									: i === 5
+										? codeHref("interior", cell)
+										: null;
+						if (href) {
+							const link = element("a", "", cell);
+							link.href = href;
+							td.append(link);
+						} else td.textContent = cell;
+						tr.append(td);
+					});
+					return tr;
+				}),
+			);
+			section.querySelector(".vst-stats-table-wrap").hidden = !cars.length;
+			section.querySelector(".vst-stats-search-csv").hidden = !cars.length;
+			const pager = section.querySelector(".vst-stats-pager");
+			pager.hidden = pages <= 1;
+			pager.querySelector(".vst-stats-page-label").textContent = `Page ${page} of ${pages}`;
+			pager.querySelector('[data-page="prev"]').disabled = page <= 1;
+			pager.querySelector('[data-page="next"]').disabled = page >= pages;
+		}
+
 		// --- the numbers ---
 
 		buildTable() {
@@ -852,7 +952,7 @@
 		}
 
 		renderTable() {
-			const table = this.root.querySelector(".vst-stats-table");
+			const table = this.root.querySelector(".vst-stats-data .vst-stats-table");
 			const { header, rows } = this.tableData();
 			const head = element("tr");
 			header.forEach((title, i) => {

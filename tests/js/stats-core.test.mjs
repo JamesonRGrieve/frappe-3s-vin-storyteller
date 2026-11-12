@@ -323,3 +323,27 @@ test("search keeps rows matching every word; sorting is numeric for numbers", ()
 	assert.deepEqual(plain(core.sortRows(rows, 2, true).map((r) => r[0])), ["W75", "T87", "R25"]);
 	assert.deepEqual(plain(core.sortRows(rows, 1, false).map((r) => r[0])), ["T87", "R25", "W75"]);
 });
+
+test("a search request carries the page filters and the form's text and codes", () => {
+	const filter = { model: ["GTO"], market: [], region: ["Japan"], from: "1992", to: "" };
+	assert.equal(
+		core.searchParams(filter, { q: " Z16A-001 ", paint: "T87", interior: "", option: "" }, 1),
+		"q=Z16A-001&paint=T87&model=GTO&region=Japan&from=1992",
+	);
+	assert.equal(core.searchParams(core.emptyFilter(), { q: "JA3" }, 3), "q=JA3&page=3");
+});
+
+test("build dates read as month and period, or month only", () => {
+	assert.equal(core.builtLabel("92032"), "1992-03, 2nd period");
+	assert.equal(core.builtLabel("94070"), "1994-07");
+	assert.equal(core.builtLabel("00011"), "2000-01, 1st period");
+	assert.equal(core.builtLabel(""), "");
+	assert.equal(core.builtLabel("EXT"), "");
+});
+
+test("a found car's cells follow the columns, VIN uncensored", () => {
+	const car = { vin: "JA3AM84J3NY000001", model_year: "1992", line: "Mitsubishi 3000GT VR-4", region: "California", paint: "T87", interior: "12A", option: "XA1", built: "91092", provenance: "CAPS 1999" };
+	const cells = plain(core.carCells(car));
+	assert.equal(cells.length, core.SEARCH_COLUMNS.length);
+	assert.deepEqual(cells, ["JA3AM84J3NY000001", "1992", "Mitsubishi 3000GT VR-4", "California", "T87", "12A", "XA1", "1991-09, 2nd period", "CAPS 1999"]);
+});

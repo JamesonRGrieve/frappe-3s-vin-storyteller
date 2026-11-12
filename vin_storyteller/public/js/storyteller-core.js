@@ -49,6 +49,11 @@
 	};
 	const isValidVin = (vin) => VIN_PATTERN.test(vin);
 	const isChassisNumber = (raw) => CHASSIS.test(normalizeVin(raw));
+	// A VIN, chassis or frame number handed in the address (?vin=…, e.g. from the stats page's search), or "".
+	const vinFromAddress = (search) => {
+		const vin = normalizeVin(new URLSearchParams(search || "").get("vin"));
+		return isValidVin(vin) || isChassisNumber(vin) || isFrameNumber(vin) ? vin : "";
+	};
 	const isSafeUrl = (url) => typeof url === "string" && SAFE_URL.test(url);
 	const formatNumber = (n) => Number(n).toLocaleString(LOCALE);
 	const positionText = (p) => `No. ${formatNumber(p.position)} of ${formatNumber(p.total)}`;
@@ -270,6 +275,7 @@
 		isValidVin,
 		isChassisNumber,
 		isFrameNumber,
+		vinFromAddress,
 		keyLabel,
 		vinCheck,
 		isSafeUrl,

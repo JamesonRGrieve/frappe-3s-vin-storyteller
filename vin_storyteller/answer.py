@@ -12,6 +12,7 @@ from contextlib import AbstractContextManager
 from dataclasses import asdict
 
 from vin_storyteller.repository import ProductionRecords
+from vin_storyteller.search import PAGE_SIZE, InvalidSearch, parse_query
 from vin_storyteller.stats import build_stats
 from vin_storyteller.story import (
 	CHASSIS_NOT_ON_RECORD,
@@ -160,3 +161,34 @@ def stats_answer(
 	if not rows:
 		return {"status": "not_found", "message": STATS_EMPTY}
 	return {"status": "found", "stats": build_stats(rows, catalogue)}
+
+
+# Car search on the stats page.
+SEARCH_TOO_BROAD = "Narrow the search: give part of a VIN, a code, a model, a year or a region."
+
+
+def search_answer(
+	params: dict,
+	open_records: Callable[[], AbstractContextManager[ProductionRecords]],
+	database_errors: tuple[type[BaseException], ...],
+) -> dict:
+	"""The API response body for a car search: status found (cars, total, page, pages, truncated) | invalid."""
+	try:
+		query = parse_query(params)
+	except InvalidSearch as error:
+		return {"status": "invalid", "message": str(error)}
+	if not query.narrowed:
+		return {"status": "invalid", "message": SEARCH_TOO_BROAD}
+	try:
+		with open_records() as records:
+			cars, total, truncated = records.search_cars(query)
+	except database_errors as error:
+		raise RecordsUnavailable from error
+	return {
+		"status": "found",
+		"total": total,
+		"page": query.page,
+		"pages": max(1, -(-total // PAGE_SIZE)),
+		"truncated": truncated,
+		"cars": [asdict(car) for car in cars],
+	}

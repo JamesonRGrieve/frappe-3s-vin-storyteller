@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="/assets/vin_storyteller/css/storyteller.css?v={{ vin_storyteller_asset_version() }}">
 <link rel="stylesheet" href="/assets/vin_storyteller/css/stats.css?v={{ vin_storyteller_asset_version() }}">
 <div class="vst vst-production" data-stats-endpoint="/api/method/vin_storyteller.api.stats"
+	data-search-endpoint="/api/method/vin_storyteller.api.search"
 	data-swatches="/assets/vin_storyteller/data/swatches.json?v={{ vin_storyteller_asset_version() }}"
 	data-world="/assets/vin_storyteller/data/countries-110m.json?v={{ vin_storyteller_asset_version() }}">
 	<header class="vst-head">
@@ -89,6 +90,34 @@
 					<figcaption><label class="vst-stats-field">Option item <select name="option"></select></label></figcaption>
 					<div class="vst-chart-plot"></div></figure>
 			</div>
+		</section>
+
+		<section class="vst-stats-section vst-stats-search" aria-labelledby="vst-stats-search-h">
+			<h3 id="vst-stats-search-h" class="vst-stats-h">Find cars</h3>
+			<p class="vst-note">Search every car on record by any part of its VIN or chassis number, or by a paint, interior
+				or option code. The model, market, region and year filters above apply too. Click a VIN to tell its story.</p>
+			<form class="vst-stats-search-form" role="search">
+				<label class="vst-stats-field">VIN or code <input type="search" name="q" autocomplete="off" maxlength="17"
+					placeholder="e.g. JA3AN74K or Z16A-001 or T87"></label>
+				<label class="vst-stats-field">Paint <input name="paint" autocomplete="off" maxlength="4" size="5"></label>
+				<label class="vst-stats-field">Interior <input name="interior" autocomplete="off" maxlength="4" size="5"></label>
+				<label class="vst-stats-field">Option <input name="option" autocomplete="off" maxlength="4" size="5"></label>
+				<button type="submit" class="vst-stats-csv">Search</button>
+				<button type="button" class="vst-stats-csv vst-stats-search-csv" hidden>Download results (CSV)</button>
+			</form>
+			<p class="vst-note vst-stats-search-status" role="status" aria-live="polite"></p>
+			<div class="vst-stats-table-wrap" hidden>
+				<table class="vst-spec vst-code-table vst-stats-table vst-stats-results">
+					<caption class="vst-visually-hidden">Cars matching the search</caption>
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+			<nav class="vst-stats-pager" aria-label="Search result pages" hidden>
+				<button type="button" class="vst-stats-csv" data-page="prev">Previous</button>
+				<span class="vst-stats-page-label"></span>
+				<button type="button" class="vst-stats-csv" data-page="next">Next</button>
+			</nav>
 		</section>
 
 		<section class="vst-stats-section vst-stats-data" aria-labelledby="vst-stats-data-h">

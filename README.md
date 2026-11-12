@@ -156,6 +156,17 @@ and checksums), so the page needs no build step or CDN.
 - **The numbers:** any count as a searchable, sortable table, downloadable as CSV (that table, or every filtered
   group); every chart can also show its data, or be saved as an image.
 
+**Find cars** searches every car on record (every provenance, each labelled) by any part of its VIN or chassis
+number, or by a paint, interior or option code, together with the page's model, market, region and year filters.
+Results show full VINs (operator, 2026-11-12), 50 a page, each VIN linking to the storyteller with the VIN filled in
+(`/storyteller?vin=…`; the visitor still gives a name and submits, so stories stay counted and logged) and each paint
+and interior code to its page; a page of results downloads as CSV. `GET /api/method/vin_storyteller.api.search` takes
+`q`, `model`, `market`, `region` (comma lists), `from`, `to`, `paint`, `interior`, `option` and `page`, and answers
+`status` `found` with `cars` (`vin`, `model_year`, `model`, `line`, `model_code`, `classification`, `option`, `paint`,
+`interior`, `built`, `region`, `market`, `provenance`), `total`, `page`, `pages` and `truncated` (a search reads at
+most 20,000 cars before region filtering), or `invalid` (an empty search is refused). It counts with the code pages
+and is cached for an hour.
+
 A car's **region** comes from its factory record (`stats.region_of`):
 
 | Market | Region |

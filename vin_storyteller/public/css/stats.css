@@ -112,6 +112,14 @@
 .vst-chart-unmapped { margin: 4px 0 6px; font-size: 13px; }
 .vst-chart-empty { display: grid; place-items: center; height: 100%; color: var(--vst-soft); font-size: 14px; }
 
+/* Car search. */
+.vst-stats-search-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; margin-bottom: 10px; }
+.vst-stats-search-form input[name="q"] { min-width: 16rem; }
+.vst-stats-search-form input[size] { min-width: 5rem; width: 6rem; }
+.vst-stats-results th, .vst-stats-results td { width: auto; white-space: nowrap; padding: 7px 10px; font-size: 13.5px; }
+.vst-stats-results tbody th { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.vst-stats-pager { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 14px; color: var(--vst-soft); }
+
 /* The numbers. */
 .vst-stats-table-tools { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; margin-bottom: 12px; }
 .vst-stats-table-wrap { max-height: 560px; overflow: auto; border: 1px solid var(--vst-line); border-radius: 12px; }

@@ -11,7 +11,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
-from vin_storyteller.stats import Catalogue, StatsRow, destination_code
+from vin_storyteller.search import MAX_SCAN, PAGE_SIZE, FoundCar, SearchQuery, found_car
+from vin_storyteller.stats import Catalogue, StatsRow, destination_code, destination_digits, region_of
 from vin_storyteller.story import (
 	ASA_GENERAL,
 	CODE_KINDS,
@@ -657,6 +658,68 @@ class ProductionRecords:
 			paint_names={c.strip(): d for c, d in self._descriptions("paint").items()},
 			interior_names={c.strip(): d for c, d in self._descriptions("interior").items()},
 		)
+
+	# Car search on the stats page (search.py): every provenance, full VINs, region named as the charts name it.
+
+	def search_cars(self, query: SearchQuery) -> tuple[tuple[FoundCar, ...], int, bool]:
+		"""One page of the cars matching `query`, the number matching, and whether the scan was cut short."""
+		where, params = ["1 = 1"], []
+		if query.text:
+			where.append("(p.VIN LIKE %s OR p.Exterior = %s OR p.Interior = %s OR p.Equipment = %s)")
+			params += [f"%{query.text}%", query.text, query.text, query.text]
+		if query.models:
+			where.append("m.Model IN (" + ", ".join(["%s"] * len(query.models)) + ")")
+			params += list(query.models)
+		if query.year_from or query.year_to:
+			years = query.model_years()
+			if not years:
+				return (), 0, False
+			where.append("p.ModelYear IN (" + ", ".join(["%s"] * len(years)) + ")")
+			params += list(years)
+		if query.paint:
+			family = self.paint_family(query.paint)
+			where.append("p.Exterior IN (" + ", ".join(["%s"] * len(family)) + ")")
+			params += list(family)
+		if query.interior:
+			where.append("p.Interior = %s")
+			params.append(query.interior)
+		if query.option:
+			where.append("p.Equipment = %s")
+			params.append(query.option)
+		rows = self._rows(
+			"SELECT p.VIN, p.ModelYear, p.Model, m.Manufacturer, m.Model, m.Trim, p.ModelCode, p.Classification, "
+			"p.Equipment, p.Exterior, p.Interior, p.DateOfManufacture, p.Provenance FROM Production p "
+			f"LEFT JOIN Model m ON m.ModelCode = p.Model WHERE {' AND '.join(where)} "
+			# Calendar order: a 2000 GTO ('00') after the 1990s.
+			f"ORDER BY CASE WHEN p.ModelYear < '50' THEN 1 ELSE 0 END, p.ModelYear, p.VIN LIMIT {MAX_SCAN + 1}",
+			tuple(params),
+		)
+		truncated = len(rows) > MAX_SCAN
+		rows = rows[:MAX_SCAN]
+		catalogue = self.stats_catalogue()
+		digits = destination_digits(catalogue.destinations)
+		cars = []
+		for row in rows:
+			key, model_code, grade, option = (
+				row[2],
+				(row[6] or "").strip(),
+				(row[7] or "").strip(),
+				(row[8] or "").strip(),
+			)
+			region = region_of(
+				key,
+				row[0][:1],
+				catalogue.destination(model_code, grade, digits),
+				catalogue.market_items.get((model_code, option, grade), ()),
+				catalogue.grade(model_code, grade),
+			)
+			if query.regions and region.name not in query.regions:
+				continue
+			if query.markets and region.market not in query.markets:
+				continue
+			cars.append(found_car(row, region))
+		start = (query.page - 1) * PAGE_SIZE
+		return tuple(cars[start : start + PAGE_SIZE]), len(cars), truncated
 
 	def record_story(self, vin: str, name: str, at: datetime) -> None:
 		"""Log a story told, as the original storyteller did: the VIN, the visitor's name, the hour and the time."""

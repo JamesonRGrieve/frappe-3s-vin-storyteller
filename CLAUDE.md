@@ -24,6 +24,9 @@ production record, which lives in its own MariaDB database (not the Frappe site 
   `globalThis.VinStatsCore`), `public/js/stats.js` (DOM + ECharts; every tooltip value escaped), `public/css/stats.css`.
   Charts use the vendored Apache ECharts and world map in `public/js/vendor` (README there: versions, checksums,
   licences); copy upstream files unmodified. A region is only ever what the record names; never infer a country.
+- Car search (stats page "Find cars"): `vin_storyteller/search.py` (pure: SearchQuery, FoundCar),
+  `ProductionRecords.search_cars` (regions via stats.region_of), `answer.search_answer`, endpoint `api.search`. Full VINs
+  by operator decision; links prefill the storyteller (`storyteller-core.vinFromAddress`), never run a counted lookup.
 - `vin_storyteller/api.py`: `tell(vin)` and the code endpoints, kept thin: guest, GET, rate-limited per IP;
   opens a read-only PyMySQL session from site-config keys `vin_storyteller_db_*` and calls `answer`; logs
   database failures, returns a generic message.

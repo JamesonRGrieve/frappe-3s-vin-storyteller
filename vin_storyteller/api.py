@@ -26,10 +26,12 @@ from vin_storyteller.answer import (
 	code_answer,
 	index_answer,
 	page_key,
+	search_answer,
 	stats_answer,
 )
 from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
+from vin_storyteller.search import InvalidSearch, parse_query
 from vin_storyteller.story import (
 	CODE_KINDS,
 	CODE_PAGE_ROUTES,
@@ -168,6 +170,19 @@ def stats() -> dict:
 	paint, interior, model line, transmission, build month, colour pair and exact-spec rarity."""
 	_count_lookup("code_pages", CODE_PAGES_PER_WINDOW, CODE_PAGES_LIMITED)
 	return _cached("stats", lambda: stats_answer(_records, (pymysql.MySQLError,)))
+
+
+@frappe.whitelist(allow_guest=True, methods=["GET"])
+def search(**params) -> dict:
+	"""Car search for the stats page: q (VIN fragment or code), model, market, region, from, to, paint, interior,
+	option, page. Full VINs (operator, 2026-11-12). Counted with the code pages; answers cached for CODE_CACHE_S."""
+	_count_lookup("code_pages", CODE_PAGES_PER_WINDOW, CODE_PAGES_LIMITED)
+	params = {k: v for k, v in params.items() if k != "cmd"}
+	try:
+		key = f"search:{parse_query(params).key()}"
+	except InvalidSearch:
+		key = None
+	return _cached(key, lambda: search_answer(params, _records, (pymysql.MySQLError,)))
 
 
 def sitemap_routes(site) -> list[tuple[str, None]]:

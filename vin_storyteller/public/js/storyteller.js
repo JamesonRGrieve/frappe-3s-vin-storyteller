@@ -240,6 +240,12 @@
 		const form = root.querySelector(".vst-form");
 		const input = form.querySelector("input[name=vin]");
 		input.addEventListener("input", () => showCheck(root, input));
+		// Prefilled from the address (the stats page's search links here); the visitor still gives a name and submits.
+		const handed = core.vinFromAddress(location.search);
+		if (handed) {
+			input.value = handed;
+			showCheck(root, input);
+		}
 		form.addEventListener("submit", (event) => {
 			event.preventDefault();
 			const vin = core.normalizeVin(input.value);

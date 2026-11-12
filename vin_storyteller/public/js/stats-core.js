@@ -372,6 +372,55 @@
 		});
 	}
 
+	// --- car search -----------------------------------------------------------------------------------------------
+
+	const PERIODS = { 0: "", 1: "1st period", 2: "2nd period", 3: "3rd period" };
+	const SEARCH_COLUMNS = Object.freeze(["VIN", "Year", "Model line", "Region", "Paint", "Interior", "Option", "Built", "Source"]);
+
+	// The search request: the page's filters plus the search form's text and codes, as API parameters.
+	function searchParams(filter, fields, page) {
+		const params = new URLSearchParams();
+		const add = (key, value) => {
+			const text = String(value || "").trim();
+			if (text) params.set(key, text);
+		};
+		add("q", fields.q);
+		add("paint", fields.paint);
+		add("interior", fields.interior);
+		add("option", fields.option);
+		add("model", filter.model.join(","));
+		add("market", filter.market.join(","));
+		add("region", filter.region.join(","));
+		add("from", filter.from);
+		add("to", filter.to);
+		if (page > 1) params.set("page", String(page));
+		return params.toString();
+	}
+
+	// A stored 'YYMMP' build date as text: '92032' -> '1992-03, 2nd period'; month-only (P = 0) -> '1994-07'.
+	function builtLabel(built) {
+		const match = /^([0-9]{2})([0-9]{2})([0-3])$/.exec(String(built || ""));
+		if (!match) return "";
+		const year = Number(match[1]) < 50 ? `20${match[1]}` : `19${match[1]}`;
+		const period = PERIODS[match[3]];
+		return period ? `${year}-${match[2]}, ${period}` : `${year}-${match[2]}`;
+	}
+
+	// A found car's table cells, in SEARCH_COLUMNS order.
+	function carCells(car) {
+		return [
+			car.vin,
+			car.model_year,
+			car.line,
+			car.region,
+			car.paint,
+			car.interior,
+			car.option,
+			builtLabel(car.built),
+			car.provenance,
+		];
+	}
+
 	// --- the address: a filtered view is shareable -----------------------------------------------------------
 
 	function parseState(search) {
@@ -495,6 +544,10 @@
 		itemByRegion,
 		searchRows,
 		sortRows,
+		SEARCH_COLUMNS,
+		searchParams,
+		builtLabel,
+		carCells,
 		parseState,
 		stateQuery,
 		csvCell,

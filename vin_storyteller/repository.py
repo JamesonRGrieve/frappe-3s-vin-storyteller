@@ -276,10 +276,7 @@ class ProductionRecords:
 			return None
 		model = self._one("SELECT Manufacturer, Model, Trim FROM Model WHERE ModelCode = %s", (car.model,))
 		manufacturer, model_name, trim = model if model else (MISSING, MISSING, "")
-		paint = self._one(
-			"SELECT MitsubishiDescription, DodgeDescription FROM Exterior WHERE ExteriorCode = %s",
-			(car.exterior,),
-		)
+		paint = self.paint_row(car.exterior)
 
 		same_line = "ModelYear = %s AND Model = %s AND ModelCode = %s"
 		line = (car.model_year, car.model, car.model_code)
@@ -411,6 +408,14 @@ class ProductionRecords:
 			for code, paint in self._rows("SELECT Code, PaintCode FROM PaintAlias", ())
 		}
 
+	def paint_row(self, code: str) -> tuple | None:
+		"""A paint's (Mitsubishi, Dodge) names: its own row, else its plain code's for a CAPS "A" form (RA5 is R25,
+		Morocco Red Mica), so a car or page with an "A" code is never shown as undecoded when its paint is named."""
+		query = "SELECT MitsubishiDescription, DodgeDescription FROM Exterior WHERE ExteriorCode = %s"
+		row = self._one(query, (code,))
+		plain = self.paint_family(code)[0] if not row and code and code.strip() else ""
+		return row or (self._one(query, (plain,)) if plain and plain != code.strip() else None)
+
 	def paint_family(self, code: str) -> tuple[str, ...]:
 		"""Every code that names the same paint as ``code`` (its plain paint code first, then its "A" forms)."""
 		code = code.strip()
@@ -457,10 +462,7 @@ class ProductionRecords:
 		same_paint = ()
 		if kind == "paint":
 			same_paint = tuple(c for c in params if c != code)
-			paint = self._one(
-				"SELECT MitsubishiDescription, DodgeDescription FROM Exterior WHERE ExteriorCode = %s",
-				(code,),
-			)
+			paint = self.paint_row(code)
 			description, names = paint_names(*paint) if paint else (MISSING, ())
 		else:
 			description = self._description(*LABEL_TABLES[kind], code)

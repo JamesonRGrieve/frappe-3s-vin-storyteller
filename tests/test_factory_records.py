@@ -212,3 +212,18 @@ def test_an_asa_usa_car_is_a_factory_record_counted_with_the_us_cars(connection,
 	story = records.story("JA3AN74K9NY004601")
 	assert not story.partial and story.provenance == ASA_USA
 	assert records.story("JA3AM84J3NY000004").in_year.total == before + 1
+
+
+def test_a_car_or_page_with_a_paints_a_form_is_named_by_its_plain_code(connection, records):
+	"""RA5 is R25 (Morocco Red Mica): a car recorded with the "A" form, and the A form's own page, carry the paint's
+	names instead of showing it as undecoded (found 2026-11-13 on JA3BN74K1PY015096)."""
+	connection.execute(
+		"INSERT INTO PaintAlias (Code, PaintCode, Source) VALUES ('TA7', 'T87', 'ASA USA 2007')"
+	)
+	connection.execute("DELETE FROM Exterior WHERE ExteriorCode = 'TA7'")
+	add_gto(connection, exterior="TA7")
+	plain = records.story("JA3AM84J3NY000004").exterior  # a T87 car
+	story = records.story(GTO)
+	assert story.exterior.code == "TA7" and story.exterior.description == plain.description != "MISSING"
+	assert records.code_page("paint", "TA7").description == records.code_page("paint", "T87").description
+	assert records.paint_row("ZZ9") is None  # an unknown code with no alias stays undecoded

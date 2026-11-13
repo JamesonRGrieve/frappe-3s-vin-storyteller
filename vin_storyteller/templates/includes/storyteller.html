@@ -6,12 +6,19 @@
 		<p class="vst-kicker">3000GT &middot; Stealth &middot; GTO</p>
 		<h2 class="vst-title">VIN Storyteller</h2>
 		<p class="vst-lede">Learn the story of your vehicle: what number off the line it was, its original colour, interior and more, straight from the factory production record. Enter a 17-character VIN, a Japanese-market GTO's chassis number (Z15A- or Z16A-), or an export car's frame number.</p>
+		<nav class="vst-code-nav" aria-label="Storyteller">
+			<a href="/storyteller" aria-current="page">VIN Storyteller</a>
+			<a href="/storyteller/stats">Production statistics</a>
+			<a href="/storyteller/paint" data-kind="paint">Paint codes</a>
+			<a href="/storyteller/interior" data-kind="interior">Interior codes</a>
+			<a href="/storyteller/option" data-kind="option">Option codes</a>
+		</nav>
 	</header>
 
 	<form class="vst-form" novalidate>
 		<label class="vst-label" for="vst-visitor">Your name</label>
 		<input id="vst-visitor" class="vst-visitor" name="name" type="text" autocomplete="name" maxlength="100" required>
-		<label class="vst-label" for="vst-vin">Your vehicle's VIN</label>
+		<label class="vst-label" for="vst-vin">Your vehicle's VIN or chassis number</label>
 		<div class="vst-row">
 			<div class="vst-field">
 				<input id="vst-vin" name="vin" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
@@ -21,7 +28,7 @@
 			<button class="vst-submit" type="submit"><span class="vst-spinner" aria-hidden="true"></span><span class="vst-submit-label">Tell its story</span></button>
 		</div>
 		<p id="vst-check" class="vst-check" aria-live="polite"></p>
-		<p id="vst-hint" class="vst-hint">17 characters, on the plate at the base of the windshield (driver's side) or on your registration. Up to 3 lookups an hour; each is logged with your name and audited for errors.</p>
+		<p id="vst-hint" class="vst-hint">A VIN is 17 characters, on the plate at the base of the windshield (driver's side) or on your registration; a GTO's chassis number is on the firewall plate. Up to 3 lookups an hour; each is logged with your name and audited for errors.</p>
 	</form>
 
 	<p class="vst-status" role="status" aria-live="polite" hidden></p>

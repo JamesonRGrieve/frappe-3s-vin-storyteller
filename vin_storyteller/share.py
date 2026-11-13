@@ -44,11 +44,23 @@ class CardText:
 	"""What a share card and its link preview say."""
 
 	title: str  # '1991 Mitsubishi 3000GT VR-4'
-	lines: tuple[str, ...]  # paint, interior, built
+	paint: str  # 'Glacier White Pearl · WA5' (the paint chip's heading)
+	interior: str  # 'Red leather · 14U' (the interior chip's heading)
+	built: str  # 'Built the 1st production period of July, 1990'
 	position: str  # 'No. 345 of 27,207 built for 1991'
-	rarity: str  # 'Fewer than 25: 1 of 20 in this exact specification ...' or ''
+	rarity: str  # 'Fewer than 25: 1 of 20 in this exact specification' or ''
 	tier: str | None
+	option: str  # 'A07' (the option code the list is from)
+	options: tuple[str, ...]  # what the option code fits, then factory features from the parts catalogue
 	description: str  # the preview's one-paragraph text
+
+
+# The card's rarity scopes, short enough for one line (the story page and preview text give the full wording).
+CARD_SCOPES = {
+	"spec": "in this exact specification",
+	"colour": "in this colour for this model and year",
+	"model": "of this model for the year",
+}
 
 
 def _named(coded, what: str, hint: str = "") -> str:
@@ -100,17 +112,16 @@ def interior_look(swatches: dict, story: Story) -> tuple[str | None, str]:
 	return colour, material
 
 
+def _chip_heading(coded, hint: str = "") -> str:
+	if not coded.code:
+		return "Not on record"
+	name = coded.description if coded.description and coded.description != MISSING else hint
+	return f"{name} \u00b7 {coded.code}" if name else f"Code {coded.code}"
+
+
 def card_text(story: Story, interior_hint: str = "") -> CardText:
 	"""A story's share card text, from its factory record."""
-	lines = tuple(
-		line
-		for line in (
-			_named(story.exterior, "Paint"),
-			_named(story.interior, "Interior", interior_hint),
-			f"Built {story.built}" if story.built else "",
-		)
-		if line
-	)
+	built = f"Built {story.built}" if story.built else ""
 	position = (
 		f"No. {story.in_year.position:,} of {story.in_year.total:,} built for {story.model_year}"
 		if not story.partial and story.in_year.total
@@ -118,23 +129,41 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 	)
 	rarities = story.rarities
 	rarest = rarities[0] if rarities else None
-	rarity = (
-		f"{TIER_NAMES[rarest.tier]}: 1 of {rarest.total:,} {rarest.description}"
-		if rarest and rarest.total > 1
-		else ""
+	rarity, long_rarity = "", ""
+	if rarest:
+		count = "the only one" if rarest.total == 1 else f"1 of {rarest.total:,}"
+		rarity = f"{TIER_NAMES[rarest.tier]}: {count} {CARD_SCOPES[rarest.scope]}"
+		long_rarity = f"{TIER_NAMES[rarest.tier]}: {count} {rarest.description}"
+	items = tuple(
+		item.description if item.description and item.description != MISSING else f"Item {item.code}"
+		for item in story.equipment_items
 	)
-	if rarest and rarest.total == 1:
-		rarity = f"{TIER_NAMES[rarest.tier]}: the only one {rarest.description}"
+	options = items + tuple(story.features)
+	colours = [_named(story.exterior, "Paint"), _named(story.interior, "Interior", interior_hint)]
 	description = " ".join(
-		p
+		f"{p}."
 		for p in (
-			". ".join(lines) + "." if lines else "",
-			position + "." if position else "",
-			rarity + "." if rarity else "",
+			*(c for c in colours if c),
+			built,
+			position,
+			long_rarity,
+			f"Options: {', '.join(options)}" if options else "",
 		)
 		if p
 	)
-	return CardText(story.vehicle_name, lines, position, rarity, rarest.tier if rarest else None, description)
+	equipment = story.equipment.code if story.equipment.code not in ("", "EQU") else ""
+	return CardText(
+		title=story.vehicle_name,
+		paint=_chip_heading(story.exterior),
+		interior=_chip_heading(story.interior, interior_hint),
+		built=built,
+		position=position,
+		rarity=rarity,
+		tier=rarest.tier if rarest else None,
+		option=equipment,
+		options=options,
+		description=description,
+	)
 
 
 def _font(name: str, size: int) -> ImageFont.FreeTypeFont:
@@ -172,39 +201,143 @@ def _paint_panel(colour: tuple[int, int, int] | None, size: tuple[int, int]) -> 
 	shade = Image.linear_gradient("L").resize(size).point(lambda v: int(v * 0.55))
 	panel = Image.composite(Image.new("RGB", size, tuple(int(c * 0.45) for c in base)), panel, shade)
 	mask = Image.new("L", size, 0)
-	ImageDraw.Draw(mask).rounded_rectangle((0, 0, w - 1, h - 1), radius=28, fill=255)
+	ImageDraw.Draw(mask).rounded_rectangle((0, 0, w - 1, h - 1), radius=20, fill=255)
 	panel.putalpha(mask)
 	return panel
 
 
-def _interior_tile(colour: tuple[int, int, int] | None, material: str, size: int) -> Image.Image:
-	"""A square interior swatch: perforated leather, a cloth weave or plain, lit like the paint panel, with a navy
-	ring so it reads over the paint."""
+def _interior_chip(colour: tuple[int, int, int] | None, material: str, size: tuple[int, int]) -> Image.Image:
+	"""An interior swatch: perforated leather, a cloth weave or plain, lit like the paint chip."""
+	w, h = size
 	base = colour or NO_COLOUR
-	tile = _paint_panel(base if colour else None, (size, size)).convert("RGB")
-	draw = ImageDraw.Draw(tile)
-	dark = tuple(int(c * 0.45) for c in base)
+	chip = _paint_panel(colour, size)
+	draw = ImageDraw.Draw(chip)
+	dark = (*tuple(int(c * 0.45) for c in base), 255)
 	if material == "leather":
-		step = max(8, size // 18)
-		for row, y in enumerate(range(step // 2, size, step)):
-			for x in range(step // 2 + (step // 2 if row % 2 else 0), size, step):
+		step = 11
+		for row, y in enumerate(range(step // 2, h, step)):
+			for x in range(step // 2 + (step // 2 if row % 2 else 0), w, step):
 				draw.ellipse((x - 2, y - 2, x + 2, y + 2), fill=dark)
 	elif material == "cloth":
-		light = tuple(min(255, int(c * 1.18) + 8) for c in base)
-		for i in range(0, size, 4):
-			draw.line((i, 0, i, size), fill=dark if (i // 4) % 2 else light, width=1)
-		for j in range(0, size, 6):
-			draw.line((0, j, size, j), fill=dark, width=1)
-		tile = Image.blend(tile, _paint_panel(base, (size, size)).convert("RGB"), 0.55)
-	ring = 8
-	framed = Image.new("RGBA", (size + 2 * ring, size + 2 * ring), (0, 0, 0, 0))
-	ImageDraw.Draw(framed).rounded_rectangle(
-		(0, 0, size + 2 * ring - 1, size + 2 * ring - 1), radius=26, fill=(*NAVY, 255)
+		weave = Image.new("RGBA", size, (0, 0, 0, 0))
+		lines = ImageDraw.Draw(weave)
+		for i in range(0, w, 4):
+			lines.line((i, 0, i, h), fill=(*tuple(int(c * 0.6) for c in base), 110), width=1)
+		for j in range(0, h, 6):
+			lines.line((0, j, w, j), fill=(*tuple(int(c * 0.5) for c in base), 120), width=1)
+		chip = Image.alpha_composite(chip, weave)
+	mask = Image.new("L", size, 0)
+	ImageDraw.Draw(mask).rounded_rectangle((0, 0, w - 1, h - 1), radius=20, fill=255)
+	chip.putalpha(mask)
+	return chip
+
+
+def _ellipsis(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, width: int) -> str:
+	"""`text`, cut with an ellipsis to fit `width`."""
+	if draw.textlength(text, font=font) <= width:
+		return text
+	while text and draw.textlength(f"{text}\u2026", font=font) > width:
+		text = text[:-1]
+	return f"{text.rstrip()}\u2026"
+
+
+LEFT, LEFT_WIDTH = 64, 620  # the text column
+RIGHT, RIGHT_WIDTH = 744, 392  # the colour column: paint over interior
+BOTTOM = HEIGHT - 72  # above the site address
+
+
+def _badge(draw, text: CardText, y: int) -> int:
+	"""The rarity badge at `y`, laid out from its text's ink boxes with even padding; returns its bottom."""
+	tier = TIER_COLOURS[text.tier]
+	label_font, body_font = _font("Barlow-SemiBold.ttf", 20), _font("Barlow-Medium.ttf", 22)
+	label = TIER_NAMES[text.tier].upper()
+	body = text.rarity.split(": ", 1)[-1]
+	body = body[:1].upper() + body[1:]
+	pad, gap = 20, 10  # the same padding on every side; the gap between the tier name and the text
+	lines = _wrap(draw, body, body_font, LEFT_WIDTH - 2 * pad)[:2]
+	label_box = draw.textbbox((0, 0), label, font=label_font)
+	line_box = draw.textbbox((0, 0), "Hg", font=body_font)  # one line's ink height, with a descender
+	line_height = line_box[3] - line_box[1]
+	pitch = line_height + 8
+	body_top = y + pad + (label_box[3] - label_box[1]) + gap
+	bottom = body_top + pitch * (len(lines) - 1) + line_height + pad
+	draw.rounded_rectangle(
+		(LEFT, y, LEFT + LEFT_WIDTH, bottom),
+		radius=14,
+		outline=tier,
+		width=2,
+		fill=tuple(int(c * 0.12 + n * 0.88) for c, n in zip(tier, NAVY, strict=True)),
 	)
-	mask = Image.new("L", (size, size), 0)
-	ImageDraw.Draw(mask).rounded_rectangle((0, 0, size - 1, size - 1), radius=20, fill=255)
-	framed.paste(tile, (ring, ring), mask)
-	return framed
+	draw.text((LEFT + pad, y + pad - label_box[1]), label, font=label_font, fill=tier)
+	for i, chunk in enumerate(lines):
+		draw.text((LEFT + pad, body_top + pitch * i - line_box[1]), chunk, font=body_font, fill=TEXT)
+	return bottom
+
+
+def _options(draw, text: CardText, y: int) -> None:
+	"""The option list from `y` down to BOTTOM: one column at 19 px when every item fits on a line, else two columns
+	at 18 px where a long item wraps onto a second, indented line. What the space can't hold is counted ('+3 more')."""
+	kicker = _font("Barlow-SemiBold.ttf", 18)
+	heading = f"FACTORY OPTIONS \u00b7 {text.option}" if text.option else "FACTORY OPTIONS"
+	draw.text((LEFT, y), heading, font=kicker, fill=KICKER)
+	y += 34
+	if not text.options:
+		message = "Not yet decoded" if text.option else "Not recorded"
+		draw.text((LEFT, y), message, font=_font("Barlow-Medium.ttf", 19), fill=SOFT)
+		return
+	items = list(text.options)
+	bullet, indent, gutter = "\u2022", 18, 24
+	single = _font("Barlow-Medium.ttf", 19)
+	rows = (BOTTOM - y) // 28
+	if len(items) <= rows and all(draw.textlength(i, font=single) <= LEFT_WIDTH - indent for i in items):
+		columns, font, pitch, width = 1, single, 28, LEFT_WIDTH
+	else:
+		columns, font, pitch = 2, _font("Barlow-Medium.ttf", 18), 25
+		width = (LEFT_WIDTH - gutter) // 2
+	rows = (BOTTOM - y) // pitch
+	# Each item's lines; items fill the first column, then the second.
+	blocks = [_wrap(draw, item, font, width - indent)[:2] for item in items]
+	placed, column, row = [], 0, 0
+	for lines in blocks:
+		if row + len(lines) > rows:
+			column, row = column + 1, 0
+		if column >= columns or row + len(lines) > rows:
+			break
+		placed.append((column, row, lines))
+		row += len(lines)
+	hidden = len(items) - len(placed)
+	more_at = None
+	if hidden:  # a last line says how many more there are: free a row for it at the end of the last column
+		while placed and placed[-1][1] + len(placed[-1][2]) >= rows:
+			placed.pop()
+			hidden += 1
+		more_at = (placed[-1][0], placed[-1][1] + len(placed[-1][2])) if placed else (0, 0)
+	for col, row, lines in placed:
+		x = LEFT + col * (width + gutter)
+		draw.text((x, y + row * pitch), bullet, font=font, fill=SOFT)
+		for k, line in enumerate(lines):
+			draw.text(
+				(x + indent, y + (row + k) * pitch),
+				_ellipsis(draw, line, font, width - indent),
+				font=font,
+				fill=SOFT,
+			)
+	if more_at:
+		draw.text(
+			(LEFT + more_at[0] * (width + gutter) + indent, y + more_at[1] * pitch),
+			f"+{hidden} more",
+			font=font,
+			fill=KICKER,
+		)
+
+
+def _colour_block(image, draw, y: int, kicker: str, heading: str, chip: Image.Image) -> int:
+	"""A heading (kind and name) above its chip, in the colour column; returns its bottom."""
+	draw.text((RIGHT, y), kicker, font=_font("Barlow-SemiBold.ttf", 18), fill=KICKER)
+	name_font = _fit(draw, heading, "Barlow-SemiBold.ttf", 26, RIGHT_WIDTH, 18)
+	draw.text((RIGHT, y + 26), _ellipsis(draw, heading, name_font, RIGHT_WIDTH), font=name_font, fill=TEXT)
+	image.paste(chip, (RIGHT, y + 66), chip)
+	return y + 66 + chip.height
 
 
 def render_card(
@@ -213,68 +346,49 @@ def render_card(
 	interior_hint: str = "",
 	interior: tuple[str | None, str] | None = None,
 ) -> bytes:
-	"""The story's share card as PNG bytes; `interior` (from interior_look) adds the interior tile."""
+	"""The story's share card as PNG bytes: the car, its build and rarity and its factory options on the left; its
+	paint over its interior on the right, each under its name (`interior` from interior_look)."""
 	text = card_text(story, interior_hint)
 	glow = Image.linear_gradient("L").rotate(-35, expand=False).resize((WIDTH, HEIGHT))
 	image = Image.composite(
 		Image.new("RGB", (WIDTH, HEIGHT), NAVY), Image.new("RGB", (WIDTH, HEIGHT), NAVY_2), glow
 	)
 	draw = ImageDraw.Draw(image)
-	left, text_width = 64, 600
 
-	draw.text((left, 58), "3S HUB  ·  VIN STORYTELLER", font=_font("Barlow-SemiBold.ttf", 22), fill=KICKER)
+	draw.text(
+		(LEFT, 52), "3S HUB  \u00b7  VIN STORYTELLER", font=_font("Barlow-SemiBold.ttf", 20), fill=KICKER
+	)
 	title = text.title.upper()
-	title_font = _fit(draw, title, "BarlowCondensed-Bold.ttf", 72, text_width, 44)
-	y = 100
-	for chunk in _wrap(draw, title, title_font, text_width)[:2]:
-		draw.text((left, y), chunk, font=title_font, fill=TEXT)
+	title_font = _fit(draw, title, "BarlowCondensed-Bold.ttf", 64, LEFT_WIDTH, 44)
+	y = 86
+	for chunk in _wrap(draw, title, title_font, LEFT_WIDTH)[:2]:
+		draw.text((LEFT, y), chunk, font=title_font, fill=TEXT)
 		y += int(title_font.size * 1.02)
-	y += 18
-	body = _font("Barlow-Medium.ttf", 27)
-	for line in text.lines:
-		for chunk in _wrap(draw, line, body, text_width)[:2]:
-			draw.text((left, y), chunk, font=body, fill=SOFT)
-			y += 38
+	y += 12
+	if text.built:
+		draw.text(
+			(LEFT, y),
+			_ellipsis(draw, text.built, _font("Barlow-Medium.ttf", 24), LEFT_WIDTH),
+			font=_font("Barlow-Medium.ttf", 24),
+			fill=SOFT,
+		)
+		y += 36
 	if text.position:
-		y += 10
-		draw.text((left, y), text.position, font=_font("Barlow-SemiBold.ttf", 30), fill=TEXT)
-		y += 44
+		draw.text((LEFT, y), text.position, font=_font("Barlow-SemiBold.ttf", 26), fill=TEXT)
+		y += 42
 	if text.rarity and text.tier:
-		y += 14
-		tier = TIER_COLOURS[text.tier]
-		label = TIER_NAMES[text.tier].upper()
-		badge_font = _font("Barlow-SemiBold.ttf", 20)
-		body_text = text.rarity.split(": ", 1)[-1]
-		body_text = body_text[:1].upper() + body_text[1:]
-		body_font = _font("Barlow-Medium.ttf", 22)
-		pad, gap = 20, 10  # the same padding on every side; the gap between the tier name and the text
-		lines = _wrap(draw, body_text, body_font, text_width - 2 * pad)[:2]
-		# Laid out from the ink boxes, so the padding is what it says: label caps from the top, descenders at the bottom.
-		label_box = draw.textbbox((0, 0), label, font=badge_font)
-		line_box = draw.textbbox((0, 0), "Hg", font=body_font)  # one line's ink height, with a descender
-		line_height = line_box[3] - line_box[1]
-		pitch = line_height + 8
-		body_top = y + pad + (label_box[3] - label_box[1]) + gap
-		height = body_top - y + pitch * (len(lines) - 1) + line_height + pad
-		if y + height < HEIGHT - 70:
-			draw.rounded_rectangle(
-				(left, y, left + text_width, y + height),
-				radius=14,
-				outline=tier,
-				width=2,
-				fill=tuple(int(c * 0.12 + n * 0.88) for c, n in zip(tier, NAVY, strict=True)),
-			)
-			draw.text((left + pad, y + pad - label_box[1]), label, font=badge_font, fill=tier)
-			for i, chunk in enumerate(lines):
-				draw.text((left + pad, body_top + pitch * i - line_box[1]), chunk, font=body_font, fill=TEXT)
-	draw.text((left, HEIGHT - 52), "3shub.ca/storyteller", font=_font("Barlow-SemiBold.ttf", 22), fill=SOFT)
+		y = _badge(draw, text, y + 8) + 24
+	else:
+		y += 8
+	_options(draw, text, y)
+	draw.text((LEFT, HEIGHT - 50), "3shub.ca/storyteller", font=_font("Barlow-SemiBold.ttf", 20), fill=SOFT)
 
-	panel = _paint_panel(_hex(paint_hex), (440, 470))
-	image.paste(panel, (WIDTH - 440 - 64, 80), panel)
-	if interior and story.interior.code:
-		tile = _interior_tile(_hex(interior[0]), interior[1], 170)
-		# Inside the paint panel's lower-left corner, clear of the text column.
-		image.paste(tile, (WIDTH - 440 - 64 + 22, 80 + 470 - tile.height - 22), tile)
+	chip_size = (RIGHT_WIDTH, 168)
+	bottom = _colour_block(image, draw, 52, "PAINT", text.paint, _paint_panel(_hex(paint_hex), chip_size))
+	colour, material = interior if interior else (None, "unknown")
+	_colour_block(
+		image, draw, bottom + 28, "INTERIOR", text.interior, _interior_chip(_hex(colour), material, chip_size)
+	)
 	buffer = io.BytesIO()
 	image.save(buffer, "PNG", optimize=True)
 	return buffer.getvalue()

@@ -114,11 +114,13 @@ printing.
 
 **Share card** (card 391): *Share* on a story shares (or copies) `GET /api/method/vin_storyteller.api.share?vin=<key>`,
 a small page with Open Graph and Twitter card tags that sends people on to `/storyteller?vin=<key>`. Its image,
-`GET /api/method/vin_storyteller.api.share_image?vin=<key>`, is a 1200x630 PNG drawn with Pillow (`share.py`): the
-car's name, paint, interior (an unnamed interior by its colour and material from `swatches.json`, e.g. "Red leather"), build date, place
-in the model year and rarest run, beside a panel in its paint colour with an interior tile in its lower corner (perforated leather, cloth weave or plain,
-in the colour the animated swatch uses: `share.interior_look` follows `swatch-core.js` `interiorSwatch`; card 390
-will put a factory render in the panel). The interior tones are one table, `swatches.INTERIOR_TONES`, shipped in
+`GET /api/method/vin_storyteller.api.share_image?vin=<key>`, is a 1200x630 PNG drawn with Pillow (`share.py`). Left:
+the car's name, build date, place in the model year, its rarest run (one line: "1 of 20 in this exact specification")
+and its **factory options**, the items its option code fits plus part-level features, in one column, or two with long
+names wrapping, and "+N more" past the space ("Not yet decoded" / "Not recorded" otherwise). Right: its paint over its
+interior, each chip under its name and code. The interior chip is perforated leather, cloth weave or plain, in the
+colour the animated swatch uses (`share.interior_look` follows `swatch-core.js` `interiorSwatch`; an unnamed interior
+is named by its colour and material, e.g. "Red leather"). Card 390 will add a factory render of the car. The interior tones are one table, `swatches.INTERIOR_TONES`, shipped in
 `swatches.json` as `interior_tones` for both the swatches and the card. Both
 take any key the storyteller does, are never logged and never count as a lookup (they show only the story's
 headline); they count apart, `SHARES_PER_WINDOW` (600) an hour per client, and the image is cached per key for an

@@ -54,7 +54,10 @@ def test_the_card_says_what_the_storys_headline_says(records):
 	story = records.story("JA3AM84J3NY000001")
 	text = card_text(story)
 	assert text.title == story.vehicle_name
-	assert any(line.startswith("Paint: ") and story.exterior.code in line for line in text.lines)
+	assert text.paint.endswith(f"\u00b7 {story.exterior.code}") and text.interior.endswith(
+		story.interior.code
+	)
+	assert "Paint: " in text.description and text.built.startswith("Built ")
 	assert (
 		text.position
 		== f"No. {story.in_year.position:,} of {story.in_year.total:,} built for {story.model_year}"
@@ -105,7 +108,10 @@ def test_the_interior_tile_is_resolved_as_the_animated_swatch_resolves_it(record
 	assert interior_look(named, story)[0] == dict(INTERIOR_TONES)["grey"]
 	unnamed = story.__class__(**{**story.__dict__, "interior": story.interior.__class__(code, "MISSING")})
 	assert interior_look(named, unnamed) == (dict(INTERIOR_TONES)["red"], "leather")
-	assert interior_look({"interior_tones": tones, "interior": {}}, unnamed) == (None, "unknown")  # nothing on file
+	assert interior_look({"interior_tones": tones, "interior": {}}, unnamed) == (
+		None,
+		"unknown",
+	)  # nothing on file
 	png = render_card(story, "#4F8EBF", "Red leather", interior_look(named, story))
 	assert Image.open(io.BytesIO(png)).size == (WIDTH, HEIGHT)
 
@@ -118,3 +124,24 @@ def test_swatches_json_carries_the_interior_tones():
 		(Path(__file__).parent.parent / "vin_storyteller/public/data/swatches.json").read_text()
 	)
 	assert shipped["interior_tones"] == [list(t) for t in INTERIOR_TONES]
+
+
+def test_the_card_lists_the_factory_options_and_keeps_the_rarity_to_one_line(records):
+	from dataclasses import replace
+
+	from vin_storyteller.story import Coded
+
+	story = records.story("JA3AM84J3NY000001")
+	items = tuple(
+		Coded(f"K{i:02}", name) for i, name in enumerate(["LEATHER SEAT & ROOM TRIM", "SUNROOF (B)", "ECS"])
+	)
+	full = replace(story, equipment_items=items, features=("Headlamp washers",))
+	text = card_text(full)
+	assert text.options == ("LEATHER SEAT & ROOM TRIM", "SUNROOF (B)", "ECS", "Headlamp washers")
+	assert text.option == story.equipment.code and "Options: LEATHER SEAT" in text.description
+	assert "(" not in text.rarity.split(": ", 1)[-1] if text.rarity else True  # the short scope on the card
+	many = replace(
+		story, equipment_items=tuple(Coded(f"X{i:02}", f"OPTION ITEM NUMBER {i}") for i in range(30))
+	)
+	png = render_card(many, "#4F8EBF", "Red leather", ("#7E1F24", "leather"))  # overflow: '+N more', no error
+	assert Image.open(io.BytesIO(png)).size == (WIDTH, HEIGHT)

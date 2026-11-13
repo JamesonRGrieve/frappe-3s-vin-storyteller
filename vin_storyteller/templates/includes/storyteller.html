@@ -31,6 +31,8 @@
 		<h3 id="vst-name" class="vst-name"></h3>
 		<p class="vst-built"></p>
 		<p class="vst-vin"><span class="vst-vin-label">VIN</span> <span class="vst-vin-value"></span></p>
+		<p class="vst-actions"><button type="button" class="vst-print">Print build sheet</button>
+			<span class="vst-reference" hidden>Build sheet reference <span class="vst-reference-value"></span></span></p>
 		<ul class="vst-badges" aria-label="Rarity" hidden></ul>
 
 		<div class="vst-swatches" hidden>
@@ -87,6 +89,25 @@
 		<p>Serial numbers 000001 thru 000100 are typically reserved for vehicles which were crash tested or used for promotional purposes.</p>
 		<p>This missing information means that while the data provided here is very accurate, it may not be perfect.</p>
 	</details>
+
+	<!-- The printable build sheet (card 391): filled from the story when printed; only it prints. -->
+	<section class="vst-sheet" aria-hidden="true" data-qr-src="/assets/vin_storyteller/js/vendor/qrcode-generator.js?v={{ vin_storyteller_asset_version() }}">
+		<header class="vst-sheet-head">
+			<p class="vst-sheet-brand">3S Hub &middot; VIN Storyteller</p>
+			<h2 class="vst-sheet-title">Factory build sheet</h2>
+			<p class="vst-sheet-name"></p>
+		</header>
+		<table class="vst-sheet-table"><tbody></tbody></table>
+		<footer class="vst-sheet-foot">
+			<div class="vst-sheet-qr"></div>
+			<div class="vst-sheet-check">
+				<p>Reference <strong class="vst-sheet-reference"></strong></p>
+				<p>To check this sheet, scan the code or open <span class="vst-sheet-address"></span>: the story there shows the
+					same reference while the factory record is unchanged.</p>
+				<p class="vst-sheet-printed"></p>
+			</div>
+		</footer>
+	</section>
 
 	<p class="vst-source">The VIN Storyteller is open source under the AGPL-3.0:
 		<a href="https://github.com/JamesonRGrieve/frappe-3s-vin-storyteller" rel="noopener">source on GitHub</a>.</p>

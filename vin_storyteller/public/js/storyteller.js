@@ -137,6 +137,64 @@
 		});
 	}
 
+	// --- the printable build sheet (card 391) ---
+
+	let qrLoading = null;
+	function loadQr(src) {
+		if (typeof globalThis.qrcode === "function") return Promise.resolve(globalThis.qrcode);
+		qrLoading ||= new Promise((resolve, reject) => {
+			const script = document.createElement("script");
+			script.src = src;
+			script.onload = () => resolve(globalThis.qrcode);
+			script.onerror = reject;
+			document.head.append(script);
+		});
+		return qrLoading;
+	}
+
+	async function reference(story) {
+		if (!globalThis.crypto?.subtle) return "";
+		const bytes = new TextEncoder().encode(core.referenceSource(story));
+		const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+		return core.formatReference([...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join(""));
+	}
+
+	async function showReference(root, story) {
+		const holder = root.querySelector(".vst-reference");
+		const ref = await reference(story).catch(() => "");
+		holder.querySelector(".vst-reference-value").textContent = ref;
+		holder.hidden = !ref;
+	}
+
+	async function fillSheet(root, story) {
+		const sheet = root.querySelector(".vst-sheet");
+		const address = core.storyAddress(location.origin, story.vin);
+		sheet.querySelector(".vst-sheet-name").textContent = story.vehicle_name;
+		sheet.querySelector(".vst-sheet-table tbody").replaceChildren(
+			...core.sheetRows(story).map(([label, value]) => {
+				const tr = element("tr");
+				const th = element("th", "", label);
+				th.scope = "row";
+				tr.append(th, element("td", "", value));
+				return tr;
+			}),
+		);
+		sheet.querySelector(".vst-sheet-reference").textContent = await reference(story).catch(() => "");
+		sheet.querySelector(".vst-sheet-address").textContent = address;
+		sheet.querySelector(".vst-sheet-printed").textContent = `Printed ${new Date().toISOString().slice(0, 10)}.`;
+		const qrHolder = sheet.querySelector(".vst-sheet-qr");
+		try {
+			const qrcode = await loadQr(sheet.dataset.qrSrc);
+			const code = qrcode(0, "M");
+			code.addData(address);
+			code.make();
+			// The library's own SVG markup (paths only, no script), from a URL we built.
+			qrHolder.innerHTML = code.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+		} catch {
+			qrHolder.replaceChildren();
+		}
+	}
+
 	function render(root, story) {
 		const result = root.querySelector(".vst-result");
 		result.querySelector(".vst-name").textContent = story.vehicle_name;
@@ -144,6 +202,15 @@
 		result.querySelector(".vst-stats").hidden = Boolean(story.partial);
 		result.querySelector(".vst-timeline").hidden = Boolean(story.partial);
 		result.querySelector(".vst-vin-value").textContent = story.vin;
+		root.currentStory = story;
+		showReference(root, story);
+		const print = result.querySelector(".vst-print");
+		print.onclick = async () => {
+			print.disabled = true;
+			await fillSheet(root, root.currentStory);
+			print.disabled = false;
+			globalThis.print();
+		};
 
 		setText(result, "in_year", core.positionText(story.in_year));
 		setText(result, "in_year_label", `built for the ${story.model_year} model year (any model or trim)`);

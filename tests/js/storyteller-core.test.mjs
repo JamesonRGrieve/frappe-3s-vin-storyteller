@@ -293,3 +293,38 @@ test("an unnamed interior is titled by its colour and material", () => {
 	assert.equal(parts.name, "Ivory leather");
 	assert.equal(parts.detail, "");
 });
+
+// Card 391: the printable build sheet.
+test("a build sheet's reference comes from the record it prints, and changes with it", () => {
+	const story = {
+		vin: "JA3XE74C2MY001329", model_year: "1991", line_code: "VR", classification: { code: "MNGFL7M" },
+		exterior: { code: "WA5" }, interior: { code: "14U" }, equipment: { code: "A07" }, built_code: "90071", provenance: "CAPS 1999",
+	};
+	assert.equal(core.referenceSource(story), "3shub-build-sheet-v1|JA3XE74C2MY001329|1991|VR|MNGFL7M|WA5|14U|A07|90071|CAPS 1999");
+	assert.notEqual(core.referenceSource(story), core.referenceSource({ ...story, interior: { code: "14W" } }));
+	assert.equal(core.formatReference("1a2b3c4d5e6f"), "3SH-1A2B-3C4D");
+	assert.equal(core.formatReference("xyz"), "");
+	assert.equal(core.storyAddress("https://3shub.ca/", "JA3XE74C2MY001329"), "https://3shub.ca/storyteller?vin=JA3XE74C2MY001329");
+});
+
+test("a build sheet prints the factory record's rows", () => {
+	const story = {
+		vin: "JA3XE74C2MY001329", model_year: "1991", manufacturer: "Mitsubishi", model: "3000GT", trim: "VR-4",
+		classification: { code: "MNGFL7M", description: "ULTIMATE LINE,5FM/TR" },
+		exterior: { code: "WA5", description: "Glacier White Pearl" }, interior: { code: "14U", description: "MISSING" },
+		equipment: { code: "A07", description: "MISSING" }, equipment_items: [{ code: "K03", description: "LEATHER SEAT & ROOM TRIM" }],
+		built: "the 1st production period of July, 1990", provenance: "CAPS 1999",
+		in_year: { position: 345, total: 27207 }, in_model: { position: 155, total: 3693 },
+		in_colour: { position: 1, total: 760 }, among_identical: { position: 1, total: 20 },
+	};
+	const rows = plain(core.sheetRows(story));
+	assert.deepEqual(rows.slice(0, 4), [
+		["VIN", "JA3XE74C2MY001329"],
+		["Model year", "1991"],
+		["Model", "Mitsubishi 3000GT VR-4"],
+		["Grade", "ULTIMATE LINE,5FM/TR · MNGFL7M"],
+	]);
+	assert.deepEqual(rows.find((r) => r[0] === "Option contents"), ["Option contents", "LEATHER SEAT & ROOM TRIM · K03"]);
+	assert.deepEqual(rows.find((r) => r[0] === "Among identical cars"), ["Among identical cars", "No. 1 of 20"]);
+	assert.ok(!plain(core.sheetRows({ ...story, partial: true })).some((r) => r[0] === "In the model year"));
+});

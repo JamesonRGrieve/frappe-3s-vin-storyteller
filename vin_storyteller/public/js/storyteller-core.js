@@ -279,6 +279,63 @@
 			models: listText(entry.by_model.map(modelCountText)),
 		};
 	}
+	// --- the printable build sheet (card 391) -------------------------------------------------------------------
+
+	// What a build sheet's reference is computed from: the car's key and every factory-record field it prints. The
+	// page shows the same reference, so a printed sheet can be checked against the record (a changed record gives a
+	// different reference).
+	function referenceSource(story) {
+		return [
+			"3shub-build-sheet-v1",
+			story.vin,
+			story.model_year,
+			story.line_code,
+			story.classification?.code,
+			story.exterior?.code,
+			story.interior?.code,
+			story.equipment?.code,
+			story.built_code,
+			story.provenance,
+		]
+			.map((v) => String(v || ""))
+			.join("|");
+	}
+
+	// '3SH-' and the first 8 hex digits of the source's SHA-256, in two groups: '3SH-1A2B-3C4D'.
+	function formatReference(hex) {
+		const h = String(hex || "").toUpperCase();
+		return /^[0-9A-F]{8}/.test(h) ? `3SH-${h.slice(0, 4)}-${h.slice(4, 8)}` : "";
+	}
+
+	// The address a sheet's QR code and link open: the story page with the VIN filled in.
+	function storyAddress(origin, vin) {
+		return `${String(origin || "").replace(/\/$/, "")}/storyteller?vin=${encodeURIComponent(vin)}`;
+	}
+
+	// The sheet's rows: [label, value], from the factory record only.
+	function sheetRows(story) {
+		const rows = [
+			[keyLabel(story.vin), story.vin],
+			["Model year", story.model_year || "Not known"],
+			["Model", [story.manufacturer, story.model, story.trim].filter((p) => p && p !== UNDECODED).join(" ")],
+		];
+		if (story.classification?.code) rows.push(["Grade", codedText(story.classification)]);
+		rows.push(["Exterior colour", codedText(story.exterior)], ["Interior", codedText(story.interior)], ["Option code", codedText(story.equipment)]);
+		const items = equipmentItemsText(story.equipment_items || []);
+		if (items.length) rows.push(["Option contents", items.join("; ")]);
+		if (story.built) rows.push(["Built", story.built]);
+		if (!story.partial) {
+			rows.push(
+				["In the model year", positionText(story.in_year)],
+				["Of its model", positionText(story.in_model)],
+				["In its colour", positionText(story.in_colour)],
+				["Among identical cars", positionText(story.among_identical)],
+			);
+		}
+		rows.push(["Record", PROVENANCE_NAMES[story.provenance] || story.provenance]);
+		return rows;
+	}
+
 	// --- the colour chart (card 391): every paint or interior as a swatch card, from the kind's index and swatches.json
 
 	// Model years as calendar ranges: ['00', '91', '92', '95', '96'] -> '1991–1992, 1995–1996, 2000'.
@@ -381,6 +438,10 @@
 		CODE_KINDS,
 		KIND_NAMES,
 		KIND_PLURALS,
+		referenceSource,
+		formatReference,
+		storyAddress,
+		sheetRows,
 		CHART_SORTS,
 		yearsText,
 		hueKey,

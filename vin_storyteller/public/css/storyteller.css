@@ -279,3 +279,36 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 .vst-chart-name { font-weight: 700; font-size: 16px; }
 .vst-chart-dodge, .vst-chart-detail, .vst-chart-years, .vst-chart-cars { color: var(--vst-soft); font-size: 13px; line-height: 1.45; }
 .vst-chart-cars { margin-top: 4px !important; }
+
+/* The printable build sheet (card 391): hidden on screen; when printing, only it shows. */
+.vst-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 10px 0 0; }
+.vst-print { min-height: 36px; padding: 6px 14px; border: 1px solid var(--vst-line); border-radius: 8px; background: transparent; color: var(--vst-fiji-hi); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.vst-print:hover { border-color: var(--vst-fiji-hi); }
+.vst-print:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
+.vst-reference { font-size: 13px; color: var(--vst-soft); }
+.vst-reference-value { font-family: ui-monospace, monospace; letter-spacing: 0.06em; color: var(--vst-text); }
+.vst-sheet { display: none; }
+@media print {
+	@page { size: auto; margin: 14mm; }
+	/* Everything but the sheet and the elements that hold it is left out, so the page is one sheet long. */
+	body *:not(:has(.vst-sheet)):not(.vst-sheet):not(.vst-sheet *) { display: none !important; }
+	:has(> .vst-sheet), :has(.vst-sheet) {
+		margin: 0 !important; padding: 0 !important; border: 0 !important; box-shadow: none !important;
+		background: #fff !important; max-width: none !important; min-height: 0 !important;
+	}
+	.vst-sheet { display: block !important; width: 100%; color: #000; background: #fff; font: 11pt/1.4 Georgia, "Times New Roman", serif; }
+	.vst-sheet-brand { margin: 0; font: 600 9pt/1.2 system-ui, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: #444; }
+	.vst-sheet-title { margin: 4pt 0 2pt; font: 700 20pt/1.1 system-ui, sans-serif; }
+	.vst-sheet-name { margin: 0 0 12pt; font-size: 13pt; }
+	.vst-sheet-head { border-bottom: 2pt solid #000; padding-bottom: 6pt; margin-bottom: 10pt; }
+	.vst-sheet-table { width: 100%; border-collapse: collapse; }
+	.vst-sheet-table th, .vst-sheet-table td { padding: 4pt 6pt; border-bottom: 0.5pt solid #bbb; text-align: left; vertical-align: top; }
+	.vst-sheet-table th { width: 32%; font: 600 9.5pt/1.4 system-ui, sans-serif; color: #333; }
+	.vst-sheet-foot { display: flex; gap: 14pt; align-items: flex-start; margin-top: 16pt; padding-top: 10pt; border-top: 1pt solid #000; break-inside: avoid; }
+	.vst-sheet-qr { flex: none; width: 32mm; height: 32mm; }
+	.vst-sheet-qr svg { width: 100%; height: 100%; }
+	.vst-sheet-check { font-size: 9.5pt; }
+	.vst-sheet-check p { margin: 0 0 4pt; }
+	.vst-sheet-reference { font: 700 12pt/1.2 ui-monospace, monospace; letter-spacing: 0.08em; }
+	.vst-sheet-address { word-break: break-all; }
+}

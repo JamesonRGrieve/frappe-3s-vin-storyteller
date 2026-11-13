@@ -105,6 +105,13 @@ total, tier, description}`, rarest first), `rarest` (the top tier or null), and 
 positions and totals count within). The story's identical-car, same-period and same-month counts each link to the
 stats page's search for exactly those cars (`storyteller-core.js` `exploreHref`), whose totals equal the counts.
 
+**Build sheet** (card 391): *Print build sheet* on a story prints only a one-page sheet of the car's factory record
+(key, model year, model, grade, colours, option code and contents, build date, positions, record source) with a
+reference and a QR code. The reference is `3SH-` and the first 8 hex digits of a SHA-256 of the key and every printed
+factory field (`referenceSource`); the story shows it too, so anyone holding a sheet can scan the code (the story's
+address) and check the reference still matches. The QR library (`vendor/qrcode-generator.js`, MIT) loads only when
+printing.
+
 ## Code pages
 
 Every exterior paint, interior and option code in the factory records has its own page, with its production stats

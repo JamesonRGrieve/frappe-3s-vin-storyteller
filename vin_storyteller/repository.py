@@ -413,8 +413,11 @@ class ProductionRecords:
 		Morocco Red Mica), so a car or page with an "A" code is never shown as undecoded when its paint is named."""
 		query = "SELECT MitsubishiDescription, DodgeDescription FROM Exterior WHERE ExteriorCode = %s"
 		row = self._one(query, (code,))
-		plain = self.paint_family(code)[0] if not row and code and code.strip() else ""
-		return row or (self._one(query, (plain,)) if plain and plain != code.strip() else None)
+		if row and any(name and name.strip() not in ("", MISSING) for name in row):
+			return row
+		# The A form's own row, where there is one, carries only the MISSING placeholder (RA5 in the record).
+		plain = self.paint_family(code)[0] if code and code.strip() else ""
+		return (self._one(query, (plain,)) if plain and plain != code.strip() else None) or row
 
 	def paint_family(self, code: str) -> tuple[str, ...]:
 		"""Every code that names the same paint as ``code`` (its plain paint code first, then its "A" forms)."""

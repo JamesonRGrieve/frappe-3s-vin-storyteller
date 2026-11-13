@@ -220,7 +220,9 @@ def test_a_car_or_page_with_a_paints_a_form_is_named_by_its_plain_code(connectio
 	connection.execute(
 		"INSERT INTO PaintAlias (Code, PaintCode, Source) VALUES ('TA7', 'T87', 'ASA USA 2007')"
 	)
+	# As in the record: the A form has its own row, holding only the placeholder.
 	connection.execute("DELETE FROM Exterior WHERE ExteriorCode = 'TA7'")
+	connection.execute("INSERT INTO Exterior VALUES ('TA7', 'MISSING', 'MISSING')")
 	add_gto(connection, exterior="TA7")
 	plain = records.story("JA3AM84J3NY000004").exterior  # a T87 car
 	story = records.story(GTO)

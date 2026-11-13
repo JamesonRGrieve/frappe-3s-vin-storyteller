@@ -7,7 +7,7 @@ import sqlite3
 import pytest
 
 from vin_storyteller.repository import PARAMSTYLES, ProductionRecords
-from vin_storyteller.story import MISSING
+from vin_storyteller.story import MISSING, Position
 
 
 def test_existing_records_are_caps(records):
@@ -104,8 +104,15 @@ def test_production_starts(records):
 
 def test_positions(records):
 	story = records.story("JA3AM84J3NY000004")
-	# MY92 serials below 00004530: 4500, 4505, 4510, 4520 -> number 5 of 8 MY92 cars
-	assert (story.in_year.position, story.in_year.total) == (5, 8)
+	# The model year counts the whole plant (every model and market), in build order, then VIN within a period.
+	rows = records._rows(
+		"SELECT VIN, DateOfManufacture FROM Production WHERE ModelYear = '92' AND Provenance IN ('CAPS 1999', "
+		"'CAPS 2004', 'ASA Japan 2008', 'ASA USA 2007', 'ASA General 2008')",
+		(),
+	)
+	order = sorted(rows, key=lambda r: (r[1] < "50", r[1], r[0]))
+	assert story.in_year == Position([r[0] for r in order].index("JA3AM84J3NY000004") + 1, len(order))
+	assert (story.in_year.position, story.in_year.total) == (6, 8)
 	# MY92 3000GT VR-4 (M1/Z16A): 4500, 4510, 4520 before it -> number 4 of 5
 	assert (story.in_model.position, story.in_model.total) == (4, 5)
 	# identical spec (Fiji Blue, Grey, Leather): 4500, 4510 before -> number 3 of 4

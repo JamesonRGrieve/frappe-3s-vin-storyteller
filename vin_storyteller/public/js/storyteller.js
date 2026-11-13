@@ -229,7 +229,7 @@
 		};
 
 		setText(result, "in_year", core.positionText(story.in_year));
-		setText(result, "in_year_label", `built for the ${story.model_year} model year (any model or trim)`);
+		setText(result, "in_year_label", `built for the ${story.model_year} model year (every 3000GT, Stealth and GTO, every market)`);
 		setText(result, "in_model", core.positionText(story.in_model));
 		setText(result, "in_model_label", `${story.vehicle_name}s built`);
 		setText(result, "in_colour", core.positionText(story.in_colour));

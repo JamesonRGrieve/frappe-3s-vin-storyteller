@@ -35,19 +35,17 @@ def test_an_asa_gto_tells_a_full_story(connection, records):
 	assert story.built == "the 2nd production period of March, 1992"
 
 
-def test_positions_stay_within_their_market(connection, records):
-	"""A GTO never shifts a North American car's count, and its own positions count GTOs only."""
+def test_the_year_counts_the_whole_plant_and_the_other_positions_their_market(connection, records):
+	"""Operator 2026-11-13: the year's "No. X of Y" is the plant's whole output (every model, every market). The
+	other positions stay within the car's market and numbering: a GTO never shifts a US car's period or colour."""
 	before = records.story("JA3AM84J3NY000004")
 	add_gto(connection)
 	add_gto(connection, "Z16A-0014161", "0014161")
 	after = records.story("JA3AM84J3NY000004")
-	assert (after.in_year, after.built_in_period, after.in_colour) == (
-		before.in_year,
-		before.built_in_period,
-		before.in_colour,
-	)
+	assert after.in_year.total == before.in_year.total + 2  # the two MY92 GTOs are plant output too
+	assert (after.built_in_period, after.in_colour) == (before.built_in_period, before.in_colour)
 	gto = records.story("Z16A-0014161")
-	assert (gto.in_year.position, gto.in_year.total, gto.built_in_period) == (2, 2, 2)
+	assert gto.in_year.total == after.in_year.total and gto.built_in_period == 2
 
 
 def test_breakdowns_span_every_model(connection, records):

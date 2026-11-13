@@ -39,9 +39,10 @@ def test_export_cars_count_within_their_own_market(connection, records):
 	add_export(connection, EXPORT_VIN, "VY000101", built="92032", year="92")
 	add_export(connection, FRAME, "PY00001", model="EL", built="92032", year="92")
 	after = records.story("JA3AM84J3NY000004")
-	assert (after.in_year, after.built_in_period) == (before.in_year, before.built_in_period)
+	assert after.in_year.total == before.in_year.total + 2  # the plant's year counts export cars too
+	assert after.built_in_period == before.built_in_period  # a period stays within the market
 	export = records.story(FRAME)
-	assert (export.in_year.total, export.built_in_period) == (2, 2)
+	assert (export.in_year.total, export.built_in_period) == (after.in_year.total, 2)
 	period = {b.scope: b for b in after.breakdowns}["period"]
 	assert period.total == before.built_in_period + 2  # the cross-model breakdown spans every market
 

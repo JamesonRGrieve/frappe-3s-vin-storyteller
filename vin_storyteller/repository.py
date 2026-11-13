@@ -129,6 +129,30 @@ class ProductionRecords:
 		rows = self._rows(sql, params)
 		return rows[0] if rows else None
 
+	def _count_plant(self, where: str, params: tuple) -> int:
+		"""Factory-record cars of every market matching `where`: the whole plant's output."""
+		return int(
+			self._one(
+				f"SELECT COUNT(*) FROM Production WHERE ({where}) AND {FACTORY}",
+				(*params, *FACTORY_PROVENANCES),
+			)[0]
+		)
+
+	def _plant_year_position(self, car: Car, vin: str) -> Position:
+		"""Its place in the whole plant's output for its model year (every 3000GT, Stealth and GTO, every market).
+		US VINs and Japanese chassis numbers are numbered apart, so the order is the build date (2000 after 1999),
+		then the VIN or chassis number within a production period."""
+		century = "(CASE WHEN DateOfManufacture < '50' THEN 1 ELSE 0 END)"
+		car_century = 1 if car.built < "50" else 0
+		earlier = (
+			f"ModelYear = %s AND ({century} < %s OR ({century} = %s AND DateOfManufacture < %s) "
+			f"OR ({century} = %s AND DateOfManufacture = %s AND VIN < %s))"
+		)
+		params = (car.model_year, car_century, car_century, car.built, car_century, car.built, vin)
+		return Position(
+			self._count_plant(earlier, params) + 1, self._count_plant("ModelYear = %s", (car.model_year,))
+		)
+
 	def _count(self, where: str, params: tuple, market: str = "us") -> int:
 		"""Factory-record cars in the same market matching `where`: records from other sources never shift a count."""
 		return int(
@@ -346,10 +370,7 @@ class ProductionRecords:
 			built_in_month=self._count("SUBSTR(DateOfManufacture, 1, 4) = %s", (car.built[0:4],), chassis),
 			year_started=describe_production_date(year_start[0]),
 			model_started=describe_production_date(model_start[0]),
-			in_year=Position(
-				self._count("ModelYear = %s" + earlier, (car.model_year, car.serial), chassis) + 1,
-				self._count("ModelYear = %s", (car.model_year,), chassis),
-			),
+			in_year=self._plant_year_position(car, vin),
 			in_model=Position(
 				self._count(same_line + earlier, (*line, car.serial), chassis) + 1,
 				self._count(same_line, line, chassis),

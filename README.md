@@ -278,8 +278,11 @@ stories and count in positions and totals:
   no ISO check digit) or, for 1992–94 cars, a 14-character frame number such as `DMNZ16APY00001`; the model year
   is the year letter in either.
 
-Positions and totals count within the car's own market (North American VINs, JDM chassis numbers, or export
-cars), so they never mix numbering schemes. The story's **breakdowns** span every model and market: how many
+The **model year** position counts the whole plant's output for that year (operator 2026-11-13): every 3000GT,
+Stealth and GTO of every market, ordered by build date (2000 after 1999) and then by VIN or chassis number within a
+production period, since the markets' numbering schemes don't interleave. Every other position and total (model
+line, colours, interior, exact specification, production period and month) counts within the car's own market
+(North American VINs, JDM chassis numbers, or export cars), in serial order. The story's **breakdowns** span every model and market: how many
 factory-record cars share its model year, exterior colour (every year, and its year), interior, colour pair,
 production period and month, and of which models (3000GT, Stealth, GTO). Every other provenance is a partial
 story outside all counts.

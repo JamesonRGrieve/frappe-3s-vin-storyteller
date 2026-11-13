@@ -61,14 +61,14 @@ def _named(coded, what: str, hint: str = "") -> str:
 
 def swatch_hints(swatches: dict, story: Story) -> tuple[str | None, str]:
 	"""From swatches.json: the paint's colour (a code's "A" form takes its plain code's) and, for an interior the
-	record doesn't name, its colour and material where they are known ('red leather')."""
+	record doesn't name, its colour and material where they are known ('Red leather')."""
 	paints = swatches.get("paint", {})
 	paint = paints.get(story.exterior.code) or {}
 	hex_value = paint.get("hex") or (paints.get(paint.get("same_paint_as", "")) or {}).get("hex")
 	interior = swatches.get("interior", {}).get(story.interior.code) or {}
 	material = interior.get("material") if interior.get("material") not in (None, "", "unknown") else ""
 	hint = " ".join(p for p in ((interior.get("colour") or "").lower(), material) if p)
-	return hex_value, hint
+	return hex_value, hint[:1].upper() + hint[1:]  # 'Red leather', as the colour chart writes it
 
 
 def card_text(story: Story, interior_hint: str = "") -> CardText:

@@ -59,7 +59,7 @@ def test_swatch_hints_give_the_paint_colour_and_an_unnamed_interiors_colour_and_
 		"paint": {story.exterior.code: {"same_paint_as": "P1"}, "P1": {"hex": "#112233"}},
 		"interior": {story.interior.code: {"colour": "Red", "material": "leather"}},
 	}
-	assert swatch_hints(swatches, story) == ("#112233", "red leather")
+	assert swatch_hints(swatches, story) == ("#112233", "Red leather")
 	assert swatch_hints({}, story) == (None, "")
 
 

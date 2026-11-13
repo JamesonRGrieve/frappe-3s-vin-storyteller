@@ -25,7 +25,7 @@
 
 	const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 	const FINE_POINTER = "(hover: hover) and (pointer: fine)";
-	const EMPTY_DATA = Object.freeze({ paint: {}, interior: {} });
+	const EMPTY_DATA = Object.freeze({ paint: {}, interior: {}, interior_tones: [] });
 	// The data carries the same version as this script (?v=<commit>), so a CDN never pairs new code with old data.
 	let dataSource = core.versionedUrl("/assets/vin_storyteller/data/swatches.json", ownVersion());
 
@@ -43,7 +43,7 @@
 		if (!dataPromise) {
 			dataPromise = fetch(dataSource, { credentials: "omit", headers: { Accept: "application/json" } })
 				.then((response) => (response.ok ? response.json() : EMPTY_DATA))
-				.then((data) => ({ paint: data.paint || {}, interior: data.interior || {} }))
+				.then((data) => ({ paint: data.paint || {}, interior: data.interior || {}, interior_tones: data.interior_tones || [] }))
 				.catch(() => EMPTY_DATA);
 		}
 		return dataPromise;

@@ -161,49 +161,90 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 @property --vst-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
 .vst-result { position: relative; }
 .vst-result[data-rarity] { border-radius: 18px; }
-.vst-badges { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.vst-badges { list-style: none; margin: 16px 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
 .vst-badge { display: grid; gap: 2px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--vst-tier, var(--vst-line)); background: color-mix(in srgb, var(--vst-tier, #fff) 16%, transparent); }
 .vst-badge-tier { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vst-tier-text, #fff); }
 .vst-badge-count { font-size: 22px; font-weight: 800; font-style: italic; line-height: 1.1; color: #fff; }
 .vst-badge-scope { font-size: 12.5px; color: var(--vst-soft); max-width: 26ch; }
-.vst-tier-one_of_one { --vst-tier: #e9c46a; --vst-tier-text: #ffe7a3; background: linear-gradient(120deg, rgba(233, 196, 106, 0.28), rgba(207, 0, 23, 0.22), rgba(79, 142, 191, 0.28)); }
-.vst-tier-sub10 { --vst-tier: var(--vst-morocco); --vst-tier-text: #ff9db0; }
-.vst-tier-sub25 { --vst-tier: var(--vst-fiji); --vst-tier-text: var(--vst-fiji-hi); }
-.vst-tier-sub50 { --vst-tier: var(--vst-danube); --vst-tier-text: #a9bde6; }
-.vst-tier-sub100 { --vst-tier: #9aa1ad; --vst-tier-text: #dfe3ea; }
+/* Tiers (story.RARITY_TIERS, operator 2026-11-13): 1 holographic, 2 platinum with a hint of iridescence, 3 platinum,
+   5 gold, 10 silver, 25 copper, 50 Fiji Blue, 100 Morocco Red, more than 100 grey. */
+.vst { --vst-platinum: #e5e4e2; --vst-gold: #d4af37; --vst-silver: #c0c0c4; --vst-copper: #b87333; --vst-grey: #80848e;
+	--vst-holo: linear-gradient(115deg, #ff78aa, #ffd278, #96f0aa, #6ed2ff, #aa8cff, #ff78aa); }
+.vst-tier-one_of_one { --vst-tier: #f4f4f8; --vst-tier-text: #fff; border-color: transparent;
+	background: linear-gradient(rgba(10, 17, 50, 0.72), rgba(10, 17, 50, 0.72)) padding-box, var(--vst-holo) border-box;
+	background-size: 100% 100%, 300% 300%; border-width: 2px; }
+.vst-tier-one_of_one .vst-badge-tier { background: var(--vst-holo); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+.vst-tier-one_of_two { --vst-tier: var(--vst-platinum); --vst-tier-text: #fff;
+	background: linear-gradient(115deg, rgba(229, 228, 226, 0.14), rgba(150, 200, 255, 0.10), rgba(255, 190, 220, 0.10), rgba(229, 228, 226, 0.14)); background-size: 300% 100%; }
+.vst-tier-one_of_three { --vst-tier: var(--vst-platinum); --vst-tier-text: #fff; }
+.vst-tier-five { --vst-tier: var(--vst-gold); --vst-tier-text: #f3d77a; }
+.vst-tier-ten { --vst-tier: var(--vst-silver); --vst-tier-text: #e6e6ea; }
+.vst-tier-twenty_five { --vst-tier: var(--vst-copper); --vst-tier-text: #e4a574; }
+.vst-tier-fifty { --vst-tier: var(--vst-fiji); --vst-tier-text: var(--vst-fiji-hi); }
+.vst-tier-hundred { --vst-tier: var(--vst-morocco); --vst-tier-text: #ff9db0; }
+.vst-tier-common { --vst-tier: var(--vst-grey); --vst-tier-text: #c4c7cf; }
 
-.vst-result[data-rarity] { padding: 28px 24px; margin-left: -8px; margin-right: -8px; }
-.vst-result[data-rarity="sub100"] { box-shadow: 0 0 0 1px #9aa1ad, 0 0 30px -6px rgba(200, 205, 214, 0.45); }
-.vst-result[data-rarity="sub50"] { box-shadow: 0 0 0 1px var(--vst-danube), 0 0 36px -6px rgba(75, 105, 161, 0.7); }
-.vst-result[data-rarity="sub25"] { box-shadow: 0 0 0 1px var(--vst-fiji), 0 0 42px -6px rgba(79, 142, 191, 0.75); }
-.vst-result[data-rarity="sub10"] { box-shadow: 0 0 0 2px var(--vst-morocco), 0 0 52px -4px rgba(175, 31, 65, 0.8); }
+/* The whole result for the rarest tier: a ring and glow in the tier's colour; more for the top three. */
+.vst-result[data-rarity]:not([data-rarity="common"]) { padding: 28px 24px; margin-left: -8px; margin-right: -8px; }
+.vst-result[data-rarity="hundred"] { box-shadow: 0 0 0 1px var(--vst-morocco), 0 0 30px -6px rgba(175, 31, 65, 0.55); }
+.vst-result[data-rarity="fifty"] { box-shadow: 0 0 0 1px var(--vst-fiji), 0 0 34px -6px rgba(79, 142, 191, 0.6); }
+.vst-result[data-rarity="twenty_five"] { box-shadow: 0 0 0 1px var(--vst-copper), 0 0 38px -6px rgba(184, 115, 51, 0.6); }
+.vst-result[data-rarity="ten"] { box-shadow: 0 0 0 1px var(--vst-silver), 0 0 42px -6px rgba(192, 192, 196, 0.55); }
+.vst-result[data-rarity="five"] { box-shadow: 0 0 0 2px var(--vst-gold), 0 0 48px -4px rgba(212, 175, 55, 0.6); }
+.vst-result[data-rarity="one_of_three"] { box-shadow: 0 0 0 2px var(--vst-platinum), 0 0 56px -4px rgba(229, 228, 226, 0.55); }
+.vst-result[data-rarity="one_of_two"] { box-shadow: 0 0 0 2px var(--vst-platinum), 0 0 60px -4px rgba(229, 228, 226, 0.6); }
+/* One of two: a faint iridescent sheen over the platinum ring. */
+.vst-result[data-rarity="one_of_two"]::before,
 .vst-result[data-rarity="one_of_one"]::before {
 	content: "";
 	position: absolute;
 	inset: 0;
 	padding: 2px;
 	border-radius: inherit;
-	background: conic-gradient(from var(--vst-angle), #e9c46a, #cf0017, #af1f41, #4b69a1, #4f8ebf, #8cc0e8, #e9c46a);
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor;
 	mask-composite: exclude;
 	pointer-events: none;
 }
-.vst-result[data-rarity="one_of_one"] { box-shadow: 0 0 60px -6px rgba(233, 196, 106, 0.55); }
+.vst-result[data-rarity="one_of_two"]::before {
+	background: conic-gradient(from var(--vst-angle), #e5e4e2, #b9d8ff, #e5e4e2, #ffd0e6, #e5e4e2);
+	opacity: 0.55;
+}
+/* One of one: a spinning spectral ring, a holographic sheen sweeping the result, and a shimmering name. */
+.vst-result[data-rarity="one_of_one"]::before {
+	padding: 3px;
+	background: conic-gradient(from var(--vst-angle), #ff78aa, #ffd278, #96f0aa, #6ed2ff, #aa8cff, #ff78aa);
+}
+.vst-result[data-rarity="one_of_one"]::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: linear-gradient(115deg, transparent 30%, rgba(255, 120, 170, 0.10) 40%, rgba(110, 210, 255, 0.12) 50%, rgba(150, 240, 170, 0.10) 60%, transparent 70%) 0 0 / 300% 100%;
+	mix-blend-mode: screen;
+	pointer-events: none;
+}
+.vst-result[data-rarity="one_of_one"] { box-shadow: 0 0 70px -6px rgba(170, 140, 255, 0.5), 0 0 40px -10px rgba(110, 210, 255, 0.5); }
 .vst-result[data-rarity="one_of_one"] .vst-name {
-	background: linear-gradient(100deg, #fff 20%, #ffe7a3 40%, #8cc0e8 55%, #fff 75%) 0 0 / 250% 100%;
+	background: linear-gradient(100deg, #fff 15%, #ffd278 30%, #96f0aa 45%, #6ed2ff 60%, #aa8cff 75%, #fff 90%) 0 0 / 250% 100%;
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
 }
 @media (prefers-reduced-motion: no-preference) {
-	.vst-result[data-rarity="one_of_one"]::before { animation: vst-spin 6s linear infinite; }
+	.vst-result[data-rarity="one_of_one"]::before { animation: vst-spin 5s linear infinite; }
+	.vst-result[data-rarity="one_of_one"]::after { animation: vst-sweep 6s ease-in-out infinite; }
 	.vst-result[data-rarity="one_of_one"] .vst-name { animation: vst-shine 5s ease-in-out infinite; }
-	.vst-result[data-rarity="sub10"] { animation: vst-pulse 3.2s ease-in-out infinite; }
+	.vst-tier-one_of_one { animation: vst-holo 6s linear infinite; }
+	.vst-tier-one_of_one .vst-badge-tier { animation: vst-holo-text 6s linear infinite; }
+	.vst-result[data-rarity="one_of_two"]::before { animation: vst-spin 14s linear infinite; }
+	.vst-tier-one_of_two { animation: vst-holo-text 12s linear infinite; }
 }
 @keyframes vst-spin { to { --vst-angle: 360deg; } }
 @keyframes vst-shine { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
-@keyframes vst-pulse { 50% { box-shadow: 0 0 0 2px var(--vst-morocco), 0 0 70px 0 rgba(175, 31, 65, 0.95); } }
+@keyframes vst-sweep { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+@keyframes vst-holo { to { background-position: 0 0, 300% 0; } }
+@keyframes vst-holo-text { to { background-position: 300% 0; } }
 
 /* Per-code pages (card 330) */
 .vst-code-nav { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: -8px 0 24px; font-weight: 700; }

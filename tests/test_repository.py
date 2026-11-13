@@ -65,9 +65,9 @@ def test_colour_run_and_rarity(records):
 	assert (story.in_colour.position, story.in_colour.total) == (3, 4)
 	# same tier: fewest first; on a tie the narrower claim (spec) leads
 	assert [(r.scope, r.total, r.tier) for r in story.rarities] == [
-		("spec", 4, "sub10"),
-		("colour", 4, "sub10"),
-		("model", 5, "sub10"),
+		("spec", 4, "five"),
+		("colour", 4, "five"),
+		("model", 5, "five"),
 	]
 
 

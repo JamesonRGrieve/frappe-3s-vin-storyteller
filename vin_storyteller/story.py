@@ -312,8 +312,21 @@ class Position:
 
 HISTORY_TYPES = ("auction", "photo", "sale", "registration", "service", "article", "other")
 
-# (largest total in the tier, tier id), rarest first. A total of 1 is a one-of-one.
-RARITY_TIERS = ((1, "one_of_one"), (9, "sub10"), (24, "sub25"), (49, "sub50"), (99, "sub100"))
+# (largest total in the tier, tier id, name), rarest first (operator 2026-11-13). Every car has a tier: a run of more
+# than 100 is "common" (grey). The one table the story, the stats page and the share card name tiers from.
+RARITY_TIERS = (
+	(1, "one_of_one", "One of one"),  # fully iridescent, holographic
+	(2, "one_of_two", "One of two"),  # platinum, a hint of iridescence
+	(3, "one_of_three", "One of three"),  # platinum
+	(5, "five", "Five or fewer"),  # gold
+	(10, "ten", "Ten or fewer"),  # silver
+	(25, "twenty_five", "25 or fewer"),  # copper
+	(50, "fifty", "50 or fewer"),  # Fiji Blue
+	(100, "hundred", "100 or fewer"),  # Morocco Red
+)
+COMMON_TIER, COMMON_NAME = "common", "More than 100"  # grey
+TIER_NAMES = {**{tier: name for _, tier, name in RARITY_TIERS}, COMMON_TIER: COMMON_NAME}
+TIER_ORDER = (*(tier for _, tier, _ in RARITY_TIERS), COMMON_TIER)
 RARITY_SCOPES = {
 	"spec": "in this exact specification (year, model, colours and equipment)",
 	"colour": "in this colour for this model and year",
@@ -322,8 +335,8 @@ RARITY_SCOPES = {
 
 
 def rarity_tier(total: int) -> str | None:
-	"""The rarity tier for a production run of `total` cars, or None when it is not rare."""
-	return next((tier for ceiling, tier in RARITY_TIERS if 0 < total <= ceiling), None)
+	"""The rarity tier for a production run of `total` cars (100 or fewer), or None when it is not rare."""
+	return next((tier for ceiling, tier, _ in RARITY_TIERS if 0 < total <= ceiling), None)
 
 
 @dataclass(frozen=True)
@@ -335,6 +348,10 @@ class Rarity:
 	@property
 	def description(self) -> str:
 		return RARITY_SCOPES[self.scope]
+
+	@property
+	def tier_name(self) -> str:
+		return TIER_NAMES[self.tier]
 
 
 SAFE_URL = re.compile(r"^https?://[^\s<>\"']+$", re.IGNORECASE)
@@ -413,8 +430,9 @@ class Story:
 			"model": self.in_model.total,
 		}
 		found = [Rarity(scope, total, tier) for scope, total in runs.items() if (tier := rarity_tier(total))]
-		order = [tier for _, tier in RARITY_TIERS]
-		return sorted(found, key=lambda r: (order.index(r.tier), r.total))
+		if not found and self.among_identical.total:  # no rare run: its exact spec, as common (grey)
+			found = [Rarity("spec", self.among_identical.total, COMMON_TIER)]
+		return sorted(found, key=lambda r: (TIER_ORDER.index(r.tier), r.total))
 
 	def as_dict(self) -> dict:
 		rarities = self.rarities
@@ -422,7 +440,9 @@ class Story:
 			**asdict(self),
 			"breakdowns": [{**asdict(b), "description": b.description} for b in self.breakdowns],
 			"vehicle_name": self.vehicle_name,
-			"rarities": [{**asdict(r), "description": r.description} for r in rarities],
+			"rarities": [
+				{**asdict(r), "description": r.description, "tier_name": r.tier_name} for r in rarities
+			],
 			"rarest": rarities[0].tier if rarities else None,
 		}
 

@@ -56,12 +56,12 @@ test("codedText and provenanceText", () => {
 
 test("badgeParts names the tier and the run", () => {
 	assert.deepEqual(
-		{ ...core.badgeParts({ tier: "one_of_one", total: 1, description: "in this exact specification" }) },
+		{ ...core.badgeParts({ tier: "one_of_one", tier_name: "One of one", total: 1, description: "in this exact specification" }) },
 		{ tier: "One of one", count: "1 of 1", scope: "in this exact specification" },
 	);
-	assert.equal(core.badgeParts({ tier: "sub25", total: 1234, description: "" }).count, "1 of 1,234");
-	assert.equal(core.badgeParts({ tier: "sub100", total: 60, description: "" }).tier, "Fewer than 100");
-	assert.equal(core.badgeParts({ tier: "mystery", total: 3, description: "" }).tier, "mystery");
+	assert.equal(core.badgeParts({ tier: "twenty_five", total: 1234, description: "" }).count, "1 of 1,234");
+	assert.equal(core.badgeParts({ tier: "hundred", tier_name: "100 or fewer", total: 60, description: "" }).tier, "100 or fewer");
+	assert.equal(core.badgeParts({ tier: "mystery", total: 3, description: "" }).tier, "mystery"); // no name sent: the key
 });
 
 test("historyParts builds meta, keeps safe links and drops unsafe ones", () => {

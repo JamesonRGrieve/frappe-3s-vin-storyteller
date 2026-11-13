@@ -6,13 +6,7 @@
 
 	const VIN_PATTERN = /^[A-HJ-NPR-Z0-9]{17}$/;
 	const SAFE_URL = /^https?:\/\/[^\s<>"']+$/i;
-	const TIER_NAMES = {
-		one_of_one: "One of one",
-		sub10: "Fewer than 10",
-		sub25: "Fewer than 25",
-		sub50: "Fewer than 50",
-		sub100: "Fewer than 100",
-	};
+
 	const HISTORY_KINDS = {
 		auction: "Auction",
 		photo: "Photos",
@@ -113,7 +107,7 @@
 
 	function badgeParts(rarity) {
 		return {
-			tier: TIER_NAMES[rarity.tier] || rarity.tier,
+			tier: rarity.tier_name || rarity.tier, // the tier's name comes with the story (story.RARITY_TIERS)
 			count: `1 of ${formatNumber(rarity.total)}`,
 			scope: rarity.description,
 		};

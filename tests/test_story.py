@@ -104,15 +104,19 @@ class TestRarityTier:
 		("total", "tier"),
 		[
 			(1, "one_of_one"),
-			(2, "sub10"),
-			(9, "sub10"),
-			(10, "sub25"),
-			(24, "sub25"),
-			(25, "sub50"),
-			(49, "sub50"),
-			(50, "sub100"),
-			(99, "sub100"),
-			(100, None),
+			(2, "one_of_two"),
+			(3, "one_of_three"),
+			(4, "five"),
+			(5, "five"),
+			(6, "ten"),
+			(10, "ten"),
+			(11, "twenty_five"),
+			(25, "twenty_five"),
+			(26, "fifty"),
+			(50, "fifty"),
+			(51, "hundred"),
+			(100, "hundred"),
+			(101, None),  # common: no rare tier
 			(0, None),
 		],
 	)
@@ -156,7 +160,11 @@ def test_vehicle_name_and_dict():
 	assert data["exterior"] == {"code": "T87", "description": "Fiji Blue"}
 	assert data["provenance"] == "CAPS 1999"
 	assert data["history"][0]["kind"] == "auction"
-	assert data["rarities"] == [] and data["rarest"] is None
+	# No rare run: its exact spec is shown as common (grey), operator 2026-11-13.
+	assert [(r["scope"], r["tier"], r["tier_name"]) for r in data["rarities"]] == [
+		("spec", "common", "More than 100")
+	]
+	assert data["rarest"] == "common"
 
 
 def test_vehicle_name_skips_empty_trim():
@@ -165,7 +173,7 @@ def test_vehicle_name_skips_empty_trim():
 
 def test_one_of_one_is_rarest():
 	story = make_story(among_identical=Position(1, 1), in_colour=Position(1, 30))
-	assert [(r.scope, r.tier) for r in story.rarities] == [("spec", "one_of_one"), ("colour", "sub50")]
+	assert [(r.scope, r.tier) for r in story.rarities] == [("spec", "one_of_one"), ("colour", "fifty")]
 	data = story.as_dict()
 	assert data["rarest"] == "one_of_one"
 	assert data["rarities"][0]["description"].startswith("in this exact specification")

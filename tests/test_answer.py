@@ -29,7 +29,7 @@ def test_found(open_records):
 	assert story["vehicle_name"] == "1992 Mitsubishi 3000GT VR-4"
 	assert story["provenance"] == "CAPS 1999"
 	assert [h["kind"] for h in story["history"]] == ["sale", "auction", "photo"]
-	assert story["rarest"] == "sub10"
+	assert story["rarest"] == "five"
 
 
 @pytest.mark.parametrize("vin", [None, "", "SHORT", "JA3AM84J3NY00000O"])

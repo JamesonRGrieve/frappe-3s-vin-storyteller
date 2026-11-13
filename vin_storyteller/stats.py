@@ -22,6 +22,8 @@ from dataclasses import dataclass
 
 from vin_storyteller.story import (
 	MISSING,
+	TIER_NAMES,
+	TIER_ORDER,
 	full_year,
 	market_of,
 	model_name,
@@ -78,15 +80,8 @@ MAP_COUNTRIES = {
 DRIVE_SIDES = {"EL": "left-hand drive", "ER": "right-hand drive"}
 NOT_COUNTRIES = {"Non-EC"}  # market items that name no one country
 
-RARITY_ORDER = ("one_of_one", "sub10", "sub25", "sub50", "sub100", "common")
-RARITY_NAMES = {
-	"one_of_one": "One of one",
-	"sub10": "Fewer than 10",
-	"sub25": "Fewer than 25",
-	"sub50": "Fewer than 50",
-	"sub100": "Fewer than 100",
-	"common": "100 or more",
-}
+RARITY_ORDER = TIER_ORDER  # story.RARITY_TIERS, then common
+RARITY_NAMES = TIER_NAMES
 # The 1994 model year facelift (fixed headlamps, new bumpers) splits the cars into two generations.
 SECOND_GENERATION_FROM = 1994
 GENERATIONS = ("1st generation (to 1993)", "2nd generation (1994 on)")

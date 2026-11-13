@@ -17,25 +17,31 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from vin_storyteller.story import MISSING, Story, rarity_tier
+from vin_storyteller.story import COMMON_TIER, MISSING, TIER_NAMES, Story, rarity_tier
 
 WIDTH, HEIGHT = 1200, 630
 NAVY, NAVY_2 = (10, 17, 50), (17, 26, 68)
 TEXT, SOFT, KICKER = (238, 240, 246), (179, 185, 207), (140, 192, 232)
-TIER_COLOURS = {  # the story page's rarity badge colours
-	"one_of_one": (212, 175, 55),
-	"sub10": (175, 31, 65),
-	"sub25": (79, 142, 191),
-	"sub50": (75, 105, 161),
-	"sub100": (154, 161, 173),
+# Each tier's colour and how iridescent its badge is (0 none, 1 full): story.RARITY_TIERS, operator 2026-11-13.
+TIER_STYLES = {
+	"one_of_one": ((236, 236, 240), 1.0),  # fully iridescent, holographic
+	"one_of_two": ((229, 228, 226), 0.35),  # platinum, a hint of iridescence
+	"one_of_three": ((229, 228, 226), 0.0),  # platinum
+	"five": ((212, 175, 55), 0.0),  # gold
+	"ten": ((192, 192, 196), 0.0),  # silver
+	"twenty_five": ((184, 115, 51), 0.0),  # copper
+	"fifty": ((79, 142, 191), 0.0),  # Fiji Blue
+	"hundred": ((175, 31, 65), 0.0),  # Morocco Red
+	COMMON_TIER: ((128, 132, 142), 0.0),  # grey
 }
-TIER_NAMES = {
-	"one_of_one": "One of one",
-	"sub10": "Fewer than 10",
-	"sub25": "Fewer than 25",
-	"sub50": "Fewer than 50",
-	"sub100": "Fewer than 100",
-}
+SPECTRUM = (
+	(255, 120, 170),
+	(255, 210, 120),
+	(150, 240, 170),
+	(110, 210, 255),
+	(170, 140, 255),
+	(255, 120, 170),
+)
 NO_COLOUR = (60, 64, 74)
 FONTS = Path(__file__).parent / "public" / "fonts"
 
@@ -148,10 +154,9 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 		)
 		# The badge says how rare the spec is ('1 of 4'); the place line above it says which one this car is.
 		spec_line = f"1 of {story.among_identical.total:,} in this exact specification"
-		tier = rarity_tier(
-			story.among_identical.total
-		)  # the exact spec is always the smallest, so rarest, run
-	rarity = f"{TIER_NAMES[tier]}: {spec_line}" if tier else ""  # a badge only for a rare run
+		# The exact spec is always the smallest, so rarest, run; past 100 cars it is common (grey).
+		tier = rarity_tier(story.among_identical.total) or COMMON_TIER
+	rarity = f"{TIER_NAMES[tier]}: {spec_line}" if tier else ""
 	long_rarity = rarity
 	items = tuple(
 		item.description if item.description and item.description != MISSING else f"Item {item.code}"
@@ -266,9 +271,52 @@ RIGHT, RIGHT_WIDTH = 744, 392  # the colour column: paint over interior
 BOTTOM = HEIGHT - 72  # above the site address
 
 
-def _badge(draw, text: CardText, y: int) -> int:
+def _spectrum(width: int, height: int, strength: float, base: tuple[int, int, int]) -> Image.Image:
+	"""A diagonal holographic gradient across the spectrum, blended into `base` by `strength` (0 to 1)."""
+	stops = SPECTRUM
+	row = Image.new("RGB", (width + height, 1))
+	n = len(stops) - 1
+	for x in range(width + height):
+		t = x / max(1, width + height - 1) * n
+		i = min(int(t), n - 1)
+		f = t - i
+		c = tuple(int(stops[i][k] * (1 - f) + stops[i + 1][k] * f) for k in range(3))
+		row.putpixel((x, 0), tuple(int(c[k] * strength + base[k] * (1 - strength)) for k in range(3)))
+	full = row.resize((width + height, height))
+	sheared = Image.new("RGB", (width, height))
+	for yy in range(height):  # shift each row so the bands run diagonally
+		sheared.paste(full.crop((yy, yy, yy + width, yy + 1)), (0, yy))
+	return sheared
+
+
+def _iridescent(image: Image.Image, box: tuple[int, int, int, int], strength: float) -> None:
+	"""A rounded outline in the holographic gradient (a platinum one with a hint of it when `strength` is low), with a
+	soft sheen across the badge for a full one."""
+	x0, y0, x1, y1 = box
+	w, h = x1 - x0 + 1, y1 - y0 + 1
+	ring = Image.new("L", (w, h), 0)
+	ImageDraw.Draw(ring).rounded_rectangle(
+		(0, 0, w - 1, h - 1), radius=14, outline=255, width=3 if strength >= 1 else 2
+	)
+	image.paste(_spectrum(w, h, strength, TIER_STYLES["one_of_two"][0]), (x0, y0), ring)
+	if strength >= 1:  # a faint holographic wash inside the badge
+		inside = Image.new("L", (w, h), 0)
+		ImageDraw.Draw(inside).rounded_rectangle((3, 3, w - 4, h - 4), radius=12, fill=34)
+		image.paste(_spectrum(w, h, 1.0, (0, 0, 0)), (x0, y0), inside)
+
+
+def _spectral_text(image: Image.Image, xy: tuple[int, int], text: str, font: ImageFont.FreeTypeFont) -> None:
+	"""`text` filled with the holographic gradient."""
+	box = ImageDraw.Draw(image).textbbox(xy, text, font=font)
+	w, h = box[2] - xy[0] + 2, box[3] - xy[1] + 2
+	mask = Image.new("L", (w, h), 0)
+	ImageDraw.Draw(mask).text((0, 0), text, font=font, fill=255)
+	image.paste(_spectrum(w, h, 1.0, (0, 0, 0)), xy, mask)
+
+
+def _badge(image: Image.Image, draw, text: CardText, y: int) -> int:
 	"""The rarity badge at `y`, laid out from its text's ink boxes with even padding; returns its bottom."""
-	tier = TIER_COLOURS[text.tier]
+	tier, iridescence = TIER_STYLES[text.tier]
 	label_font, body_font = _font("Barlow-SemiBold.ttf", 20), _font("Barlow-Medium.ttf", 22)
 	label = TIER_NAMES[text.tier].upper()
 	body = text.rarity.split(": ", 1)[-1]
@@ -281,14 +329,18 @@ def _badge(draw, text: CardText, y: int) -> int:
 	pitch = line_height + 8
 	body_top = y + pad + (label_box[3] - label_box[1]) + gap
 	bottom = body_top + pitch * (len(lines) - 1) + line_height + pad
+	box = (LEFT, y, LEFT + LEFT_WIDTH, bottom)
 	draw.rounded_rectangle(
-		(LEFT, y, LEFT + LEFT_WIDTH, bottom),
-		radius=14,
-		outline=tier,
-		width=2,
-		fill=tuple(int(c * 0.12 + n * 0.88) for c, n in zip(tier, NAVY, strict=True)),
+		box, radius=14, fill=tuple(int(c * 0.12 + n * 0.88) for c, n in zip(tier, NAVY, strict=True))
 	)
-	draw.text((LEFT + pad, y + pad - label_box[1]), label, font=label_font, fill=tier)
+	if iridescence:
+		_iridescent(image, box, iridescence)
+	else:
+		draw.rounded_rectangle(box, radius=14, outline=tier, width=2)
+	if iridescence >= 1:  # the one-of-one's name shimmers through the spectrum
+		_spectral_text(image, (LEFT + pad, y + pad - label_box[1]), label, label_font)
+	else:
+		draw.text((LEFT + pad, y + pad - label_box[1]), label, font=label_font, fill=tier)
 	for i, chunk in enumerate(lines):
 		draw.text((LEFT + pad, body_top + pitch * i - line_box[1]), chunk, font=body_font, fill=TEXT)
 	return bottom
@@ -412,7 +464,7 @@ def render_card(
 	if text.position or text.positions:
 		y += 4
 	if text.rarity and text.tier:
-		y = _badge(draw, text, y + 8) + 24
+		y = _badge(image, draw, text, y + 8) + 24
 	else:
 		y += 8
 	_options(draw, text, y)

@@ -236,9 +236,9 @@ def test_facets_name_their_values(connection, records):
 def test_rarity_counts_cars_by_their_exact_specs_run(connection, records):
 	stats = stats_answer(lambda: _session(records), (sqlite3.Error,))["stats"]
 	rarity = {key[1]: n for key, n in facet(stats, "rarity").items()}
-	# MY92 3000GT T87/12A/XA1 is four cars (sub10); the R25 3000GT, both Stealths, the 1991 car and the unknown
-	# codes are each one of one.
-	assert rarity == {"Fewer than 10": 4, "One of one": 5}
+	# MY92 3000GT T87/12A/XA1 is four cars (five or fewer); the R25 3000GT, both Stealths, the 1991 car and the
+	# unknown codes are each one of one.
+	assert rarity == {"Five or fewer": 4, "One of one": 5}
 
 
 def test_the_stats_answer_reports_an_unreadable_record(records):

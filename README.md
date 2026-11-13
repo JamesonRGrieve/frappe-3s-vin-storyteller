@@ -325,19 +325,25 @@ not in Mitsubishi's ASA Japan record of GTOs.
 ## Rarity
 
 A car is rated on three runs within its model year: its **exact specification** (model, trim, colour,
-interior and equipment), its **colour** within its model, and its **model**. Each run's size maps to a tier:
+interior and equipment), its **colour** within its model, and its **model**. Each run's size maps to a tier
+(`story.RARITY_TIERS`, the one table the story, the stats page and the share card use; operator 2026-11-13):
 
-| Cars in the run | Tier | Effect |
+| Cars in the run | Tier | Look |
 |---|---|---|
-| 1 | One of one | Gold badge, animated iridescent border, shimmering name |
-| 2–9 | Fewer than 10 | Morocco Red badge and pulsing glow |
-| 10–24 | Fewer than 25 | Fiji Blue |
-| 25–49 | Fewer than 50 | Danube Blue |
-| 50–99 | Fewer than 100 | Silver |
+| 1 | One of one | Fully iridescent: holographic badge, spinning spectral ring, a sheen sweeping the result, shimmering name |
+| 2 | One of two | Platinum, with a hint of iridescence (a slow pastel sheen on the ring and badge) |
+| 3 | One of three | Platinum |
+| 4–5 | Five or fewer | Gold |
+| 6–10 | Ten or fewer | Silver |
+| 11–25 | 25 or fewer | Copper |
+| 26–50 | 50 or fewer | Fiji Blue |
+| 51–100 | 100 or fewer | Morocco Red |
+| more than 100 | More than 100 | Grey |
 
-Every rare run gets a badge; the rarest decides the page effect. Animation is off for visitors who prefer
-reduced motion. Mitsubishi sometimes used several codes for the same colour or equipment, so a spec run can
-read smaller than it really was. The page says so.
+Every rare run gets a badge and the rarest decides the page effect; a car with no run of 100 or fewer shows its
+exact specification as a grey badge. The badge says how rare the run is ("1 of 4"); the car's own place in it is a
+separate line ("#3 of 4"). Animation is off for visitors who prefer reduced motion. Mitsubishi sometimes used several
+codes for the same colour or equipment, so a spec run can read smaller than it really was. The page says so.
 
 ## Deploying
 

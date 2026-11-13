@@ -12,7 +12,7 @@ from contextlib import AbstractContextManager
 from dataclasses import asdict
 
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.search import PAGE_SIZE, InvalidSearch, parse_query
+from vin_storyteller.search import PAGE_SIZE, InvalidSearch, breakdown, csv_text, parse_query
 from vin_storyteller.stats import build_stats
 from vin_storyteller.story import (
 	CHASSIS_NOT_ON_RECORD,
@@ -182,19 +182,43 @@ def search_answer(
 	try:
 		with open_records() as records:
 			if query.missing_only:
-				cars, total, truncated = (), 0, False
+				matching, truncated, names = [], False, {}
 			else:
-				cars, total, truncated = records.search_cars(query)
+				matching, truncated = records.matching_cars(query)
+				names = records.breakdown_names() if matching else {}
 			missing, missing_total = records.missing_ranges(query)
 	except database_errors as error:
 		raise RecordsUnavailable from error
+	total = len(matching)
+	start = (query.page - 1) * PAGE_SIZE
 	return {
 		"status": "found",
 		"total": total,
 		"page": query.page,
 		"pages": max(1, -(-total // PAGE_SIZE)),
 		"truncated": truncated,
-		"cars": [asdict(car) for car in cars],
+		"cars": [asdict(car) for car in matching[start : start + PAGE_SIZE]],
+		"breakdown": breakdown(matching, names) if matching else {},
 		"missing": [asdict(entry) for entry in missing],
 		"missing_total": missing_total,
 	}
+
+
+def search_csv(
+	params: dict,
+	open_records: Callable[[], AbstractContextManager[ProductionRecords]],
+	database_errors: tuple[type[BaseException], ...],
+) -> tuple[str, str] | dict:
+	"""Every car a search matches as CSV: (filename, text), or an invalid answer body."""
+	try:
+		query = parse_query(params)
+	except InvalidSearch as error:
+		return {"status": "invalid", "message": str(error)}
+	if not query.narrowed or query.missing_only:
+		return {"status": "invalid", "message": SEARCH_TOO_BROAD}
+	try:
+		with open_records() as records:
+			matching, _truncated = records.matching_cars(query)
+	except database_errors as error:
+		raise RecordsUnavailable from error
+	return "3shub-storyteller-search.csv", csv_text(matching)

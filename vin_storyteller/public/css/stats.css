@@ -57,12 +57,12 @@
 	min-height: 36px; min-width: 9rem; padding: 6px 10px;
 	border: 1px solid var(--vst-line); border-radius: 8px;
 	background: var(--vst-navy); color: var(--vst-text);
-	font: 500 14px/1.2 inherit; letter-spacing: 0; text-transform: none;
+	font-weight: 500; font-size: 14px; line-height: 1.2; font-family: inherit; letter-spacing: 0; text-transform: none;
 }
 .vst-stats-field select:focus-visible, .vst-stats-field input:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
 .vst-stats-reset, .vst-stats-csv {
 	min-height: 36px; padding: 6px 14px; border: 1px solid var(--vst-line); border-radius: 8px;
-	background: transparent; color: var(--vst-fiji-hi); font: 700 14px/1.2 inherit; cursor: pointer;
+	background: transparent; color: var(--vst-fiji-hi); font-weight: 700; font-size: 14px; line-height: 1.2; font-family: inherit; cursor: pointer;
 }
 .vst-stats-reset:hover, .vst-stats-csv:hover { border-color: var(--vst-fiji-hi); }
 .vst-stats-filter-note { flex-basis: 100%; margin: 0; font-size: 13px; color: var(--vst-soft); }
@@ -73,7 +73,7 @@
 .vst-help-button {
 	display: inline-grid; place-items: center; width: 22px; height: 22px; padding: 0;
 	border: 1px solid var(--vst-soft); border-radius: 50%; background: transparent;
-	color: var(--vst-soft); font: 700 12px/1 inherit; cursor: help;
+	color: var(--vst-soft); font-weight: 700; font-size: 12px; line-height: 1; font-family: inherit; cursor: help;
 }
 .vst-help-button[aria-expanded="true"] { color: var(--vst-navy); background: var(--vst-fiji-hi); border-color: var(--vst-fiji-hi); }
 .vst-help-note:empty { display: none; }
@@ -147,3 +147,60 @@
 	.vst-stats-tiles li { padding: 12px; }
 	.vst-stats-tiles .vst-n { font-size: 24px; }
 }
+
+/* Find cars: removable narrowed-by chips and the breakdown of the matching cars (card 391). */
+.vst-production .vst-stats-search-narrowed { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0; }
+.vst-production .vst-stats-narrowed-chip {
+	display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px;
+	border: 1px solid var(--vst-soft); border-radius: 999px; background: rgba(255, 255, 255, 0.06);
+	color: var(--vst-text); font-weight: 600; font-size: 14px; line-height: 1.2; font-family: inherit; text-align: left; cursor: pointer;
+}
+.vst-production .vst-stats-narrowed-chip:hover { border-color: var(--vst-fiji-hi); }
+.vst-production .vst-stats-narrowed-chip:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
+.vst-production .vst-stats-breakdown {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: 1rem 1.5rem;
+	margin: 0.75rem 0 1rem;
+}
+.vst-production .vst-stats-breakdown-h { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.vst-production .vst-stats-breakdown-list { list-style: none; margin: 0; padding: 0; }
+.vst-production .vst-stats-breakdown-item {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 4rem 7.5em;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.15rem 0;
+	font-size: 0.85rem;
+}
+.vst-production .vst-stats-breakdown-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+	background: none;
+	border: 0;
+	padding: 0;
+	font: inherit;
+	color: inherit;
+}
+.vst-production button.vst-stats-breakdown-label { cursor: pointer; text-decoration: underline dotted; }
+.vst-production button.vst-stats-breakdown-label:hover,
+.vst-production button.vst-stats-breakdown-label:focus-visible { text-decoration: underline; }
+.vst-production .vst-stats-breakdown-dot {
+	display: inline-block;
+	width: 0.7em;
+	height: 0.7em;
+	margin-right: 0.35em;
+	border-radius: 50%;
+	box-shadow: 0 0 0 1px rgb(0 0 0 / 25%);
+	vertical-align: -0.05em;
+}
+.vst-production .vst-stats-breakdown-bar {
+	height: 0.45rem;
+	border-radius: 4px;
+	background: linear-gradient(to right, currentColor var(--share), rgb(127 127 127 / 18%) var(--share));
+	opacity: 0.7;
+}
+.vst-production .vst-stats-breakdown-count { font-variant-numeric: tabular-nums; color: var(--vst-soft); white-space: nowrap; text-align: right; }
+.vst-production a.vst-stats-search-export { display: inline-flex; align-items: center; font-weight: 700; font-size: 14px; line-height: 1.2; font-family: inherit; text-decoration: none; }

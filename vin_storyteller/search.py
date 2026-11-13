@@ -6,6 +6,8 @@ by stats.region_of, the same way the charts name them, so a search and a chart a
 
 from __future__ import annotations
 
+import csv
+import io
 import re
 from dataclasses import asdict, dataclass
 
@@ -18,6 +20,11 @@ YEAR_PATTERN = re.compile(r"^(19|20)[0-9]{2}$")
 FIRST_YEAR, LAST_YEAR = 1990, 2000
 MODEL_NAMES = ("3000GT", "Stealth", "GTO")
 LIST_MAX = 20  # values of one repeated filter
+LINE_PATTERN = re.compile(r"^[A-Z0-9]{2}$")  # a Model key: 'VR', 'TT', 'G6', 'AU'
+# A build month 'YYMM' or production period 'YYMMP'.
+BUILT_PATTERN = re.compile(r"^[0-9]{2}(0[1-9]|1[0-2])[1-3]?$")
+SORTS = ("", "vin", "built", "paint", "interior", "option", "grade")  # '' = model year, then VIN
+BREAKDOWN_TOP = 12  # values a breakdown names; the rest are summed as 'other'
 
 
 class InvalidSearch(ValueError):
@@ -37,6 +44,11 @@ class SearchQuery:
 	option: str = ""
 	page: int = 1
 	missing_only: bool = False  # list the known missing VIN ranges the filters cover
+	lines: tuple[str, ...] = ()  # Model keys (model line: 3000GT VR-4 'VR', Stealth R/T Turbo 'TT' ...)
+	built_from: str = ""  # 'YYMM' or 'YYMMP', inclusive
+	built_to: str = ""
+	sort: str = ""
+	descending: bool = False
 
 	@property
 	def narrowed(self) -> bool:
@@ -51,6 +63,9 @@ class SearchQuery:
 			or self.year_from
 			or self.year_to
 			or self.missing_only
+			or self.lines
+			or self.built_from
+			or self.built_to
 		)
 
 	def model_years(self) -> tuple[str, ...]:
@@ -80,8 +95,16 @@ def _code(params: dict, name: str) -> str:
 	return code
 
 
+def _built(params: dict, name: str) -> str:
+	built = str(params.get(name) or "").strip()
+	if built and not BUILT_PATTERN.match(built):
+		raise InvalidSearch(f"{name} must be a build month YYMM or production period YYMMP")
+	return built
+
+
 def parse_query(params: dict) -> SearchQuery:
-	"""A search from request parameters (q, model, market, region, from, to, paint, interior, option, page)."""
+	"""A search from request parameters (q, model, market, region, from, to, paint, interior, option, page; line,
+	built or built_from/built_to, sort, desc)."""
 	text = re.sub(r"\s+", "", str(params.get("q") or "")).upper()
 	if text and not TEXT_PATTERN.match(text):
 		raise InvalidSearch(
@@ -100,6 +123,15 @@ def parse_query(params: dict) -> SearchQuery:
 		page = max(1, int(params.get("page") or 1))
 	except ValueError as error:
 		raise InvalidSearch("page must be a number") from error
+	lines = tuple(line.upper() for line in _list(params, "line"))
+	if any(not LINE_PATTERN.match(line) for line in lines):
+		raise InvalidSearch("line must be a 2-character model line code")
+	built_from, built_to = _built(params, "built_from"), _built(params, "built_to")
+	if params.get("built"):
+		built_from = built_to = _built(params, "built")
+	sort = str(params.get("sort") or "").strip().lower()
+	if sort not in SORTS:
+		raise InvalidSearch("sort must be one of " + ", ".join(s for s in SORTS if s))
 	return SearchQuery(
 		text=text,
 		models=models,
@@ -112,6 +144,11 @@ def parse_query(params: dict) -> SearchQuery:
 		option=_code(params, "option"),
 		page=page,
 		missing_only=str(params.get("missing") or "").strip().lower() in ("1", "true", "yes"),
+		lines=lines,
+		built_from=built_from,
+		built_to=built_to,
+		sort=sort,
+		descending=str(params.get("desc") or "").strip().lower() in ("1", "true", "yes"),
 	)
 
 
@@ -129,6 +166,7 @@ class FoundCar:
 	paint: str
 	interior: str
 	built: str  # 'YYMMP' as stored ('' when not recorded)
+	line_code: str  # the Model key ('VR')
 	region: str
 	market: str
 	provenance: str
@@ -163,6 +201,7 @@ def found_car(row: tuple, region) -> FoundCar:
 		paint=(paint or "").strip(),
 		interior=(interior or "").strip(),
 		built=(built or "").strip(),
+		line_code=(_key or "").strip(),
 		region=region.name,
 		market=region.market,
 		provenance=provenance or "",
@@ -230,3 +269,107 @@ def missing_entry(row: tuple, vin: str = "") -> MissingEntry:
 		count=int(last) - int(first) + 1,
 		note=note,
 	)
+
+
+def calendar_built(built: str) -> str:
+	"""A 'YYMMP' build date as a sortable key: 2000's '00…' after the 1990s."""
+	return ("1" if built[:2] < "50" else "0") + built if built else ""
+
+
+def in_built_range(built: str, low: str, high: str) -> bool:
+	"""Whether a car's 'YYMMP' falls in [low, high] (each 'YYMM' or 'YYMMP'); open ends are unbounded."""
+	if not built:
+		return not (low or high)
+	key = calendar_built(built)
+	if low and key[: len(low) + 1] < calendar_built(low):
+		return False
+	return not (high and key[: len(high) + 1] > calendar_built(high))
+
+
+SORT_KEYS = {
+	"": lambda c: (c.model_year, c.vin),
+	"vin": lambda c: (c.vin,),
+	"built": lambda c: (calendar_built(c.built), c.vin),
+	"paint": lambda c: (c.paint, c.model_year, c.vin),
+	"interior": lambda c: (c.interior, c.model_year, c.vin),
+	"option": lambda c: (c.model_code, c.option, c.model_year, c.vin),
+	"grade": lambda c: (c.model_code, c.classification, c.model_year, c.vin),
+}
+
+
+def sorted_cars(cars: list[FoundCar], query: SearchQuery) -> list[FoundCar]:
+	"""The search's cars in the order asked for (model year, then VIN, by default)."""
+	return sorted(cars, key=SORT_KEYS[query.sort], reverse=query.descending)
+
+
+@dataclass(frozen=True)
+class Share:
+	"""One value's share of a search's cars."""
+
+	code: str
+	name: str
+	count: int
+	percent: float
+
+
+BREAKDOWNS = ("paint", "interior", "option", "grade", "line", "model_year", "region")
+
+
+def breakdown(cars: list[FoundCar], names: dict[str, dict[str, str]]) -> dict[str, list[dict]]:
+	"""How a search's cars split by paint, interior, option, grade, model line, model year and region: the
+	BREAKDOWN_TOP largest values with counts and percentages, the rest summed as 'other'. `names` gives display
+	names per facet and code (paint and interior names, grade texts)."""
+	total = len(cars)
+	facets = {
+		"paint": lambda c: c.paint,
+		"interior": lambda c: c.interior,
+		"option": lambda c: f"{c.model_code} {c.option}".strip(),
+		"grade": lambda c: f"{c.model_code} {c.classification}".strip(),
+		"line": lambda c: c.line,
+		"model_year": lambda c: c.model_year,
+		"region": lambda c: c.region,
+	}
+	out: dict[str, list[dict]] = {}
+	for facet, value in facets.items():
+		counts: dict[str, int] = {}
+		for car in cars:
+			counts[value(car) or ""] = counts.get(value(car) or "", 0) + 1
+		ranked = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+		if facet == "model_year":
+			ranked = sorted(counts.items())
+		shares = [
+			Share(code, names.get(facet, {}).get(code, ""), n, round(100 * n / total, 1))
+			for code, n in ranked
+		]
+		if facet != "model_year" and len(shares) > BREAKDOWN_TOP:
+			rest = sum(s.count for s in shares[BREAKDOWN_TOP:])
+			shares = [*shares[:BREAKDOWN_TOP], Share("other", "Other", rest, round(100 * rest / total, 1))]
+		out[facet] = [asdict(s) for s in shares]
+	return out
+
+
+CSV_COLUMNS = (
+	"vin",
+	"model_year",
+	"model",
+	"line",
+	"model_code",
+	"classification",
+	"option",
+	"paint",
+	"interior",
+	"built",
+	"region",
+	"market",
+	"provenance",
+)
+
+
+def csv_text(cars: list[FoundCar]) -> str:
+	"""A search's cars as CSV (every matching car, in the search's order)."""
+	buffer = io.StringIO()
+	writer = csv.writer(buffer, lineterminator="\n")
+	writer.writerow(CSV_COLUMNS)
+	for car in cars:
+		writer.writerow([getattr(car, column) for column in CSV_COLUMNS])
+	return buffer.getvalue()

@@ -138,3 +138,67 @@ def test_missing_only_lists_the_gaps_the_filters_cover(records):
 def test_an_australian_vin_in_a_gap_and_a_car_on_record_is_never_missing(records):
 	assert run(records, q="JMFJF5S24NJ000002")["missing"][0]["market"] == "au"
 	assert run(records, q="JA3AM84J3NY000001")["missing_total"] == 0
+
+
+# Sort, model line and build-period filters, breakdowns and CSV (card 391).
+
+
+def test_sorting_and_order(records):
+	cars = run(records, q="JA3", sort="vin", desc="1")["cars"]
+	vins = [c["vin"] for c in cars]
+	assert vins == sorted(vins, reverse=True)
+	built = [c["built"] for c in run(records, q="JA3", sort="built")["cars"]]
+	assert built == sorted(built, key=lambda b: ("1" if b[:2] < "50" else "0") + b)
+	with pytest.raises(InvalidSearch):
+		parse_query({"q": "JA3", "sort": "price"})
+
+
+def test_a_model_line_and_a_build_period_narrow_a_search(records):
+	every = run(records, q="JA3")["cars"]
+	line = every[0]["line_code"]
+	assert line and all(c["line_code"] == line for c in run(records, line=line)["cars"])
+	period = every[0]["built"]
+	same = run(records, built=period)["cars"]
+	assert same and all(c["built"] == period for c in same)
+	month = run(records, built_from=period[:4], built_to=period[:4])["cars"]
+	assert {c["vin"] for c in same} <= {c["vin"] for c in month}
+	assert all(c["built"][:4] == period[:4] for c in month)
+	for bad in ({"line": "VR4"}, {"built": "9213"}, {"built_from": "x"}):
+		with pytest.raises(InvalidSearch):
+			parse_query(bad)
+	assert parse_query({"line": "vr"}).narrowed and parse_query({"built": "92031"}).narrowed
+
+
+def test_a_build_range_runs_across_the_year_2000():
+	from vin_storyteller.search import in_built_range
+
+	assert in_built_range("00013", "9901", "0012")
+	assert in_built_range("99121", "9901", "0012")
+	assert not in_built_range("98121", "9901", "0012")
+	assert in_built_range("92031", "", "")
+	assert not in_built_range("", "9201", "")
+
+
+def test_a_search_breaks_down_by_spec_with_shares(records):
+	body = run(records, paint="R25")
+	shares = body["breakdown"]
+	assert set(shares) == {"paint", "interior", "option", "grade", "line", "model_year", "region"}
+	for facet in shares.values():
+		assert sum(s["count"] for s in facet) == body["total"]
+		assert abs(sum(s["percent"] for s in facet) - 100) < 1
+	(paint,) = shares["paint"]
+	assert paint["code"] == "R25" and paint["count"] == 3
+
+
+def test_a_search_downloads_as_csv(records):
+	from vin_storyteller.answer import search_csv
+	from vin_storyteller.search import CSV_COLUMNS
+
+	@contextmanager
+	def session():
+		yield records
+
+	filename, text = search_csv({"paint": "R25"}, session, (sqlite3.Error,))
+	lines = text.strip().split("\n")
+	assert filename.endswith(".csv") and lines[0].split(",") == list(CSV_COLUMNS) and len(lines) == 4
+	assert search_csv({}, session, (sqlite3.Error,))["status"] == "invalid"

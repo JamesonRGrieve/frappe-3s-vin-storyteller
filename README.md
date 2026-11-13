@@ -161,11 +161,21 @@ number, or by a paint, interior or option code, together with the page's model, 
 Results show full VINs (operator, 2026-11-12), 50 a page, each VIN linking to the storyteller with the VIN filled in
 (`/storyteller?vin=…`; the visitor still gives a name and submits, so stories stay counted and logged) and each paint
 and interior code to its page; a page of results downloads as CSV. `GET /api/method/vin_storyteller.api.search` takes
-`q`, `model`, `market`, `region` (comma lists), `from`, `to`, `paint`, `interior`, `option` and `page`, and answers
-`status` `found` with `cars` (`vin`, `model_year`, `model`, `line`, `model_code`, `classification`, `option`, `paint`,
-`interior`, `built`, `region`, `market`, `provenance`), `total`, `page`, `pages` and `truncated` (a search reads at
-most 20,000 cars before region filtering), or `invalid` (an empty search is refused). It counts with the code pages
-and is cached for an hour.
+`q`, `model`, `market`, `region` (comma lists), `from`, `to`, `paint`, `interior`, `option` and `page`, plus `line`
+(model line keys such as `VR`, `TT`, `G6`), `built` (one build month `YYMM` or production period `YYMMP`) or
+`built_from` / `built_to`, `sort` (`vin`, `built`, `paint`, `interior`, `option`, `grade`; model year then VIN by
+default) and `desc=1`. It answers `status` `found` with `cars` (`vin`, `model_year`, `model`, `line`, `line_code`,
+`model_code`, `classification`, `option`, `paint`, `interior`, `built`, `region`, `market`, `provenance`), `total`,
+`page`, `pages`, `truncated` (a search reads at most 20,000 cars before region filtering) and `breakdown`: how every
+matching car splits by `paint`, `interior`, `option`, `grade`, `line`, `model_year` and `region` (`code`, `name`,
+`count`, `percent`; the 12 largest, the rest as `other`). An empty search is `invalid`. It counts with the code pages
+and is cached for an hour. `GET /api/method/vin_storyteller.api.search_export` takes the same parameters and
+downloads every matching car as CSV (counted the same way, not cached).
+
+The page shows the breakdown above the results; a paint, interior or option in it narrows the search. The search
+lives in the address as `find_<field>` (`find_paint=T87&find_line=VR&find_sort=built#find`), so a search can be
+shared and the storyteller links straight to one (a car's spec twins and build-date neighbours). Filters a link sets
+that have no box in the form (model line, build period) show as chips that remove them.
 
 **Missing VINs** (migration 0011, table `MissingRange`): the serials missing from every record we hold (US gaps from
 NA9199 + CAPS 2004, from 000101 up; the Australian serials no listing has given) are searchable too and shown in **red**

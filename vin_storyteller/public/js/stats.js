@@ -220,6 +220,12 @@
 			return /^#[0-9a-f]{6}$/i.test(hex || "") ? hex : this.colours.other;
 		}
 
+		// A breakdown dot's colour: the paint's or interior's swatch colour, or none when it has no known colour.
+		swatchColour(kind, code) {
+			const hex = this.swatches?.[kind]?.[code]?.hex;
+			return /^#[0-9a-f]{6}$/i.test(hex || "") ? hex : null;
+		}
+
 		// --- filters ---
 
 		buildFilters() {
@@ -286,7 +292,7 @@
 
 		setFilter(filter) {
 			this.filter = filter;
-			history.replaceState(null, "", `${location.pathname}${core.stateQuery(filter)}${location.hash}`);
+			history.replaceState(null, "", `${location.pathname}${core.addressQuery(filter, this.search?.fields)}${location.hash}`);
 			this.syncFilters();
 			this.render();
 			if (this.search?.active) this.runSearch(1);
@@ -834,12 +840,22 @@
 		buildSearch() {
 			const section = this.root.querySelector(".vst-stats-search");
 			if (!section) return;
-			this.search = { active: false, page: 1, cars: [], section };
+			this.search = { active: false, page: 1, cars: [], section, fields: core.parseSearch(location.search) };
 			const form = section.querySelector(".vst-stats-search-form");
+			this.fillSearchForm(this.search.fields);
 			form.addEventListener("submit", (event) => {
 				event.preventDefault();
 				this.runSearch(1);
 			});
+			for (const name of ["sort", "desc"])
+				form.elements[name].addEventListener("change", () => {
+					if (this.search.active) this.runSearch(1);
+				});
+			// A linked search (the story's spec twins and build-date neighbours, a shared address) runs on arrival.
+			if (core.hasSearch(this.search.fields)) {
+				this.runSearch(1);
+				if (location.hash === "#find") section.scrollIntoView();
+			}
 			section.querySelector('[data-page="prev"]').addEventListener("click", () => this.runSearch(this.search.page - 1));
 			section.querySelector('[data-page="next"]').addEventListener("click", () => this.runSearch(this.search.page + 1));
 			section.querySelector(".vst-stats-search-csv").addEventListener("click", () => {
@@ -855,11 +871,61 @@
 			});
 		}
 
+		fillSearchForm(fields) {
+			const form = this.search.section.querySelector(".vst-stats-search-form");
+			for (const name of core.SEARCH_FIELDS) form.elements[name].value = fields[name] || "";
+			form.elements.missing.checked = Boolean(fields.missing);
+			form.elements.desc.checked = Boolean(fields.desc);
+			this.showNarrowed(fields);
+		}
+
+		searchFields() {
+			const form = this.search.section.querySelector(".vst-stats-search-form");
+			const fields = Object.fromEntries(core.SEARCH_FIELDS.map((n) => [n, form.elements[n].value.trim()]));
+			fields.missing = form.elements.missing.checked;
+			fields.desc = form.elements.desc.checked;
+			return fields;
+		}
+
+		// The filters a link set that have no box in the form (model line, build period), each removable.
+		showNarrowed(fields) {
+			const holder = this.search.section.querySelector(".vst-stats-search-narrowed");
+			const chips = [];
+			const chip = (text, clear) => {
+				const button = element("button", "vst-stats-chip vst-stats-narrowed-chip", `${text}\u00a0✕`);
+				button.type = "button";
+				button.setAttribute("aria-label", `Remove: ${text}`);
+				button.addEventListener("click", () => {
+					const form = this.search.section.querySelector(".vst-stats-search-form");
+					clear.forEach((name) => {
+						form.elements[name].value = "";
+					});
+					this.runSearch(1);
+				});
+				chips.push(button);
+			};
+			if (fields.line) chip(`Model line ${this.lineName(fields.line)}`, ["line"]);
+			if (fields.built_from || fields.built_to) {
+				const from = core.builtLabel(fields.built_from.padEnd(5, "0"));
+				const to = core.builtLabel(fields.built_to.padEnd(5, "0"));
+				chip(fields.built_from === fields.built_to ? `Built ${from}` : `Built ${from || "…"} to ${to || "…"}`, ["built_from", "built_to"]);
+			}
+			holder.replaceChildren(...chips);
+			holder.hidden = !chips.length;
+		}
+
+		// A model line's name, from the results (each car carries its line's code and name), else its code.
+		lineName(code) {
+			const car = (this.search.cars || []).find((c) => c.line_code === code);
+			return car?.line ? `${car.line} (${code})` : code;
+		}
+
 		async runSearch(page) {
 			const { section } = this.search;
-			const form = section.querySelector(".vst-stats-search-form");
-			const fields = Object.fromEntries(["q", "paint", "interior", "option"].map((n) => [n, form.elements[n].value]));
-			fields.missing = form.elements.missing.checked;
+			const fields = this.searchFields();
+			this.search.fields = fields;
+			this.showNarrowed(fields);
+			history.replaceState(null, "", `${location.pathname}${core.addressQuery(this.filter, fields)}${location.hash}`);
 			const status = section.querySelector(".vst-stats-search-status");
 			const query = core.searchParams(this.filter, fields, page);
 			this.search.active = true;
@@ -877,6 +943,58 @@
 				return;
 			}
 			this.showResults(body.cars, body.total, body.page, body.pages, body.truncated, body.missing || [], body.missing_total || 0);
+			this.showBreakdown(body.breakdown || {}, body.total);
+			this.showNarrowed(fields); // now the results can name the model line
+			const exportLink = section.querySelector(".vst-stats-search-export");
+			exportLink.href = core.exportHref(this.root.dataset.exportEndpoint, this.filter, fields);
+			exportLink.hidden = !body.total;
+		}
+
+		// How the matching cars split: a short bar list per facet; a click narrows the search to that value.
+		showBreakdown(breakdown, total) {
+			const holder = this.search.section.querySelector(".vst-stats-breakdown");
+			const panels = [];
+			for (const [facet, title] of Object.entries(core.BREAKDOWN_TITLES)) {
+				const shares = breakdown[facet] || [];
+				if (shares.length < 2) continue; // one value says nothing the search didn't
+				const panel = element("section", "vst-stats-breakdown-panel");
+				panel.append(element("h4", "vst-stats-breakdown-h", title));
+				const list = element("ol", "vst-stats-breakdown-list");
+				for (const share of shares) {
+					const item = element("li", "vst-stats-breakdown-item");
+					const narrowed = core.narrowBy(facet, share, this.search.fields);
+					const label = element(narrowed ? "button" : "span", "vst-stats-breakdown-label");
+					if (facet === "paint" || facet === "interior") {
+						const colour = this.swatchColour(facet, share.code);
+						if (colour) {
+							const dot = element("span", "vst-stats-breakdown-dot");
+							dot.style.background = colour;
+							dot.setAttribute("aria-hidden", "true");
+							label.append(dot);
+						}
+					}
+					label.append(document.createTextNode(core.shareLabel(share)));
+					label.title = core.shareLabel(share);
+					if (narrowed) {
+						label.type = "button";
+						label.title = `${core.shareLabel(share)}: narrow the search to these cars`;
+						label.addEventListener("click", () => {
+							this.fillSearchForm(narrowed);
+							this.runSearch(1);
+						});
+					}
+					const bar = element("span", "vst-stats-breakdown-bar");
+					bar.style.setProperty("--share", `${share.percent}%`);
+					bar.setAttribute("aria-hidden", "true");
+					const count = element("span", "vst-stats-breakdown-count", `${core.formatNumber(share.count)} · ${share.percent}%`);
+					item.append(label, bar, count);
+					list.append(item);
+				}
+				panel.append(list);
+				panels.push(panel);
+			}
+			holder.replaceChildren(...panels);
+			holder.hidden = !panels.length || !total;
 		}
 
 		showResults(cars, total, page, pages, truncated, missing = [], missingTotal = 0) {

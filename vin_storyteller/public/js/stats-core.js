@@ -394,8 +394,86 @@
 		add("region", filter.region.join(","));
 		add("from", filter.from);
 		add("to", filter.to);
+		add("line", fields.line);
+		add("built_from", fields.built_from);
+		add("built_to", fields.built_to);
+		add("sort", fields.sort);
+		if (fields.desc) params.set("desc", "1");
 		if (page > 1) params.set("page", String(page));
 		return params.toString();
+	}
+
+	// The search form's fields kept in the address (prefixed, so they never clash with the page filters), so a
+	// search is shareable and the story can link straight to one (spec twins, build-date neighbours).
+	const SEARCH_FIELDS = Object.freeze(["q", "paint", "interior", "option", "line", "built_from", "built_to", "sort"]);
+	const FIELD_PATTERN = /^[A-Za-z0-9-]{1,17}$/;
+	const SORT_TITLES = Object.freeze({
+		"": "Model year",
+		vin: "VIN",
+		built: "Build date",
+		paint: "Paint",
+		interior: "Interior",
+		option: "Option",
+		grade: "Grade",
+	});
+
+	function parseSearch(search) {
+		const params = new URLSearchParams(search || "");
+		const fields = { missing: params.get("find_missing") === "1", desc: params.get("find_desc") === "1" };
+		for (const name of SEARCH_FIELDS) {
+			const value = (params.get(`find_${name}`) || "").trim();
+			fields[name] = FIELD_PATTERN.test(value) ? value : "";
+		}
+		if (!(fields.sort in SORT_TITLES)) fields.sort = "";
+		return fields;
+	}
+
+	function hasSearch(fields) {
+		return Boolean(fields.missing || SEARCH_FIELDS.some((name) => name !== "sort" && fields[name]));
+	}
+
+	// The page address: the filters (stateQuery) plus the search fields, as find_<name>.
+	function addressQuery(state, fields) {
+		const params = new URLSearchParams(stateQuery(state).slice(1));
+		if (fields && hasSearch(fields)) {
+			for (const name of SEARCH_FIELDS) if (fields[name]) params.set(`find_${name}`, fields[name]);
+			if (fields.missing) params.set("find_missing", "1");
+			if (fields.desc) params.set("find_desc", "1");
+		}
+		const query = params.toString();
+		return query ? `?${query}` : "";
+	}
+
+	// The search's breakdown panels, in display order, with their titles.
+	const BREAKDOWN_TITLES = Object.freeze({
+		paint: "Paint",
+		interior: "Interior",
+		line: "Model line",
+		grade: "Grade",
+		option: "Option code",
+		model_year: "Model year",
+		region: "Region",
+	});
+
+	// A breakdown value's label: its code and, where the catalogue names it, the name.
+	function shareLabel(share) {
+		if (share.code === "other") return "Other";
+		if (!share.code) return "Not recorded";
+		return share.name && share.name !== "MISSING" ? `${share.code} ${share.name}` : share.code;
+	}
+
+	// The form fields a click on a breakdown value narrows the search to (null when it can't narrow by it).
+	function narrowBy(facet, share, fields) {
+		if (!share.code || share.code === "other") return null;
+		const code = share.code.split(" ")[1];
+		if (facet === "paint" || facet === "interior") return { ...fields, [facet]: share.code };
+		if (facet === "option" && code) return { ...fields, option: code };
+		return null;
+	}
+
+	// The download of every matching car (the server's CSV, not just the page shown).
+	function exportHref(endpoint, filter, fields) {
+		return `${endpoint}?${searchParams(filter, fields, 1)}`;
 	}
 
 	// A stored 'YYMMP' build date as text: '92032' -> '1992-03, 2nd period'; month-only (P = 0) -> '1994-07'.
@@ -571,6 +649,15 @@
 		carCells,
 		missingCells,
 		tagMailto,
+		SEARCH_FIELDS,
+		SORT_TITLES,
+		BREAKDOWN_TITLES,
+		parseSearch,
+		hasSearch,
+		addressQuery,
+		shareLabel,
+		narrowBy,
+		exportHref,
 		parseState,
 		stateQuery,
 		csvCell,

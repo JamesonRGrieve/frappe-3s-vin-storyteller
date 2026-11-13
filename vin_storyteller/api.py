@@ -27,6 +27,7 @@ from vin_storyteller.answer import (
 	index_answer,
 	page_key,
 	search_answer,
+	search_csv,
 	stats_answer,
 )
 from vin_storyteller.client import client_address
@@ -183,6 +184,26 @@ def search(**params) -> dict:
 	except InvalidSearch:
 		key = None
 	return _cached(key, lambda: search_answer(params, _records, (pymysql.MySQLError,)))
+
+
+@frappe.whitelist(allow_guest=True, methods=["GET"])
+def search_export(**params):
+	"""The same search as `search`, every matching car (up to the scan limit) as a CSV download. Counted with the
+	code pages; not cached (a download is a one-off)."""
+	_count_lookup("code_pages", CODE_PAGES_PER_WINDOW, CODE_PAGES_LIMITED)
+	params = {k: v for k, v in params.items() if k != "cmd"}
+	try:
+		result = search_csv(params, _records, (pymysql.MySQLError,))
+	except RecordsUnavailable:
+		frappe.log_error(title="VIN Storyteller: production record unavailable")
+		return {"status": "error", "message": UNAVAILABLE}
+	if isinstance(result, dict):
+		return result
+	filename, text = result
+	frappe.response["type"] = "download"
+	frappe.response["filename"] = filename
+	frappe.response["filecontent"] = text.encode("utf-8")
+	frappe.response["content_type"] = "text/csv; charset=utf-8"
 
 
 def sitemap_routes(site) -> list[tuple[str, None]]:

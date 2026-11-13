@@ -360,3 +360,39 @@ test("missing ranges read as red rows with a mailto asking for the VIN tag", () 
 	assert.ok(decodeURIComponent(core.tagMailto(many)).includes("(please type it here)"));
 	assert.equal(core.searchParams(core.emptyFilter(), { missing: true }, 1), "missing=1");
 });
+
+// Card 391: the search in the address, sort, model line and build period, breakdowns and the full CSV.
+
+test("a search round-trips through the address without clashing with the page filters", () => {
+	const filter = { ...core.emptyFilter(), model: ["3000GT"], from: "1992" };
+	const fields = { q: "", paint: "T87", interior: "12A", option: "", line: "VR", built_from: "92031", built_to: "92031", sort: "built", desc: true, missing: false };
+	const address = core.addressQuery(filter, fields);
+	assert.equal(address, "?model=3000GT&from=1992&find_paint=T87&find_interior=12A&find_line=VR&find_built_from=92031&find_built_to=92031&find_sort=built&find_desc=1");
+	const back = plain(core.parseSearch(address));
+	assert.deepEqual(back, { ...fields });
+	assert.ok(core.hasSearch(back));
+	assert.equal(core.addressQuery(filter, { ...fields, paint: "", interior: "", line: "", built_from: "", built_to: "" }), "?model=3000GT&from=1992");
+	assert.equal(core.parseSearch("?find_paint=<b>&find_sort=price").paint, "");
+	assert.equal(core.parseSearch("?find_sort=price").sort, "");
+});
+
+test("the request carries sort, order, model line and build period", () => {
+	const params = core.searchParams(core.emptyFilter(), { line: "TT", built_from: "9203", built_to: "9205", sort: "vin", desc: true }, 1);
+	assert.equal(params, "line=TT&built_from=9203&built_to=9205&sort=vin&desc=1");
+	assert.equal(
+		core.exportHref("/api/method/x", core.emptyFilter(), { paint: "R25", sort: "built" }),
+		"/api/method/x?paint=R25&sort=built",
+	);
+});
+
+test("breakdown values are labelled and narrow the search where they can", () => {
+	assert.equal(core.shareLabel({ code: "T87", name: "Fiji Blue" }), "T87 Fiji Blue");
+	assert.equal(core.shareLabel({ code: "12A", name: "MISSING" }), "12A");
+	assert.equal(core.shareLabel({ code: "", name: "" }), "Not recorded");
+	assert.equal(core.shareLabel({ code: "other", name: "Other" }), "Other");
+	const fields = { q: "JA3", paint: "" };
+	assert.deepEqual(plain(core.narrowBy("paint", { code: "T87" }, fields)), { q: "JA3", paint: "T87" });
+	assert.deepEqual(plain(core.narrowBy("option", { code: "Z16A A03" }, fields)), { q: "JA3", paint: "", option: "A03" });
+	assert.equal(core.narrowBy("region", { code: "California" }, fields), null);
+	assert.equal(core.narrowBy("paint", { code: "other" }, fields), null);
+});

@@ -20,9 +20,11 @@ from vin_storyteller.search import (
 	MissingEntry,
 	SearchQuery,
 	found_car,
+	in_built_range,
 	missing_entry,
 	missing_markets,
 	searched_serial,
+	sorted_cars,
 )
 from vin_storyteller.stats import Catalogue, StatsRow, destination_code, destination_digits, region_of
 from vin_storyteller.story import (
@@ -676,6 +678,22 @@ class ProductionRecords:
 
 	def search_cars(self, query: SearchQuery) -> tuple[tuple[FoundCar, ...], int, bool]:
 		"""One page of the cars matching `query`, the number matching, and whether the scan was cut short."""
+		cars, truncated = self.matching_cars(query)
+		start = (query.page - 1) * PAGE_SIZE
+		return tuple(cars[start : start + PAGE_SIZE]), len(cars), truncated
+
+	def breakdown_names(self) -> dict[str, dict[str, str]]:
+		"""Display names for a search breakdown: paint and interior names, grade texts by 'model code grade'."""
+		catalogue = self.stats_catalogue()
+		return {
+			"paint": dict(catalogue.paint_names),
+			"interior": dict(catalogue.interior_names),
+			"grade": {f"{m} {g}": text for (m, g), text in catalogue.grades.items()},
+		}
+
+	def matching_cars(self, query: SearchQuery) -> tuple[list[FoundCar], bool]:
+		"""Every car matching `query` (at most MAX_SCAN read), in the query's order, and whether the scan was cut
+		short."""
 		where, params = ["1 = 1"], []
 		if query.text:
 			where.append("(p.VIN LIKE %s OR p.Exterior = %s OR p.Interior = %s OR p.Equipment = %s)")
@@ -699,6 +717,12 @@ class ProductionRecords:
 		if query.option:
 			where.append("p.Equipment = %s")
 			params.append(query.option)
+		if query.lines:
+			where.append("p.Model IN (" + ", ".join(["%s"] * len(query.lines)) + ")")
+			params += list(query.lines)
+		if query.built_from and query.built_from == query.built_to and len(query.built_from) == 5:
+			where.append("p.DateOfManufacture = %s")  # one production period: an indexed equality
+			params.append(query.built_from)
 		rows = self._rows(
 			"SELECT p.VIN, p.ModelYear, p.Model, m.Manufacturer, m.Model, m.Trim, p.ModelCode, p.Classification, "
 			"p.Equipment, p.Exterior, p.Interior, p.DateOfManufacture, p.Provenance FROM Production p "
@@ -730,9 +754,12 @@ class ProductionRecords:
 				continue
 			if query.markets and region.market not in query.markets:
 				continue
+			if (query.built_from or query.built_to) and not in_built_range(
+				(row[11] or "").strip(), query.built_from, query.built_to
+			):
+				continue
 			cars.append(found_car(row, region))
-		start = (query.page - 1) * PAGE_SIZE
-		return tuple(cars[start : start + PAGE_SIZE]), len(cars), truncated
+		return sorted_cars(cars, query), truncated
 
 	def missing_ranges(self, query: SearchQuery) -> tuple[tuple[MissingEntry, ...], int]:
 		"""The known missing VIN ranges a search covers (for a full VIN not on record, a serial, or "missing only"),

@@ -48,10 +48,10 @@ class CardText:
 	paint: str  # 'Glacier White Pearl · WA5' (the paint chip's heading)
 	interior: str  # 'Red leather · 14U' (the interior chip's heading)
 	built: str  # 'Built the 1st production period of July, 1990'
-	position: str  # 'No. 345 of 27,207 built for 1991'
+	position: str  # '#345 of 27,207 built for 1991'
 	positions: tuple[
 		str, ...
-	]  # its place among its model, then its colour: 'No. 155 of 3,693 1991 ... VR-4s'
+	]  # its model-line, paint, interior and paint-and-interior places: '#155 of 3,693 1991 ... VR-4s'
 	rarity: str  # 'Fewer than 25: 1 of 20 in this exact specification' or ''
 	tier: str | None
 	option: str  # 'A07' (the option code the list is from)
@@ -122,13 +122,13 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 	"""A story's share card text, from its factory record."""
 	built = f"Built {story.built}" if story.built else ""
 	position = (
-		f"No. {story.in_year.position:,} of {story.in_year.total:,} built for {story.model_year}"
+		f"#{story.in_year.position:,} of {story.in_year.total:,} built for {story.model_year}"
 		if not story.partial and story.in_year.total
 		else ""
 	)
 
 	def place(p, scope: str) -> str:
-		return f"{p.position:,} of {p.total:,} {scope}" if p.total else ""
+		return f"#{p.position:,} of {p.total:,} {scope}" if p.total else ""
 
 	positions, spec_line, tier = (), "", None
 	if not story.partial and story.in_model.total:
@@ -136,20 +136,22 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 			line
 			for line in (
 				# Left out where it repeats the year line (a JDM year is all GTOs of one line).
-				f"No. {story.in_model.position:,} of {story.in_model.total:,} {story.vehicle_name}s"
+				f"#{story.in_model.position:,} of {story.in_model.total:,} {story.vehicle_name}s"
 				if story.in_model != story.in_year
 				else "",
 				place(story.in_colour, "in this paint"),
 				place(story.in_interior, "in this interior"),
 				place(story.in_colours, "in this combination of paint and interior"),
+				place(story.among_identical, "in this exact specification"),
 			)
 			if line
 		)
-		spec_line = place(story.among_identical, "in this exact specification")
+		# The badge says how rare the spec is ('1 of 4'); the place line above it says which one this car is.
+		spec_line = f"1 of {story.among_identical.total:,} in this exact specification"
 		tier = rarity_tier(
 			story.among_identical.total
 		)  # the exact spec is always the smallest, so rarest, run
-	rarity = f"{TIER_NAMES[tier]}: {spec_line}" if tier else spec_line
+	rarity = f"{TIER_NAMES[tier]}: {spec_line}" if tier else ""  # a badge only for a rare run
 	long_rarity = rarity
 	items = tuple(
 		item.description if item.description and item.description != MISSING else f"Item {item.code}"
@@ -411,10 +413,6 @@ def render_card(
 		y += 4
 	if text.rarity and text.tier:
 		y = _badge(draw, text, y + 8) + 24
-	elif text.rarity:  # not a rare run: the exact-spec place as a plain line, like the places above it
-		small = _font("Barlow-Medium.ttf", 21)
-		draw.text((LEFT, y), text.rarity, font=small, fill=SOFT)
-		y += 30 + 20
 	else:
 		y += 8
 	_options(draw, text, y)

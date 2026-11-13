@@ -60,7 +60,7 @@ def test_the_card_says_what_the_storys_headline_says(records):
 	assert "Paint: " in text.description and text.built.startswith("Built ")
 	assert (
 		text.position
-		== f"No. {story.in_year.position:,} of {story.in_year.total:,} built for {story.model_year}"
+		== f"#{story.in_year.position:,} of {story.in_year.total:,} built for {story.model_year}"
 	)
 	assert text.description and text.title not in text.description
 
@@ -150,15 +150,19 @@ def test_the_card_lists_the_factory_options_and_keeps_the_rarity_to_one_line(rec
 def test_the_card_gives_the_cars_place_in_its_paint_interior_both_and_exact_spec(records):
 	story = records.story("JA3AM84J3NY000001")
 	text = card_text(story)
-	assert text.positions[-3:] == (
-		f"{story.in_colour.position:,} of {story.in_colour.total:,} in this paint",
-		f"{story.in_interior.position:,} of {story.in_interior.total:,} in this interior",
-		f"{story.in_colours.position:,} of {story.in_colours.total:,} in this combination of paint and interior",
+	assert text.positions[-4:-1] == (
+		f"#{story.in_colour.position:,} of {story.in_colour.total:,} in this paint",
+		f"#{story.in_interior.position:,} of {story.in_interior.total:,} in this interior",
+		f"#{story.in_colours.position:,} of {story.in_colours.total:,} in this combination of paint and interior",
 	)
-	spec = (
-		f"{story.among_identical.position:,} of {story.among_identical.total:,} in this exact specification"
+	place = (
+		f"#{story.among_identical.position:,} of {story.among_identical.total:,} in this exact specification"
 	)
-	assert text.rarity.endswith(spec)
+	assert text.positions[-1] == place  # the car's place in the exact spec: a normal line
+	# The badge, only for a rare run, says how rare: one of the run.
+	assert text.rarity == "" or text.rarity.endswith(
+		f": 1 of {story.among_identical.total:,} in this exact specification"
+	)
 	# The runs nest: exact spec within paint and interior together, within each of paint and interior.
 	assert (
 		story.among_identical.total

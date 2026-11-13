@@ -40,7 +40,7 @@ test("isSafeUrl allows only plain http(s) links", () => {
 
 test("numbers and positions use Canadian English grouping", () => {
 	assert.equal(core.formatNumber(22104), "22,104");
-	assert.equal(core.positionText({ position: 9876, total: 22104 }), "No. 9,876 of 22,104");
+	assert.equal(core.positionText({ position: 9876, total: 22104 }), "#9,876 of 22,104");
 });
 
 test("codedText and provenanceText", () => {
@@ -325,7 +325,7 @@ test("a build sheet prints the factory record's rows", () => {
 		["Grade", "ULTIMATE LINE,5FM/TR · MNGFL7M"],
 	]);
 	assert.deepEqual(rows.find((r) => r[0] === "Option contents"), ["Option contents", "LEATHER SEAT & ROOM TRIM · K03"]);
-	assert.deepEqual(rows.find((r) => r[0] === "Among identical cars"), ["Among identical cars", "No. 1 of 20"]);
+	assert.deepEqual(rows.find((r) => r[0] === "Among identical cars"), ["Among identical cars", "#1 of 20"]);
 	assert.ok(!plain(core.sheetRows({ ...story, partial: true })).some((r) => r[0] === "In the model year"));
 });
 

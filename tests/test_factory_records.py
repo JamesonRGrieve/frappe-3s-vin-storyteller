@@ -36,7 +36,7 @@ def test_an_asa_gto_tells_a_full_story(connection, records):
 
 
 def test_the_year_counts_the_whole_plant_and_the_other_positions_their_market(connection, records):
-	"""Operator 2026-11-13: the year's "No. X of Y" is the plant's whole output (every model, every market). The
+	"""Operator 2026-11-13: the year's "#X of Y" is the plant's whole output (every model, every market). The
 	other positions stay within the car's market and numbering: a GTO never shifts a US car's period or colour."""
 	before = records.story("JA3AM84J3NY000004")
 	add_gto(connection)

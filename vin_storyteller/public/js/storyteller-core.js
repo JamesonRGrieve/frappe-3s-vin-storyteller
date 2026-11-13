@@ -56,7 +56,7 @@
 	};
 	const isSafeUrl = (url) => typeof url === "string" && SAFE_URL.test(url);
 	const formatNumber = (n) => Number(n).toLocaleString(LOCALE);
-	const positionText = (p) => `No. ${formatNumber(p.position)} of ${formatNumber(p.total)}`;
+	const positionText = (p) => `#${formatNumber(p.position)} of ${formatNumber(p.total)}`;
 	const UNDECODED = "MISSING"; // the record's placeholder for a code nobody has deciphered yet
 	const codedText = (c) => {
 		if (!c.code) return "Not known"; // a car on record from another source than the factory export

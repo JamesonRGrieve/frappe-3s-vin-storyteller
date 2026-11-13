@@ -48,6 +48,9 @@ class CardText:
 	interior: str  # 'Red leather · 14U' (the interior chip's heading)
 	built: str  # 'Built the 1st production period of July, 1990'
 	position: str  # 'No. 345 of 27,207 built for 1991'
+	positions: tuple[
+		str, ...
+	]  # its place among its model, then its colour: 'No. 155 of 3,693 1991 ... VR-4s'
 	rarity: str  # 'Fewer than 25: 1 of 20 in this exact specification' or ''
 	tier: str | None
 	option: str  # 'A07' (the option code the list is from)
@@ -77,7 +80,10 @@ def swatch_hints(swatches: dict, story: Story) -> tuple[str | None, str]:
 	record doesn't name, its colour and material where they are known ('Red leather')."""
 	paints = swatches.get("paint", {})
 	paint = paints.get(story.exterior.code) or {}
-	hex_value = paint.get("hex") or (paints.get(paint.get("same_paint_as", "")) or {}).get("hex")
+	plain = paints.get(paint.get("same_paint_as", "")) or {}
+	# As swatch-core.js paintValue: a Dodge is drawn in Dodge's published value where there is one.
+	dodge = paint.get("dodge_hex") or plain.get("dodge_hex")
+	hex_value = dodge if dodge and story.manufacturer == "Dodge" else paint.get("hex") or plain.get("hex")
 	interior = swatches.get("interior", {}).get(story.interior.code) or {}
 	material = interior.get("material") if interior.get("material") not in (None, "", "unknown") else ""
 	hint = " ".join(p for p in ((interior.get("colour") or "").lower(), material) if p)
@@ -127,6 +133,17 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 		if not story.partial and story.in_year.total
 		else ""
 	)
+	positions = ()
+	if not story.partial and story.in_model.total:
+		paint_name = story.exterior.description if story.exterior.description not in ("", MISSING) else ""
+		positions = (
+			f"No. {story.in_model.position:,} of {story.in_model.total:,} {story.vehicle_name}s",
+			*(
+				(f"No. {story.in_colour.position:,} of {story.in_colour.total:,} in {paint_name}",)
+				if paint_name and story.in_colour.total
+				else ()
+			),
+		)
 	rarities = story.rarities
 	rarest = rarities[0] if rarities else None
 	rarity, long_rarity = "", ""
@@ -158,6 +175,7 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 		interior=_chip_heading(story.interior, interior_hint),
 		built=built,
 		position=position,
+		positions=positions,
 		rarity=rarity,
 		tier=rarest.tier if rarest else None,
 		option=equipment,
@@ -337,6 +355,15 @@ def _colour_block(image, draw, y: int, kicker: str, heading: str, chip: Image.Im
 	name_font = _fit(draw, heading, "Barlow-SemiBold.ttf", 26, RIGHT_WIDTH, 18)
 	draw.text((RIGHT, y + 26), _ellipsis(draw, heading, name_font, RIGHT_WIDTH), font=name_font, fill=TEXT)
 	image.paste(chip, (RIGHT, y + 66), chip)
+	# A fine light edge, so a paint as dark as the card (Danube Blue, Jet Black) keeps its shape.
+	edge = Image.new("RGBA", image.size, (0, 0, 0, 0))
+	ImageDraw.Draw(edge).rounded_rectangle(
+		(RIGHT, y + 66, RIGHT + chip.width - 1, y + 66 + chip.height - 1),
+		radius=20,
+		outline=(255, 255, 255, 56),
+		width=2,
+	)
+	image.paste(edge, (0, 0), edge)
 	return y + 66 + chip.height
 
 
@@ -375,7 +402,13 @@ def render_card(
 		y += 36
 	if text.position:
 		draw.text((LEFT, y), text.position, font=_font("Barlow-SemiBold.ttf", 26), fill=TEXT)
-		y += 42
+		y += 38
+	for line in text.positions:
+		small = _font("Barlow-Medium.ttf", 21)
+		draw.text((LEFT, y), _ellipsis(draw, line, small, LEFT_WIDTH), font=small, fill=SOFT)
+		y += 30
+	if text.position or text.positions:
+		y += 4
 	if text.rarity and text.tier:
 		y = _badge(draw, text, y + 8) + 24
 	else:

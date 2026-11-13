@@ -368,10 +368,16 @@ def apply_aliases(paint: dict[str, dict], alias_rows: Iterable[Mapping[str, str]
 			entry[field] = source.get(field) or entry.get(field, "")
 		if source.get("dodge_name_source"):
 			entry["dodge_name_source"] = source["dodge_name_source"]
-		if entry["status"] == "missing" and source["status"] == "sourced":
+		if entry["status"] == "missing" and source["hex"]:  # a published, derived or sampled colour alike
 			entry.update(
-				hex=source["hex"], flake_hex=source["flake_hex"], source=source["source"], status="sourced"
+				hex=source["hex"],
+				flake_hex=source["flake_hex"],
+				source=source["source"],
+				status=source["status"],
 			)
+			for flag in ("approximate", "derivation", "sampled"):
+				if flag in source:
+					entry[flag] = source[flag]
 			if "dodge_hex" in source:
 				entry.update(dodge_hex=source["dodge_hex"], dodge_source=source["dodge_source"])
 			entry["finish"] = entry["finish"] or source["finish"]

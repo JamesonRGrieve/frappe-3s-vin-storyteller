@@ -523,3 +523,29 @@ def test_a_factory_document_or_agreeing_sellers_decide_the_material(tmp_path):
 	assert table["15A"]["material"] == "cloth"
 	assert table["18W"]["material"] == "leather"  # a recorded description still wins
 	assert "01A" not in swatches.interior_materials(materials)
+
+
+def test_an_alias_takes_a_sampled_or_given_colour_with_its_flags():
+	"""2026-11-13 (card 391): corrected paints are derived or sampled, not published; their A forms follow them."""
+	paint = {
+		"TA7": {"status": "missing", "hex": "", "flake_hex": "", "source": "", "finish": "", "notes": ""},
+		"T87": {
+			"status": "derived",
+			"hex": "#154E92",
+			"flake_hex": "",
+			"source": "https://e/listing",
+			"finish": "metallic",
+			"approximate": True,
+			"derivation": "sampled from 7 cars",
+			"sampled": True,
+		},
+	}
+	swatches.apply_aliases(paint, [{"caps_code": "TA7", "paint_code": "T87"}])
+	ta7 = paint["TA7"]
+	assert (ta7["hex"], ta7["status"], ta7["approximate"], ta7["sampled"]) == (
+		"#154E92",
+		"derived",
+		True,
+		True,
+	)
+	assert "dodge_hex" not in ta7

@@ -2747,13 +2747,13 @@
 			"also_codes": [
 				"BA4"
 			],
-			"dodge_hex": "#0E2888",
+			"approximate": true,
+			"derivation": "Sampled from listing photos (card 329 method) and confirmed against them on 2026-11-13: the lit body colour of 3 cars whose VIN or chassis gives B34 (JA3AN74K5SY003182, JA3AN74K8SY002706 on Bring a Trailer; Z15A-0100269 on Cars & Bids). Replaces PaintScratch's #4B69A1, which was the page for Mariana Blue Pearl, another Mitsubishi paint with code B34. One value for both brands (Dodge's #0E2888 dropped).",
 			"dodge_name": "Dark Blue Pearl",
 			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "#4B69A1",
+			"hex": "#182D58",
 			"mitsubishi_name": "Danube Blue Mica",
 			"model_years": [
 				"93",
@@ -2768,9 +2768,10 @@
 				"GTO"
 			],
 			"name": "Danube Blue Mica",
-			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per names. STRONG DISAGREEMENT: PaintScratch Dodge B34/PCK 'Blue Pearl' (Stealth 1993-95) = #0E2888 (https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/); the darker Dodge value fits 'Dark Blue Pearl' better.",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/mariana-blue-pearl-b34/",
-			"status": "sourced"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Pearl per names. STRONG DISAGREEMENT: PaintScratch Dodge B34/PCK 'Blue Pearl' (Stealth 1993-95) = #0E2888 (https://www.paintscratch.com/colors/dodge/blue-pearl-b34pck/); the darker Dodge value fits 'Dark Blue Pearl' better. Corrected 2026-11-13 (card 391): see derivation.",
+			"sampled": true,
+			"source": "https://bringatrailer.com/listing/1995-mitsubishi-3000gt-35/",
+			"status": "derived"
 		},
 		"B60": {
 			"dodge_name": "Medium Green",
@@ -2793,12 +2794,12 @@
 		},
 		"BA4": {
 			"approximate": true,
-			"derivation": "Sampled from listing photos (operator 2026-10-27: sampled where no official hex exists): the lit body colour of 2 cars whose VIN gives BA4 (JB3BN74K9PY032067, JB3BN74K5PY013418; Bring a Trailer and Cars & Bids), median of each car's 70th-lightness-percentile paint pixels. Same paint family as B34 on the R/T grades; sellers call it Pearl Blue.",
+			"derivation": "Sampled from listing photos (card 329 method) and confirmed against them on 2026-11-13: the lit body colour of 3 cars whose VIN or chassis gives B34 (JA3AN74K5SY003182, JA3AN74K8SY002706 on Bring a Trailer; Z15A-0100269 on Cars & Bids). Replaces PaintScratch's #4B69A1, which was the page for Mariana Blue Pearl, another Mitsubishi paint with code B34. One value for both brands (Dodge's #0E2888 dropped).",
 			"dodge_name": "Dark Blue Pearl",
 			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "#27365C",
+			"hex": "#182D58",
 			"mitsubishi_name": "Danube Blue Mica",
 			"model_years": [
 				"93"
@@ -2807,10 +2808,10 @@
 				"Stealth"
 			],
 			"name": "Danube Blue Mica",
-			"notes": "No name and no published hex/RGB found for BA4.",
+			"notes": "Same paint as B34: Mitsubishi's ASA USA gives the same cars both codes; colour from B34's published value. Follows B34 (same paint; corrected 2026-11-13, card 391).",
 			"same_paint_as": "B34",
 			"sampled": true,
-			"source": "https://bringatrailer.com/listing/1993-dodge-stealth-19/",
+			"source": "https://bringatrailer.com/listing/1995-mitsubishi-3000gt-35/",
 			"status": "derived"
 		},
 		"G13": {
@@ -2837,13 +2838,13 @@
 			"also_codes": [
 				"GA4"
 			],
-			"dodge_hex": "#075F35",
+			"approximate": true,
+			"derivation": "Given by the 3S Hub operator on 2026-11-13 from the paint on real cars ('It's like a 062B0B'). Replaces PaintScratch's #588059, which was the page for Kilder Green Pearl, another Mitsubishi paint with code G84; listing-photo samples were spoiled by lighting. One value for both brands (Dodge's #075F35 Emerald Green Pearl Coat page dropped).",
 			"dodge_name": "Emerald Green Pearl Coat",
 			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "#588059",
+			"hex": "#062B0B",
 			"mitsubishi_name": "Panama Green Mica",
 			"model_years": [
 				"92",
@@ -2859,18 +2860,18 @@
 				"GTO"
 			],
 			"name": "Panama Green Mica",
-			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish per names (Mica/Pearl). DISAGREES with PaintScratch Dodge page G84/PG2 'Emerald Green Pearl' (Stealth 1992-96) = #075F35 (https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/).",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/kilder-green-pearl-g84/",
-			"status": "sourced"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Finish per names (Mica/Pearl). DISAGREES with PaintScratch Dodge page G84/PG2 'Emerald Green Pearl' (Stealth 1992-96) = #075F35 (https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/). Corrected 2026-11-13 (card 391): see derivation.",
+			"source": "https://3shub.ca/storyteller/paint?code=G84",
+			"status": "derived"
 		},
 		"GA4": {
-			"dodge_hex": "#075F35",
+			"approximate": true,
+			"derivation": "Given by the 3S Hub operator on 2026-11-13 from the paint on real cars ('It's like a 062B0B'). Replaces PaintScratch's #588059, which was the page for Kilder Green Pearl, another Mitsubishi paint with code G84; listing-photo samples were spoiled by lighting. One value for both brands (Dodge's #075F35 Emerald Green Pearl Coat page dropped).",
 			"dodge_name": "Emerald Green Pearl Coat",
 			"dodge_name_source": "1994 Dodge Stealth brochure, Exterior Colors chart (form 74-3838-9410); the chart's nine colours are the nine paint codes 1994 Stealths carry in CAPS 1999",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/emerald-green-pearl-g84pg2/",
 			"finish": "pearl",
 			"flake_hex": "",
-			"hex": "#588059",
+			"hex": "#062B0B",
 			"mitsubishi_name": "Panama Green Mica",
 			"model_years": [
 				"92",
@@ -2883,8 +2884,8 @@
 			"name": "Panama Green Mica",
 			"notes": "Same paint as G84: Mitsubishi's ASA USA gives the same cars both codes; colour from G84's published value. No published hex/RGB found for GA4. Possibly an alternate code for G84 but no source states this; not assumed.",
 			"same_paint_as": "G84",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/kilder-green-pearl-g84/",
-			"status": "sourced"
+			"source": "https://3shub.ca/storyteller/paint?code=G84",
+			"status": "derived"
 		},
 		"H28": {
 			"also_codes": [
@@ -3300,12 +3301,12 @@
 			"also_codes": [
 				"TA7"
 			],
-			"dodge_hex": "#112888",
+			"approximate": true,
+			"derivation": "Sampled from listing photos (card 329 method) and confirmed against them on 2026-11-13: the lit body colour of 7 cars whose VIN gives TA7, T87's A form (e.g. JB3XE74C2NY042015, JA3XE74C5MY012289, JB3XE74C9NY043937). PaintScratch's #4F8EBF rendered far lighter than the cars. One value for both brands (Dodge's #112888 dropped).",
 			"dodge_name": "Mystic Blue Metallic",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "#4F8EBF",
+			"hex": "#154E92",
 			"mitsubishi_name": "Fiji Blue Metallic",
 			"model_years": [
 				"91",
@@ -3317,9 +3318,10 @@
 				"GTO"
 			],
 			"name": "Fiji Blue Metallic",
-			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. STRONG DISAGREEMENT: PaintScratch Dodge T87/PB5 'Bright Blue Metallic' (Stealth 1988-92) = #112888 (https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/).",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/fiji-blue-metallic-t87/",
-			"status": "sourced"
+			"notes": "hex published by PaintScratch in page data (PS_SSR.hex / swatch background-color), not converted from RGB. Metallic per name. STRONG DISAGREEMENT: PaintScratch Dodge T87/PB5 'Bright Blue Metallic' (Stealth 1988-92) = #112888 (https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/). Corrected 2026-11-13 (card 391): see derivation.",
+			"sampled": true,
+			"source": "https://carsandbids.com/auctions/3oy88WxV",
+			"status": "derived"
 		},
 		"TA2": {
 			"dodge_hex": "#27A393",
@@ -3343,12 +3345,12 @@
 			"status": "sourced"
 		},
 		"TA7": {
-			"dodge_hex": "#112888",
+			"approximate": true,
+			"derivation": "Sampled from listing photos (card 329 method) and confirmed against them on 2026-11-13: the lit body colour of 7 cars whose VIN gives TA7, T87's A form (e.g. JB3XE74C2NY042015, JA3XE74C5MY012289, JB3XE74C9NY043937). PaintScratch's #4F8EBF rendered far lighter than the cars. One value for both brands (Dodge's #112888 dropped).",
 			"dodge_name": "Mystic Blue Metallic",
-			"dodge_source": "https://www.paintscratch.com/colors/dodge/bright-blue-metallic-t87pb5/",
 			"finish": "metallic",
 			"flake_hex": "",
-			"hex": "#4F8EBF",
+			"hex": "#154E92",
 			"mitsubishi_name": "Fiji Blue Metallic",
 			"model_years": [
 				"91",
@@ -3361,8 +3363,9 @@
 			"name": "Fiji Blue Metallic",
 			"notes": "Same paint as T87: Mitsubishi's ASA USA gives the same cars both codes; colour from T87's published value. No published hex/RGB found for TA7. Possibly an alternate code for T87 but no source states this; not assumed.",
 			"same_paint_as": "T87",
-			"source": "https://www.paintscratch.com/colors/mitsubishi/fiji-blue-metallic-t87/",
-			"status": "sourced"
+			"sampled": true,
+			"source": "https://carsandbids.com/auctions/3oy88WxV",
+			"status": "derived"
 		},
 		"W20": {
 			"also_codes": [

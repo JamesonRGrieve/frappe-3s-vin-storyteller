@@ -144,7 +144,13 @@
 .vst-spec caption { text-align: left; font-weight: 700; padding-bottom: 8px; }
 .vst-spec th, .vst-spec td { padding: 10px 12px; border-top: 1px solid var(--vst-line); text-align: left; vertical-align: top; }
 .vst-spec th { width: 38%; font-weight: 600; color: var(--vst-soft); }
-.vst-spec td { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.vst-spec td { font-family: ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+/* Phones: a narrower label column and tighter cells, so values wrap inside the table instead of running off it. */
+@media (max-width: 480px) {
+	.vst-spec { table-layout: fixed; }
+	.vst-spec th, .vst-spec td { padding: 9px 8px; }
+	.vst-spec th { width: 34%; }
+}
 .vst-note { margin: 0; font-size: 14px; color: var(--vst-soft); }
 
 /* Provenance + history */

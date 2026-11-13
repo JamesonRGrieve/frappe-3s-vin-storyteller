@@ -458,13 +458,13 @@ def render_card(
 		draw.text((LEFT, y), text.position, font=_font("Barlow-SemiBold.ttf", 26), fill=TEXT)
 		y += 38
 	for line in text.positions:
-		small = _font("Barlow-Medium.ttf", 21)
+		small = _font("Barlow-Medium.ttf", 20)
 		draw.text((LEFT, y), _ellipsis(draw, line, small, LEFT_WIDTH), font=small, fill=SOFT)
-		y += 30
+		y += 28
 	if text.position or text.positions:
 		y += 4
 	if text.rarity and text.tier:
-		y = _badge(image, draw, text, y + 8) + 24
+		y = _badge(image, draw, text, y + 8) + 20
 	else:
 		y += 8
 	_options(draw, text, y)

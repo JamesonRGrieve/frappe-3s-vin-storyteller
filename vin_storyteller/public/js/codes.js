@@ -152,6 +152,71 @@
 		section.hidden = false;
 	}
 
+	// The colour chart (card 391): a swatch card per paint or interior, drawn as each scrolls into view.
+	async function renderChart(root, kind, codes) {
+		const section = root.querySelector(".vst-code-index");
+		const tools = section.querySelector(".vst-chart-tools");
+		const chart = section.querySelector(".vst-chart");
+		const table = section.querySelector(".vst-code-table");
+		const swatch = globalThis.VinSwatch;
+		if (kind === "option" || !swatch) {
+			tools.hidden = chart.hidden = true;
+			table.hidden = false;
+			return;
+		}
+		const data = await swatch.load().catch(() => null);
+		const style = root.dataset.codeRoutes;
+		const sortSelect = tools.querySelector('select[name="chart-sort"]');
+		const draw = () => {
+			const watcher =
+				"IntersectionObserver" in globalThis
+					? new IntersectionObserver(
+							(entries, observer) => {
+								for (const entry of entries) {
+									if (!entry.isIntersecting) continue;
+									observer.unobserve(entry.target);
+									const { chartKind, chartCode } = entry.target.dataset;
+									swatch.render(entry.target, { kind: chartKind, code: chartCode }).catch(() => {});
+								}
+							},
+							{ rootMargin: "300px" },
+						)
+					: null;
+			chart.replaceChildren(
+				...core.chartEntries(kind, codes, data, sortSelect.value).map((card) => {
+					const parts = core.chartCardParts(card);
+					const item = element("li", "vst-chart-card");
+					const chip = element("div", "vst-chart-chip");
+					chip.dataset.chartKind = kind;
+					chip.dataset.chartCode = card.code;
+					chip.setAttribute("aria-hidden", "true");
+					if (watcher) watcher.observe(chip);
+					else swatch.render(chip, { kind, code: card.code }).catch(() => {});
+					const title = element("p", "vst-chart-title");
+					title.append(linkOrText(core.codeHref(kind, card.code, "", style), parts.codes));
+					item.append(chip, title, element("p", "vst-chart-name", parts.name));
+					for (const [cls, text] of [["vst-chart-dodge", parts.dodge], ["vst-chart-detail", parts.detail], ["vst-chart-years", parts.years]])
+						if (text) item.append(element("p", cls, text));
+					item.append(element("p", "vst-chart-cars", `${parts.cars}: ${parts.models}`));
+					return item;
+				}),
+			);
+		};
+		const show = (view) => {
+			chart.hidden = view !== "chart";
+			table.hidden = view === "chart";
+			tools.querySelector('select[name="chart-sort"]').closest("label").hidden = view !== "chart";
+			tools.querySelectorAll(".vst-chart-view").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
+		};
+		tools.querySelectorAll(".vst-chart-view").forEach((button) => {
+			button.onclick = () => show(button.dataset.view);
+		});
+		sortSelect.onchange = draw;
+		draw();
+		tools.hidden = false;
+		show("chart");
+	}
+
 	function renderIndex(root, kind, codes) {
 		const style = root.dataset.codeRoutes;
 		const section = root.querySelector(".vst-code-index");
@@ -204,6 +269,7 @@
 			if (!route.code) setStatus(root, route.invalid ? MESSAGES.invalid : "", "notice");
 			renderIndex(root, route.kind, reply.codes);
 			fillSwatches(root);
+			renderChart(root, route.kind, reply.codes);
 		} catch {
 			setStatus(root, MESSAGES.failed, "error");
 		}

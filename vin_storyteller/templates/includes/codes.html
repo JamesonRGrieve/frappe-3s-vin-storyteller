@@ -70,6 +70,20 @@
 
 	<section class="vst-code-index" aria-labelledby="vst-code-index-h" hidden>
 		<h3 id="vst-code-index-h" class="vst-name"></h3>
+		<div class="vst-chart-tools" hidden>
+			<div class="vst-chart-views" role="group" aria-label="Show as">
+				<button type="button" class="vst-chart-view" data-view="chart" aria-pressed="true">Colour chart</button>
+				<button type="button" class="vst-chart-view" data-view="list" aria-pressed="false">List</button>
+			</div>
+			<label class="vst-chart-sort">Order
+				<select name="chart-sort">
+					<option value="cars">Most built</option>
+					<option value="colour">Colour</option>
+					<option value="code">Code</option>
+				</select>
+			</label>
+		</div>
+		<ul class="vst-chart" hidden></ul>
 		<table class="vst-spec vst-code-table">
 			<thead><tr><th scope="col">Code</th><th scope="col">Name</th><th scope="col">Cars</th><th scope="col">Models</th></tr></thead>
 			<tbody></tbody>

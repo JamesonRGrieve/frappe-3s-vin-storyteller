@@ -112,7 +112,11 @@ from the factory records only (CAPS 1999, CAPS 2004, ASA Japan 2008): the total;
 model year and model line; the first and last build; for a paint, its interiors (and for an interior, its paints);
 and for an option code, what Mitsubishi's catalogue says it fits per grade and model year (ASA, so GTOs only).
 An option code means something per chassis model code (Z11A, Z15A, Z16A), so its page is per model code. Each
-kind has an index page too, and a story's exterior, interior and equipment rows link to their code pages.
+kind has an index page too, and a story's exterior, interior and equipment rows link to their code pages. The paint and
+interior index pages open as a **colour chart** (card 391): a card per paint or interior with its animated swatch
+(`swatch.js`, drawn as each card scrolls into view), Mitsubishi and Dodge names, finish or material, model years and
+cars by model, ordered by most built, colour (greys light to dark, then by hue) or code; a paint's "A" form is shown on
+its plain code's card. *List* switches back to the table.
 
 | Address | Page |
 |---|---|

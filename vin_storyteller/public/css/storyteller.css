@@ -260,3 +260,22 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 /* A count's link to the stats page's search for those cars (card 391). */
 .vst .vst-explore { display: inline-block; margin-top: 8px; font-size: 0.85em; font-weight: 600; white-space: nowrap; }
 .vst .vst-explore::after { content: " \2192"; }
+
+/* The colour chart on the paint and interior index pages (card 391). */
+.vst-chart-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 4px 0 18px; }
+.vst-chart-views { display: inline-flex; border: 1px solid var(--vst-line); border-radius: 999px; overflow: hidden; }
+.vst-chart-view { padding: 7px 16px; border: 0; background: transparent; color: var(--vst-soft); font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; }
+.vst-chart-view[aria-pressed="true"] { background: rgba(255, 255, 255, 0.1); color: var(--vst-text); }
+.vst-chart-view:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: -3px; }
+.vst-chart-sort { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--vst-soft); }
+.vst-chart-sort select { min-height: 34px; padding: 4px 10px; border: 1px solid var(--vst-line); border-radius: 8px; background: transparent; color: var(--vst-text); font-family: inherit; font-size: 14px; }
+.vst-chart { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 22px 18px; }
+@media (max-width: 560px) { .vst-chart { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; } .vst-chart-name { font-size: 14px; } }
+.vst-chart-card { margin: 0; min-width: 0; }
+.vst-chart-chip { aspect-ratio: 16 / 10; border-radius: 14px; background: rgba(255, 255, 255, 0.04); }
+.vst-chart-chip.vsw { border-radius: 14px; }
+.vst-chart-card p { margin: 0; }
+.vst-chart-title { margin-top: 10px !important; font-weight: 700; letter-spacing: 0.04em; }
+.vst-chart-name { font-weight: 700; font-size: 16px; }
+.vst-chart-dodge, .vst-chart-detail, .vst-chart-years, .vst-chart-cars { color: var(--vst-soft); font-size: 13px; line-height: 1.45; }
+.vst-chart-cars { margin-top: 4px !important; }

@@ -279,6 +279,95 @@
 			models: listText(entry.by_model.map(modelCountText)),
 		};
 	}
+	// --- the colour chart (card 391): every paint or interior as a swatch card, from the kind's index and swatches.json
+
+	// Model years as calendar ranges: ['00', '91', '92', '95', '96'] -> '1991–1992, 1995–1996, 2000'.
+	function yearsText(years) {
+		const full = [...new Set((years || []).filter((y) => /^[0-9]{2}$/.test(y)))]
+			.map((y) => Number(y) + (Number(y) < 50 ? 2000 : 1900))
+			.sort((a, b) => a - b);
+		const runs = [];
+		for (const year of full) {
+			const last = runs.at(-1);
+			if (last && year === last[1] + 1) last[1] = year;
+			else runs.push([year, year]);
+		}
+		return runs.map(([a, b]) => (a === b ? String(a) : `${a}\u2013${b}`)).join(", ");
+	}
+
+	// A colour's hue (0-360) and lightness from '#rrggbb', for ordering the chart like a paint chip book: greys
+	// (low saturation) first, light to dark, then by hue.
+	function hueKey(hex) {
+		const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || "");
+		if (!m) return [2, 0, 0];
+		const [r, g, b] = m.slice(1).map((h) => parseInt(h, 16) / 255);
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+		const light = (max + min) / 2;
+		const delta = max - min;
+		const sat = delta === 0 ? 0 : delta / (1 - Math.abs(2 * light - 1));
+		if (sat < 0.12) return [0, 1 - light, 0];
+		let hue = max === r ? ((g - b) / delta) % 6 : max === g ? (b - r) / delta + 2 : (r - g) / delta + 4;
+		hue = (hue * 60 + 360) % 360;
+		return [1, Math.round(hue / 15), 1 - light];
+	}
+
+	const CHART_SORTS = Object.freeze({ cars: "Most built", colour: "Colour", code: "Code" });
+
+	// The chart's cards: one per paint (a code's "A" form, e.g. WA5, folds into its plain code W75 with its cars
+	// added) or per interior, with its names, years and cars by model, in the chosen order.
+	function chartEntries(kind, codes, data, sort = "cars") {
+		const table = (data && data[kind]) || {};
+		const cards = new Map();
+		for (const entry of codes || []) {
+			const info = table[entry.code] || {};
+			const home = kind === "paint" && info.same_paint_as && table[info.same_paint_as] ? info.same_paint_as : entry.code;
+			const homeInfo = table[home] || info;
+			if (!cards.has(home)) {
+				cards.set(home, {
+					code: home,
+					also: [],
+					name: homeInfo.mitsubishi_name || homeInfo.name || homeInfo.description || (entry.description !== UNDECODED ? entry.description : ""),
+					dodge_name: homeInfo.dodge_name && homeInfo.dodge_name !== homeInfo.mitsubishi_name ? homeInfo.dodge_name : "",
+					detail: kind === "interior" ? [homeInfo.colour, homeInfo.material !== "unknown" ? homeInfo.material : ""].filter(Boolean).join(" ") : homeInfo.finish || "",
+					years: yearsText(homeInfo.model_years),
+					hex: homeInfo.hex || homeInfo.sampled_hex || "",
+					total: 0,
+					by_model: new Map(),
+				});
+			}
+			const card = cards.get(home);
+			if (home !== entry.code) card.also.push(entry.code);
+			card.total += entry.total;
+			for (const m of entry.by_model || []) card.by_model.set(m.model, (card.by_model.get(m.model) || 0) + m.count);
+		}
+		const list = [...cards.values()].map((c) => ({ ...c, also: c.also.sort(), by_model: [...c.by_model].map(([model, count]) => ({ model, count })) }));
+		const byCode = (a, b) => a.code.localeCompare(b.code);
+		const keyed = (a, b) => {
+			const [x, y] = [hueKey(a.hex), hueKey(b.hex)];
+			for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] - y[i];
+			return byCode(a, b);
+		};
+		return list.sort(sort === "code" ? byCode : sort === "colour" ? keyed : (a, b) => b.total - a.total || byCode(a, b));
+	}
+
+	// A chart card's lines of text.
+	function chartCardParts(card) {
+		const codes = [card.code, ...card.also].join(" / ");
+		const detail = card.detail ? card.detail.charAt(0).toUpperCase() + card.detail.slice(1) : "";
+		// An interior nobody has named yet is titled by its colour and material where those are known.
+		const named = card.name && card.name !== UNDECODED;
+		return {
+			codes,
+			name: named ? card.name : detail || "Not yet decoded",
+			dodge: card.dodge_name ? `Dodge: ${card.dodge_name}` : "",
+			detail: named ? detail : "",
+			years: card.years,
+			cars: `${formatNumber(card.total)} ${card.total === 1 ? "car" : "cars"}`,
+			models: listText(card.by_model.map(modelCountText)),
+		};
+	}
+
 	// The paint and interior swatches show when the record has either code; a car known only from another
 	// source has neither, and gets no swatches rather than two empty panels.
 	const swatchesShown = (story) => Boolean(story.exterior?.code || story.interior?.code);
@@ -292,6 +381,11 @@
 		CODE_KINDS,
 		KIND_NAMES,
 		KIND_PLURALS,
+		CHART_SORTS,
+		yearsText,
+		hueKey,
+		chartEntries,
+		chartCardParts,
 		indexHref,
 		codeHref,
 		exploreHref,

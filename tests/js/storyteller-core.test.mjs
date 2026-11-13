@@ -10,6 +10,7 @@ const sandbox = { URLSearchParams };
 vm.createContext(sandbox);
 vm.runInContext(source, sandbox);
 const core = sandbox.VinStorytellerCore;
+const plain = (value) => JSON.parse(JSON.stringify(value));
 
 test("exposes a frozen helper set", () => {
 	assert.ok(Object.isFrozen(core));
@@ -241,4 +242,54 @@ test("a story links to its spec twins and to the cars built in its period and mo
 	assert.equal(core.exploreHref({ ...story, partial: true }, "twins"), null);
 	assert.equal(core.exploreHref({ ...story, built_code: "" }, "period"), null);
 	assert.equal(core.exploreHref({ ...story, interior: { code: "<x>" } }, "twins"), null);
+});
+
+// Card 391: the colour chart.
+test("model years read as calendar ranges", () => {
+	assert.equal(core.yearsText(["00", "91", "92", "95", "96", "97"]), "1991–1992, 1995–1997, 2000");
+	assert.equal(core.yearsText(["94"]), "1994");
+	assert.equal(core.yearsText([]), "");
+});
+
+test("the chart folds a paint's A form into its plain code and orders cards", () => {
+	const data = {
+		paint: {
+			W75: { mitsubishi_name: "Glacier White Pearl", dodge_name: "Galaxy White Pearl", finish: "pearl", model_years: ["91", "92", "95"], hex: "#E5EDE3", also_codes: ["WA5"] },
+			WA5: { mitsubishi_name: "Glacier White Pearl", same_paint_as: "W75", hex: "#E5EDE3" },
+			R71: { mitsubishi_name: "Caracas Red", dodge_name: "Caracas Red", finish: "solid", model_years: ["91"], hex: "#B01020" },
+		},
+	};
+	const codes = [
+		{ code: "WA5", description: "Glacier White Pearl", total: 10, by_model: [{ model: "3000GT", count: 10 }] },
+		{ code: "W75", description: "Glacier White Pearl", total: 5, by_model: [{ model: "3000GT", count: 3 }, { model: "Stealth", count: 2 }] },
+		{ code: "R71", description: "Caracas Red", total: 12, by_model: [{ model: "Stealth", count: 12 }] },
+		{ code: "X99", description: "MISSING", total: 1, by_model: [{ model: "GTO", count: 1 }] },
+	];
+	const cards = plain(core.chartEntries("paint", codes, data));
+	assert.deepEqual(cards.map((c) => c.code), ["W75", "R71", "X99"]);
+	assert.deepEqual(cards[0].also, ["WA5"]);
+	assert.equal(cards[0].total, 15);
+	assert.deepEqual(cards[0].by_model, [{ model: "3000GT", count: 13 }, { model: "Stealth", count: 2 }]);
+	assert.equal(cards[1].dodge_name, ""); // the same name under both brands isn't repeated
+	assert.deepEqual(plain(core.chartEntries("paint", codes, data, "code")).map((c) => c.code), ["R71", "W75", "X99"]);
+	assert.deepEqual(plain(core.chartEntries("paint", codes, data, "colour")).map((c) => c.code), ["W75", "R71", "X99"]);
+	const parts = plain(core.chartCardParts(cards[0]));
+	assert.deepEqual(parts, {
+		codes: "W75 / WA5",
+		name: "Glacier White Pearl",
+		dodge: "Dodge: Galaxy White Pearl",
+		detail: "Pearl",
+		years: "1991–1992, 1995",
+		cars: "15 cars",
+		models: "13 3000GTs and 2 Stealths",
+	});
+	assert.equal(core.chartCardParts(cards[2]).name, "Not yet decoded");
+});
+
+test("an unnamed interior is titled by its colour and material", () => {
+	const data = { interior: { "14T": { description: "", colour: "Ivory", material: "leather", model_years: ["91"] } } };
+	const [card] = plain(core.chartEntries("interior", [{ code: "14T", description: "MISSING", total: 3, by_model: [{ model: "3000GT", count: 3 }] }], data));
+	const parts = core.chartCardParts(card);
+	assert.equal(parts.name, "Ivory leather");
+	assert.equal(parts.detail, "");
 });

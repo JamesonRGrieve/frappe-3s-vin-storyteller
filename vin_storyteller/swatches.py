@@ -382,6 +382,24 @@ def apply_aliases(paint: dict[str, dict], alias_rows: Iterable[Mapping[str, str]
 	return paint
 
 
+# Representative tones for the colour word in an interior description: generic shades for the word, not factory trim
+# values (no published trim colours exist in the record), so captions say "representative shade". The one table both
+# the animated swatches (swatch-core.js, from swatches.json) and the share card (share.py) draw an interior from.
+INTERIOR_TONES = (
+	("charcoal", "#3A3B3E"),
+	("black", "#1E1F21"),
+	("gray", "#6E7074"),
+	("grey", "#6E7074"),
+	("tan", "#B08A62"),
+	("beige", "#C8B596"),
+	("ivory", "#E2D9C3"),
+	("white", "#DAD7CF"),
+	("red", "#7E1F24"),
+	("blue", "#2E3F63"),
+	("brown", "#5B4130"),
+)
+
+
 def build(
 	paint_codes: str | Path,
 	paint_hex: str | Path,
@@ -402,6 +420,7 @@ def build(
 			"Interior: leather or cloth, and a colour word, each with its basis. 3000GT, Stealth and GTO codes only."
 		),
 		"paint": paint,
+		"interior_tones": [list(tone) for tone in INTERIOR_TONES],
 		"interior": interior_table(
 			read_tsv(interior_codes),
 			read_tsv(interior_colour_rows) if interior_colour_rows else (),

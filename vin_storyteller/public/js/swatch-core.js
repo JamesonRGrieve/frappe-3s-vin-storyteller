@@ -151,24 +151,11 @@
 		return { material: "unknown", confidence: "", basis: "" };
 	}
 
-	// Representative tones for the colour word in an interior description. These are generic shades for the
-	// word, not factory trim values (no published trim colours exist in the record); the label says so.
-	const INTERIOR_TONES = Object.freeze([
-		["charcoal", "#3A3B3E"],
-		["black", "#1E1F21"],
-		["gray", "#6E7074"],
-		["grey", "#6E7074"],
-		["tan", "#B08A62"],
-		["beige", "#C8B596"],
-		["ivory", "#E2D9C3"],
-		["white", "#DAD7CF"],
-		["red", "#7E1F24"],
-		["blue", "#2E3F63"],
-		["brown", "#5B4130"],
-	]);
-	function interiorTone(description) {
+	// The colour word in an interior description and its representative tone, from swatches.json's interior_tones
+	// (swatches.py INTERIOR_TONES: generic shades for the word, not factory trim values; the caption says so).
+	function interiorTone(description, tones = []) {
 		const text = String(description ?? "").toLowerCase();
-		for (const [word, hex] of INTERIOR_TONES) {
+		for (const [word, hex] of tones || []) {
 			if (new RegExp(`\\b${word}\\b`).test(text)) return { word, hex };
 		}
 		return null;
@@ -180,12 +167,12 @@
 	});
 	// The colour word comes from the description when it names one, else from the shipped table (named, from
 	// the catalogue's trim parts, or from the US trim letter); a letter-inferred colour is said to be likely.
-	function interiorSwatch(entry, description) {
+	function interiorSwatch(entry, description, tones = []) {
 		const named = description && description !== "MISSING" ? description : entry?.description || "";
 		const { material, confidence, basis } = interiorMaterial(entry, named);
-		const ownTone = interiorTone(named);
+		const ownTone = interiorTone(named, tones);
 		const sampled = parseHex(entry?.sampled_hex);
-		const tone = ownTone || interiorTone(entry?.colour);
+		const tone = ownTone || interiorTone(entry?.colour, tones);
 		const colourConfidence = ownTone ? "named" : tone ? entry.colour_confidence || "" : "";
 		if (sampled) {
 			// Measured from listing photos of cars with this code (operator 2026-10-27: sampled everywhere).
@@ -351,7 +338,6 @@
 		derivedFlake,
 		paintSwatch,
 		interiorMaterial,
-		INTERIOR_TONES,
 		interiorTone,
 		interiorSwatch,
 		paintValue,

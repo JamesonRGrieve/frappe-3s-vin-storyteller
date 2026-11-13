@@ -116,7 +116,10 @@ printing.
 a small page with Open Graph and Twitter card tags that sends people on to `/storyteller?vin=<key>`. Its image,
 `GET /api/method/vin_storyteller.api.share_image?vin=<key>`, is a 1200x630 PNG drawn with Pillow (`share.py`): the
 car's name, paint, interior (an unnamed interior by its colour and material from `swatches.json`, e.g. "Red leather"), build date, place
-in the model year and rarest run, beside a panel in its paint colour (card 390 will put a factory render there). Both
+in the model year and rarest run, beside a panel in its paint colour with an interior tile in its lower corner (perforated leather, cloth weave or plain,
+in the colour the animated swatch uses: `share.interior_look` follows `swatch-core.js` `interiorSwatch`; card 390
+will put a factory render in the panel). The interior tones are one table, `swatches.INTERIOR_TONES`, shipped in
+`swatches.json` as `interior_tones` for both the swatches and the card. Both
 take any key the storyteller does, are never logged and never count as a lookup (they show only the story's
 headline); they count apart, `SHARES_PER_WINDOW` (600) an hour per client, and the image is cached per key for an
 hour. Fonts are the site's Barlow, bundled as TTF in `public/fonts` (SIL OFL 1.1, `OFL-Barlow.txt`).

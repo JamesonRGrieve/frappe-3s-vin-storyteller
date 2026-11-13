@@ -36,7 +36,7 @@ from vin_storyteller.answer import (
 from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
 from vin_storyteller.search import InvalidSearch, parse_query
-from vin_storyteller.share import preview_html, render_card, swatch_hints
+from vin_storyteller.share import interior_look, preview_html, render_card, swatch_hints
 from vin_storyteller.story import (
 	CODE_KINDS,
 	CODE_PAGE_ROUTES,
@@ -215,7 +215,7 @@ SHARE_CACHE_S = 60 * 60
 
 
 def _share_inputs(vin: str):
-	"""The story a share link shows and its swatch hints, or None (not a key on record)."""
+	"""The story a share link shows, its swatch hints and its interior's look, or None (not a key on record)."""
 	import json
 
 	story = share_story(vin, _records, (pymysql.MySQLError,))
@@ -223,8 +223,8 @@ def _share_inputs(vin: str):
 		return None
 	path = frappe.get_app_path("vin_storyteller", "public", "data", "swatches.json")
 	with open(path, encoding="utf-8") as handle:
-		hints = swatch_hints(json.load(handle), story)
-	return story, hints
+		swatches = json.load(handle)
+	return story, swatch_hints(swatches, story), interior_look(swatches, story)
 
 
 def _share_urls(key: str) -> tuple[str, str]:
@@ -248,7 +248,7 @@ def share(vin: str = ""):
 		return Response(UNAVAILABLE, status=503, mimetype="text/plain")
 	if found is None:
 		return Response("That isn't a VIN on record.", status=404, mimetype="text/plain")
-	story, (_paint, hint) = found
+	story, (_paint, hint), _interior = found
 	page, image = _share_urls(story.vin)
 	return Response(preview_html(story, page, image, hint), mimetype="text/html")
 
@@ -267,8 +267,8 @@ def share_image(vin: str = ""):
 			return Response(UNAVAILABLE, status=503, mimetype="text/plain")
 		if found is None:
 			return Response("That isn't a VIN on record.", status=404, mimetype="text/plain")
-		story, (paint, hint) = found
-		png = render_card(story, paint, hint)
+		story, (paint, hint), interior = found
+		png = render_card(story, paint, hint, interior)
 		frappe.cache.set_value(key, png, expires_in_sec=SHARE_CACHE_S)
 	response = Response(png, mimetype="image/png")
 	response.headers["Cache-Control"] = f"public, max-age={SHARE_CACHE_S}"

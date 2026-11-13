@@ -11,6 +11,8 @@ vm.createContext(sandbox);
 vm.runInContext(source, sandbox);
 const core = sandbox.VinSwatchCore;
 const plain = (value) => JSON.parse(JSON.stringify(value));
+// The interior tones ship in swatches.json (swatches.py INTERIOR_TONES).
+const TONES = JSON.parse(readFileSync(new URL("../../vin_storyteller/public/data/swatches.json", import.meta.url), "utf8")).interior_tones;
 const near = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) < eps, `${a} ≉ ${b}`);
 
 test("exposes a frozen helper set", () => {
@@ -127,23 +129,23 @@ test("interiorMaterial: the description wins, then the table's decision, else un
 });
 
 test("interiorTone finds the colour word; interiorSwatch says when nothing is on file", () => {
-	assert.equal(core.interiorTone("Charcoal Cloth, Power Seats").word, "charcoal");
-	assert.equal(core.interiorTone("Red Leather").word, "red");
-	assert.equal(core.interiorTone("Redwood"), null);
-	assert.equal(core.interiorTone("MISSING"), null);
+	assert.equal(core.interiorTone("Charcoal Cloth, Power Seats", TONES).word, "charcoal");
+	assert.equal(core.interiorTone("Red Leather", TONES).word, "red");
+	assert.equal(core.interiorTone("Redwood", TONES), null);
+	assert.equal(core.interiorTone("MISSING", TONES), null);
 
-	const named = core.interiorSwatch({ material: "cloth" }, "Red Cloth, Power Seats");
+	const named = core.interiorSwatch({ material: "cloth" }, "Red Cloth, Power Seats", TONES);
 	assert.equal(named.status, "named");
 	assert.equal(named.material, "cloth");
 	assert.equal(core.shaderMode(named), core.MODES.cloth);
 
-	const unnamed = core.interiorSwatch({ material: "leather", basis: "K03" }, "MISSING");
+	const unnamed = core.interiorSwatch({ material: "leather", basis: "K03" }, "MISSING", TONES);
 	assert.equal(unnamed.status, "missing");
 	assert.equal(unnamed.material, "leather");
 	assert.equal(unnamed.label, core.NOT_ON_FILE);
 	assert.equal(core.toHex(unnamed.base), core.NEUTRAL);
 	assert.equal(core.shaderMode(unnamed), core.MODES.leather, "the texture still shows the material");
-	assert.equal(core.shaderMode(core.interiorSwatch(null, "")), core.MODES.plain);
+	assert.equal(core.shaderMode(core.interiorSwatch(null, "", TONES)), core.MODES.plain);
 });
 
 test("uniformsFor gives linear colours and numeric finish parameters", () => {
@@ -221,19 +223,19 @@ test("captionParts names the swatch and never implies a colour that isn't on fil
 		detail: "Colour not on file",
 	});
 	assert.deepEqual(plain(core.captionParts(core.paintSwatch(null, ""), "")), { title: "Paint", detail: "No colour on record" });
-	assert.deepEqual(plain(core.captionParts(core.interiorSwatch(null, "Tan Leather, Power Seats"), "18T")), {
+	assert.deepEqual(plain(core.captionParts(core.interiorSwatch(null, "Tan Leather, Power Seats", TONES), "18T")), {
 		title: "Tan Leather, Power Seats · 18T",
 		detail: "Leather · representative shade",
 	});
-	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "cloth", confidence: "decided" }, "MISSING"), "04H")), {
+	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "cloth", confidence: "decided" }, "MISSING", TONES), "04H")), {
 		title: "Interior · 04H",
 		detail: "Cloth · Colour not on file",
 	});
-	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "leather", confidence: "inferred" }, "MISSING"), "14T")), {
+	assert.deepEqual(plain(core.captionParts(core.interiorSwatch({ material: "leather", confidence: "inferred" }, "MISSING", TONES), "14T")), {
 		title: "Interior · 14T",
 		detail: "Leather (likely) · Colour not on file",
 	});
-	assert.deepEqual(plain(core.captionParts(core.interiorSwatch(null, ""), "")), { title: "Interior", detail: "No interior on record" });
+	assert.deepEqual(plain(core.captionParts(core.interiorSwatch(null, "", TONES), "")), { title: "Interior", detail: "No interior on record" });
 });
 
 test("pearl paints use their own texture coordinates; metallic, solid and interiors don't", () => {
@@ -271,16 +273,16 @@ test("a derived paint is drawn but captioned as an approximate colour", () => {
 });
 
 test("an interior's colour word comes from its description, else the table, a letter-inferred one said to be likely", () => {
-	const fromTable = core.interiorSwatch({ material: "cloth", confidence: "decided", basis: "b", colour: "Charcoal", colour_confidence: "letter" }, "");
+	const fromTable = core.interiorSwatch({ material: "cloth", confidence: "decided", basis: "b", colour: "Charcoal", colour_confidence: "letter" }, "", TONES);
 	assert.equal(fromTable.status, "named");
 	assert.equal(core.toHex(fromTable.base), "#3A3B3E");
 	assert.equal(core.captionParts(fromTable, "05H").detail, "Charcoal (likely) cloth · representative shade");
-	const catalogue = core.interiorSwatch({ material: "unknown", colour: "Tan", colour_confidence: "catalogue" }, "");
+	const catalogue = core.interiorSwatch({ material: "unknown", colour: "Tan", colour_confidence: "catalogue" }, "", TONES);
 	assert.equal(core.captionParts(catalogue, "13T").detail, "Tan · Trim material not on file · representative shade");
-	const described = core.interiorSwatch({ material: "leather", colour: "Charcoal", colour_confidence: "letter" }, "Red Leather, Power Seats");
+	const described = core.interiorSwatch({ material: "leather", colour: "Charcoal", colour_confidence: "letter" }, "Red Leather, Power Seats", TONES);
 	assert.equal(core.toHex(described.base), "#7E1F24");
 	assert.equal(described.colour, "");
-	assert.equal(core.interiorSwatch({ material: "cloth" }, "").status, "missing");
+	assert.equal(core.interiorSwatch({ material: "cloth" }, "", TONES).status, "missing");
 });
 
 test("only metallic paint has flake; pearls shimmer without it and solids have neither", () => {
@@ -298,12 +300,12 @@ test("a paint sampled from listing photos says so", () => {
 });
 
 test("an interior with a photo sample is drawn in it and says how many cars it came from", () => {
-	const s = core.interiorSwatch({ material: "leather", confidence: "decided", basis: "b", colour: "Charcoal", colour_confidence: "named", sampled_hex: "#383A3E", sampled_cars: 39 }, "");
+	const s = core.interiorSwatch({ material: "leather", confidence: "decided", basis: "b", colour: "Charcoal", colour_confidence: "named", sampled_hex: "#383A3E", sampled_cars: 39 }, "", TONES);
 	assert.equal(s.status, "sampled");
 	assert.equal(core.toHex(s.base), "#383A3E");
 	assert.equal(core.shaderMode(s), core.MODES.leather);
 	assert.equal(core.captionParts(s, "18W").detail, "Charcoal leather · sampled from 39 cars' photos");
-	const one = core.interiorSwatch({ material: "unknown", sampled_hex: "#525152", sampled_cars: 1 }, "");
+	const one = core.interiorSwatch({ material: "unknown", sampled_hex: "#525152", sampled_cars: 1 }, "", TONES);
 	assert.equal(core.captionParts(one, "41A").detail, "Trim material not on file · sampled from 1 car's photos");
 });
 

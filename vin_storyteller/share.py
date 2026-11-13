@@ -9,6 +9,7 @@ panel in its paint colour (card 390 will put a factory render of the car there).
 from __future__ import annotations
 
 import io
+import re
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -71,6 +72,34 @@ def swatch_hints(swatches: dict, story: Story) -> tuple[str | None, str]:
 	return hex_value, hint[:1].upper() + hint[1:]  # 'Red leather', as the colour chart writes it
 
 
+def _tone(text: str, tones) -> str | None:
+	"""The representative tone for the first colour word in `text` (swatches.json interior_tones)."""
+	lowered = (text or "").lower()
+	return next((hex_value for word, hex_value in tones if re.search(rf"\b{word}\b", lowered)), None)
+
+
+def interior_look(swatches: dict, story: Story) -> tuple[str | None, str]:
+	"""The interior tile's colour and material, resolved as the animated swatch does (swatch-core.js interiorSwatch):
+	a colour sampled from photos first, else the tone of a colour word in the record's description, else in the
+	table's colour; leather or cloth from the description, else the table. (None, 'unknown') when nothing is on file."""
+	entry = swatches.get("interior", {}).get(story.interior.code) or {}
+	tones = swatches.get("interior_tones", [])
+	named = (
+		story.interior.description
+		if story.interior.description not in ("", MISSING)
+		else entry.get("description", "")
+	)
+	colour = _hex(entry.get("sampled_hex")) and entry.get("sampled_hex")
+	colour = colour or _tone(named, tones) or _tone(entry.get("colour", ""), tones)
+	if re.search(r"\bleather\b", named, re.IGNORECASE):
+		material = "leather"
+	elif re.search(r"\b(cloth|fabric|velour|tricot)\b", named, re.IGNORECASE):
+		material = "cloth"
+	else:
+		material = entry.get("material") if entry.get("material") in ("leather", "cloth") else "unknown"
+	return colour, material
+
+
 def card_text(story: Story, interior_hint: str = "") -> CardText:
 	"""A story's share card text, from its factory record."""
 	lines = tuple(
@@ -95,7 +124,7 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 		else ""
 	)
 	if rarest and rarest.total == 1:
-		rarity = f"One of one {rarest.description}"
+		rarity = f"{TIER_NAMES[rarest.tier]}: the only one {rarest.description}"
 	description = " ".join(
 		p
 		for p in (
@@ -148,8 +177,43 @@ def _paint_panel(colour: tuple[int, int, int] | None, size: tuple[int, int]) -> 
 	return panel
 
 
-def render_card(story: Story, paint_hex: str | None, interior_hint: str = "") -> bytes:
-	"""The story's share card as PNG bytes."""
+def _interior_tile(colour: tuple[int, int, int] | None, material: str, size: int) -> Image.Image:
+	"""A square interior swatch: perforated leather, a cloth weave or plain, lit like the paint panel, with a navy
+	ring so it reads over the paint."""
+	base = colour or NO_COLOUR
+	tile = _paint_panel(base if colour else None, (size, size)).convert("RGB")
+	draw = ImageDraw.Draw(tile)
+	dark = tuple(int(c * 0.45) for c in base)
+	if material == "leather":
+		step = max(8, size // 18)
+		for row, y in enumerate(range(step // 2, size, step)):
+			for x in range(step // 2 + (step // 2 if row % 2 else 0), size, step):
+				draw.ellipse((x - 2, y - 2, x + 2, y + 2), fill=dark)
+	elif material == "cloth":
+		light = tuple(min(255, int(c * 1.18) + 8) for c in base)
+		for i in range(0, size, 4):
+			draw.line((i, 0, i, size), fill=dark if (i // 4) % 2 else light, width=1)
+		for j in range(0, size, 6):
+			draw.line((0, j, size, j), fill=dark, width=1)
+		tile = Image.blend(tile, _paint_panel(base, (size, size)).convert("RGB"), 0.55)
+	ring = 8
+	framed = Image.new("RGBA", (size + 2 * ring, size + 2 * ring), (0, 0, 0, 0))
+	ImageDraw.Draw(framed).rounded_rectangle(
+		(0, 0, size + 2 * ring - 1, size + 2 * ring - 1), radius=26, fill=(*NAVY, 255)
+	)
+	mask = Image.new("L", (size, size), 0)
+	ImageDraw.Draw(mask).rounded_rectangle((0, 0, size - 1, size - 1), radius=20, fill=255)
+	framed.paste(tile, (ring, ring), mask)
+	return framed
+
+
+def render_card(
+	story: Story,
+	paint_hex: str | None,
+	interior_hint: str = "",
+	interior: tuple[str | None, str] | None = None,
+) -> bytes:
+	"""The story's share card as PNG bytes; `interior` (from interior_look) adds the interior tile."""
 	text = card_text(story, interior_hint)
 	glow = Image.linear_gradient("L").rotate(-35, expand=False).resize((WIDTH, HEIGHT))
 	image = Image.composite(
@@ -180,9 +244,9 @@ def render_card(story: Story, paint_hex: str | None, interior_hint: str = "") ->
 		tier = TIER_COLOURS[text.tier]
 		label = TIER_NAMES[text.tier].upper()
 		badge_font = _font("Barlow-SemiBold.ttf", 20)
-		lines = _wrap(draw, text.rarity.split(": ", 1)[-1], _font("Barlow-Medium.ttf", 22), text_width - 36)[
-			:2
-		]
+		body_text = text.rarity.split(": ", 1)[-1]
+		body_text = body_text[:1].upper() + body_text[1:]
+		lines = _wrap(draw, body_text, _font("Barlow-Medium.ttf", 22), text_width - 36)[:2]
 		height = 40 + 30 * len(lines)
 		if y + height < HEIGHT - 70:
 			draw.rounded_rectangle(
@@ -199,6 +263,10 @@ def render_card(story: Story, paint_hex: str | None, interior_hint: str = "") ->
 
 	panel = _paint_panel(_hex(paint_hex), (440, 470))
 	image.paste(panel, (WIDTH - 440 - 64, 80), panel)
+	if interior and story.interior.code:
+		tile = _interior_tile(_hex(interior[0]), interior[1], 170)
+		# Inside the paint panel's lower-left corner, clear of the text column.
+		image.paste(tile, (WIDTH - 440 - 64 + 22, 80 + 470 - tile.height - 22), tile)
 	buffer = io.BytesIO()
 	image.save(buffer, "PNG", optimize=True)
 	return buffer.getvalue()

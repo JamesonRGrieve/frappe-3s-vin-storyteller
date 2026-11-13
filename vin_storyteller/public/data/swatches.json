@@ -2657,6 +2657,52 @@
 			"sampled_hex": "#3C3E41"
 		}
 	},
+	"interior_tones": [
+		[
+			"charcoal",
+			"#3A3B3E"
+		],
+		[
+			"black",
+			"#1E1F21"
+		],
+		[
+			"gray",
+			"#6E7074"
+		],
+		[
+			"grey",
+			"#6E7074"
+		],
+		[
+			"tan",
+			"#B08A62"
+		],
+		[
+			"beige",
+			"#C8B596"
+		],
+		[
+			"ivory",
+			"#E2D9C3"
+		],
+		[
+			"white",
+			"#DAD7CF"
+		],
+		[
+			"red",
+			"#7E1F24"
+		],
+		[
+			"blue",
+			"#2E3F63"
+		],
+		[
+			"brown",
+			"#5B4130"
+		]
+	],
 	"paint": {
 		"A26": {
 			"dodge_name": "Silver Metallic",

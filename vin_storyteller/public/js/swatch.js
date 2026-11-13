@@ -440,7 +440,7 @@ void main() {
 
 	function swatchFor(data, kind, code, description, make) {
 		const key = String(code ?? "").trim().toUpperCase();
-		if (kind === "interior") return core.interiorSwatch(data.interior[key], description);
+		if (kind === "interior") return core.interiorSwatch(data.interior[key], description, data.interior_tones);
 		return core.paintSwatch(data.paint[key], description, make);
 	}
 

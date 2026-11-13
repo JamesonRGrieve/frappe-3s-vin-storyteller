@@ -10,7 +10,16 @@ from PIL import Image
 
 from vin_storyteller.answer import RecordsUnavailable, share_story
 from vin_storyteller.repository import ProductionRecords
-from vin_storyteller.share import HEIGHT, WIDTH, card_text, preview_html, render_card, swatch_hints
+from vin_storyteller.share import (
+	HEIGHT,
+	WIDTH,
+	card_text,
+	interior_look,
+	preview_html,
+	render_card,
+	swatch_hints,
+)
+from vin_storyteller.swatches import INTERIOR_TONES
 
 
 @pytest.fixture
@@ -79,3 +88,33 @@ def test_the_preview_page_escapes_everything_and_sends_people_to_the_story(recor
 	assert 'og:image" content="https://3shub.ca/i.png?a=1&amp;b=2"' in html
 	assert 'twitter:card" content="summary_large_image"' in html
 	assert 'http-equiv="refresh"' in html and "&quot;&gt;&lt;script&gt;" in html
+
+
+def test_the_interior_tile_is_resolved_as_the_animated_swatch_resolves_it(records):
+	story = records.story("JA3AM84J3NY000001")
+	code = story.interior.code
+	tones = [list(t) for t in INTERIOR_TONES]
+	sampled = {
+		"interior_tones": tones,
+		"interior": {code: {"sampled_hex": "#123456", "colour": "Red", "material": "cloth"}},
+	}
+	assert interior_look(sampled, story) == ("#123456", "cloth")  # a colour sampled from photos comes first
+	named = {"interior_tones": tones, "interior": {code: {"colour": "Red", "material": "leather"}}}
+	# A colour word in the record's own description outranks the table's colour (here the description names grey).
+	assert story.interior.description == "Grey"
+	assert interior_look(named, story)[0] == dict(INTERIOR_TONES)["grey"]
+	unnamed = story.__class__(**{**story.__dict__, "interior": story.interior.__class__(code, "MISSING")})
+	assert interior_look(named, unnamed) == (dict(INTERIOR_TONES)["red"], "leather")
+	assert interior_look({"interior_tones": tones, "interior": {}}, unnamed) == (None, "unknown")  # nothing on file
+	png = render_card(story, "#4F8EBF", "Red leather", interior_look(named, story))
+	assert Image.open(io.BytesIO(png)).size == (WIDTH, HEIGHT)
+
+
+def test_swatches_json_carries_the_interior_tones():
+	import json
+	from pathlib import Path
+
+	shipped = json.loads(
+		(Path(__file__).parent.parent / "vin_storyteller/public/data/swatches.json").read_text()
+	)
+	assert shipped["interior_tones"] == [list(t) for t in INTERIOR_TONES]

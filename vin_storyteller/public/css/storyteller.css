@@ -286,6 +286,8 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 .vst-print:hover { border-color: var(--vst-fiji-hi); }
 .vst-print:focus-visible { outline: 3px solid var(--vst-fiji-hi); outline-offset: 2px; }
 .vst-reference { font-size: 13px; color: var(--vst-soft); }
+.vst-share-status { font-size: 13px; color: var(--vst-soft); word-break: break-all; }
+.vst-share-status:empty { display: none; }
 .vst-reference-value { font-family: ui-monospace, monospace; letter-spacing: 0.06em; color: var(--vst-text); }
 .vst-sheet { display: none; }
 @media print {

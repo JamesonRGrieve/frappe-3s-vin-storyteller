@@ -14,10 +14,12 @@ they are never logged to StoriesTold, their answers are cached for CODE_CACHE_S,
 CODE_PAGES_PER_WINDOW of them an hour (counted apart from VIN lookups).
 """
 
+import urllib.parse
 from contextlib import closing, contextmanager
 
 import frappe
 import pymysql
+from werkzeug.wrappers import Response
 
 from vin_storyteller.answer import (
 	UNAVAILABLE,
@@ -28,11 +30,13 @@ from vin_storyteller.answer import (
 	page_key,
 	search_answer,
 	search_csv,
+	share_story,
 	stats_answer,
 )
 from vin_storyteller.client import client_address
 from vin_storyteller.repository import ProductionRecords
 from vin_storyteller.search import InvalidSearch, parse_query
+from vin_storyteller.share import preview_html, render_card, swatch_hints
 from vin_storyteller.story import (
 	CODE_KINDS,
 	CODE_PAGE_ROUTES,
@@ -204,6 +208,71 @@ def search_export(**params):
 	frappe.response["filename"] = filename
 	frappe.response["filecontent"] = text.encode("utf-8")
 	frappe.response["content_type"] = "text/csv; charset=utf-8"
+
+
+SHARES_PER_WINDOW = 600  # link-preview crawlers fetch from few addresses; the card is cached per key
+SHARE_CACHE_S = 60 * 60
+
+
+def _share_inputs(vin: str):
+	"""The story a share link shows and its swatch hints, or None (not a key on record)."""
+	import json
+
+	story = share_story(vin, _records, (pymysql.MySQLError,))
+	if story is None:
+		return None
+	path = frappe.get_app_path("vin_storyteller", "public", "data", "swatches.json")
+	with open(path, encoding="utf-8") as handle:
+		hints = swatch_hints(json.load(handle), story)
+	return story, hints
+
+
+def _share_urls(key: str) -> tuple[str, str]:
+	base = frappe.utils.get_url()
+	quoted = urllib.parse.quote(key)
+	return (
+		f"{base}/storyteller?vin={quoted}",
+		f"{base}/api/method/vin_storyteller.api.share_image?vin={quoted}",
+	)
+
+
+@frappe.whitelist(allow_guest=True, methods=["GET"])
+def share(vin: str = ""):
+	"""A story's share link (card 391): link-preview tags for Facebook, Messenger and forums, then on to the story.
+	Never logged and never a lookup: it shows only the story's headline."""
+	_count_lookup("shares", SHARES_PER_WINDOW, CODE_PAGES_LIMITED)
+	try:
+		found = _share_inputs(vin)
+	except RecordsUnavailable:
+		frappe.log_error(title="VIN Storyteller: production record unavailable")
+		return Response(UNAVAILABLE, status=503, mimetype="text/plain")
+	if found is None:
+		return Response("That isn't a VIN on record.", status=404, mimetype="text/plain")
+	story, (_paint, hint) = found
+	page, image = _share_urls(story.vin)
+	return Response(preview_html(story, page, image, hint), mimetype="text/html")
+
+
+@frappe.whitelist(allow_guest=True, methods=["GET"])
+def share_image(vin: str = ""):
+	"""A story's share card, 1200x630 PNG, cached per key for SHARE_CACHE_S."""
+	_count_lookup("shares", SHARES_PER_WINDOW, CODE_PAGES_LIMITED)
+	key = f"vin_storyteller:share:{''.join((vin or '').split()).upper()[:20]}"
+	png = frappe.cache.get_value(key)
+	if not png:
+		try:
+			found = _share_inputs(vin)
+		except RecordsUnavailable:
+			frappe.log_error(title="VIN Storyteller: production record unavailable")
+			return Response(UNAVAILABLE, status=503, mimetype="text/plain")
+		if found is None:
+			return Response("That isn't a VIN on record.", status=404, mimetype="text/plain")
+		story, (paint, hint) = found
+		png = render_card(story, paint, hint)
+		frappe.cache.set_value(key, png, expires_in_sec=SHARE_CACHE_S)
+	response = Response(png, mimetype="image/png")
+	response.headers["Cache-Control"] = f"public, max-age={SHARE_CACHE_S}"
+	return response
 
 
 def sitemap_routes(site) -> list[tuple[str, None]]:

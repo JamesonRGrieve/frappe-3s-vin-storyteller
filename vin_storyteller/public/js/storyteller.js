@@ -204,7 +204,23 @@
 		result.querySelector(".vst-vin-value").textContent = story.vin;
 		root.currentStory = story;
 		showReference(root, story);
-		const print = result.querySelector(".vst-print");
+		const share = result.querySelector(".vst-share");
+		const shareStatus = result.querySelector(".vst-share-status");
+		shareStatus.textContent = "";
+		share.onclick = async () => {
+			const url = core.shareHref(location.origin, root.currentStory.vin);
+			try {
+				if (navigator.share) {
+					await navigator.share({ title: root.currentStory.vehicle_name, url });
+					return;
+				}
+				await navigator.clipboard.writeText(url);
+				shareStatus.textContent = "Link copied: it shows this car's card wherever you paste it.";
+			} catch (error) {
+				if (error?.name !== "AbortError") shareStatus.textContent = url;
+			}
+		};
+		const print = result.querySelector(".vst-print:not(.vst-share)");
 		print.onclick = async () => {
 			print.disabled = true;
 			await fillSheet(root, root.currentStory);

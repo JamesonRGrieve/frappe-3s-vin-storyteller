@@ -66,7 +66,7 @@ production record, which lives in its own MariaDB database (not the Frappe site 
 No bench needed. Every change adds or extends tests; logic belongs in the tested modules, never in
 `api.py` / `commands.py`.
 
-- `uv run --no-project --with pytest python -I -m pytest`: `story` (pure), `repository` and `answer`
+- `uv run --no-project --with pytest --with pillow python -I -m pytest`: `story` (pure), `repository` and `answer`
   against a real in-memory SQLite database shaped like the CAPS dump (`tests/conftest.py`), and the real
   migrations (`caps_connection` = dump as loaded; `connection` = migrated + history rows). No mocks.
 - `node --test 'tests/js/*.test.mjs'`: the front-end helpers, loaded into a `vm` context.

@@ -43,6 +43,29 @@ class RecordsUnavailable(Exception):
 	"""The production record could not be read; the caller logs the cause."""
 
 
+def share_story(
+	raw_vin: str | None,
+	open_records: Callable[[], AbstractContextManager[ProductionRecords]],
+	database_errors: tuple[type[BaseException], ...],
+):
+	"""The story a share card shows (card 391): any key the storyteller takes, or None when it isn't one or isn't on
+	record. Never logged and never counted as a lookup: the card shows only what the story's headline does."""
+	try:
+		if is_chassis_number(raw_vin):
+			key = normalize_chassis(raw_vin)
+		elif is_frame_number(raw_vin):
+			key = normalize_frame(raw_vin)
+		else:
+			key = normalize_vin(raw_vin)
+	except InvalidVin:
+		return None
+	try:
+		with open_records() as records:
+			return records.story(key)
+	except database_errors as error:
+		raise RecordsUnavailable from error
+
+
 def answer(
 	raw_vin: str | None,
 	open_records: Callable[[], AbstractContextManager[ProductionRecords]],

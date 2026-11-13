@@ -10,7 +10,7 @@ readme = "README.md"
 license = "AGPL-3.0-or-later"
 dynamic = ["version"]
 dependencies = [
-    # "frappe~=16.0.0" # Installed and managed by bench (brings PyMySQL).
+    # "frappe~=16.0.0" # Installed and managed by bench (brings PyMySQL, Pillow and Werkzeug).
 ]
 
 [project.urls]

@@ -328,3 +328,7 @@ test("a build sheet prints the factory record's rows", () => {
 	assert.deepEqual(rows.find((r) => r[0] === "Among identical cars"), ["Among identical cars", "No. 1 of 20"]);
 	assert.ok(!plain(core.sheetRows({ ...story, partial: true })).some((r) => r[0] === "In the model year"));
 });
+
+test("a story's share link is its link-preview page", () => {
+	assert.equal(core.shareHref("https://3shub.ca", "Z16A-0011452"), "https://3shub.ca/api/method/vin_storyteller.api.share?vin=Z16A-0011452");
+});

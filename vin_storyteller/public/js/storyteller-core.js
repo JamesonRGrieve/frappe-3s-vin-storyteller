@@ -312,6 +312,11 @@
 		return `${String(origin || "").replace(/\/$/, "")}/storyteller?vin=${encodeURIComponent(vin)}`;
 	}
 
+	// A story's share link (card 391): its link-preview page, which sends people on to the story.
+	function shareHref(origin, vin) {
+		return `${String(origin || "").replace(/\/$/, "")}/api/method/vin_storyteller.api.share?vin=${encodeURIComponent(vin)}`;
+	}
+
 	// The sheet's rows: [label, value], from the factory record only.
 	function sheetRows(story) {
 		const rows = [
@@ -441,6 +446,7 @@
 		referenceSource,
 		formatReference,
 		storyAddress,
+		shareHref,
 		sheetRows,
 		CHART_SORTS,
 		yearsText,

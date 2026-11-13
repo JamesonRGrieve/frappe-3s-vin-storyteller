@@ -160,6 +160,13 @@
 		setText(result, "among_identical", core.positionText(story.among_identical));
 		setText(result, "built_in_period", core.formatNumber(story.built_in_period));
 		setText(result, "built_in_month", core.formatNumber(story.built_in_month));
+		// Card 391: each count opens the stats page's search for exactly those cars.
+		result.querySelectorAll(".vst-explore[data-explore]").forEach((link) => {
+			const href = core.exploreHref(story, link.dataset.explore);
+			if (href) link.href = href;
+			else link.removeAttribute("href");
+			link.hidden = !href;
+		});
 
 		if (story.rarest) result.dataset.rarity = story.rarest;
 		else delete result.dataset.rarity;

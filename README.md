@@ -100,7 +100,10 @@ well-formed VIN without a name is refused (`invalid`) before it counts. Frappe w
 `built`, `built_in_period`, `built_in_month`, `year_started`, `model_started`, `in_year` / `in_model` /
 `in_colour` / `among_identical` (`{position, total}`), `provenance`, `history` (list of `{kind, title, url,
 date, source, provenance}`; `url` is null unless it is a plain http(s) link), `rarities` (list of `{scope,
-total, tier, description}`, rarest first) and `rarest` (the top tier or null).
+total, tier, description}`, rarest first), `rarest` (the top tier or null), and `line_code` (the Model key, e.g. `VR`),
+`built_code` (the build date as stored, `YYMMP`) and `series` (`us`, `jdm`, `export` or `au`: the numbering its
+positions and totals count within). The story's identical-car, same-period and same-month counts each link to the
+stats page's search for exactly those cars (`storyteller-core.js` `exploreHref`), whose totals equal the counts.
 
 ## Code pages
 
@@ -164,7 +167,8 @@ and interior code to its page; a page of results downloads as CSV. `GET /api/met
 `q`, `model`, `market`, `region` (comma lists), `from`, `to`, `paint`, `interior`, `option` and `page`, plus `line`
 (model line keys such as `VR`, `TT`, `G6`), `built` (one build month `YYMM` or production period `YYMMP`) or
 `built_from` / `built_to`, `sort` (`vin`, `built`, `paint`, `interior`, `option`, `grade`; model year then VIN by
-default) and `desc=1`. It answers `status` `found` with `cars` (`vin`, `model_year`, `model`, `line`, `line_code`,
+default), `desc=1`, `exact=1` (the paint code itself, not its "A" form family: what the identical-car count matches)
+and `series` (`us`, `jdm`, `export`, `au`: the scope a story's counts run in). It answers `status` `found` with `cars` (`vin`, `model_year`, `model`, `line`, `line_code`,
 `model_code`, `classification`, `option`, `paint`, `interior`, `built`, `region`, `market`, `provenance`), `total`,
 `page`, `pages`, `truncated` (a search reads at most 20,000 cars before region filtering) and `breakdown`: how every
 matching car splits by `paint`, `interior`, `option`, `grade`, `line`, `model_year` and `region` (`code`, `name`,

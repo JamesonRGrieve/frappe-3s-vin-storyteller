@@ -212,8 +212,10 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 .vst-code-page, .vst-code-index { margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--vst-line); }
 .vst-code-heading { display: flex; align-items: center; gap: 14px; }
 /* Swatch hook: card 329 fills .vst-swatch[data-swatch-kind][data-swatch-code] and removes `hidden`. */
-.vst-swatch { flex: none; display: inline-block; width: 1.4em; height: 1.4em; border-radius: 50%; border: 1px solid var(--vst-line); vertical-align: middle; }
-.vst-code-heading .vst-swatch { width: 48px; height: 48px; }
+/* Only the hooks (spans with data-swatch-kind): the story's paint and interior <figure class="vst-swatch"> share the
+   class name and must keep their full size. */
+.vst-swatch[data-swatch-kind] { flex: none; display: inline-block; width: 1.4em; height: 1.4em; border-radius: 50%; border: 1px solid var(--vst-line); vertical-align: middle; }
+.vst-code-heading .vst-swatch[data-swatch-kind] { width: 48px; height: 48px; }
 .vst-code-cell { display: inline-flex; align-items: center; gap: 8px; }
 .vst-code-table th[scope="row"] { width: auto; color: var(--vst-text); }
 .vst-code-table thead th { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--vst-fiji-hi); border-top: 0; }
@@ -254,3 +256,7 @@ a.vst-history-title { color: var(--vst-fiji-hi); }
 /* Card 329 swatches on the per-code pages: a large chip by the heading, small chips in rows. */
 .vst-codes .vst-code-heading .vst-swatch.vsw { display: inline-block; width: 96px; height: auto; flex: none; border-radius: 12px; }
 .vst-codes td .vst-swatch.vsw, .vst-codes li .vst-swatch.vsw { display: inline-block; width: 36px; height: auto; vertical-align: middle; margin-right: 8px; border-radius: 6px; }
+
+/* A count's link to the stats page's search for those cars (card 391). */
+.vst .vst-explore { display: inline-block; margin-top: 8px; font-size: 0.85em; font-weight: 600; white-space: nowrap; }
+.vst .vst-explore::after { content: " \2192"; }

@@ -397,15 +397,24 @@
 		add("line", fields.line);
 		add("built_from", fields.built_from);
 		add("built_to", fields.built_to);
+		add("series", fields.series);
 		add("sort", fields.sort);
 		if (fields.desc) params.set("desc", "1");
+		if (fields.exact && fields.paint) params.set("exact", "1");
 		if (page > 1) params.set("page", String(page));
 		return params.toString();
 	}
 
 	// The search form's fields kept in the address (prefixed, so they never clash with the page filters), so a
 	// search is shareable and the story can link straight to one (spec twins, build-date neighbours).
-	const SEARCH_FIELDS = Object.freeze(["q", "paint", "interior", "option", "line", "built_from", "built_to", "sort"]);
+	const SEARCH_FIELDS = Object.freeze(["q", "paint", "interior", "option", "line", "built_from", "built_to", "series", "sort"]);
+	// A numbering series (the scope a story's counts run in), as the narrowed-by chip names it.
+	const SERIES_NAMES = Object.freeze({
+		us: "North American cars",
+		jdm: "Japanese-market GTOs",
+		export: "Export cars",
+		au: "Australian-delivered cars",
+	});
 	const FIELD_PATTERN = /^[A-Za-z0-9-]{1,17}$/;
 	const SORT_TITLES = Object.freeze({
 		"": "Model year",
@@ -419,12 +428,17 @@
 
 	function parseSearch(search) {
 		const params = new URLSearchParams(search || "");
-		const fields = { missing: params.get("find_missing") === "1", desc: params.get("find_desc") === "1" };
+		const fields = {
+			missing: params.get("find_missing") === "1",
+			desc: params.get("find_desc") === "1",
+			exact: params.get("find_exact") === "1",
+		};
 		for (const name of SEARCH_FIELDS) {
 			const value = (params.get(`find_${name}`) || "").trim();
 			fields[name] = FIELD_PATTERN.test(value) ? value : "";
 		}
 		if (!(fields.sort in SORT_TITLES)) fields.sort = "";
+		if (!(fields.series in SERIES_NAMES)) fields.series = "";
 		return fields;
 	}
 
@@ -439,6 +453,7 @@
 			for (const name of SEARCH_FIELDS) if (fields[name]) params.set(`find_${name}`, fields[name]);
 			if (fields.missing) params.set("find_missing", "1");
 			if (fields.desc) params.set("find_desc", "1");
+			if (fields.exact && fields.paint) params.set("find_exact", "1");
 		}
 		const query = params.toString();
 		return query ? `?${query}` : "";
@@ -651,6 +666,7 @@
 		tagMailto,
 		SEARCH_FIELDS,
 		SORT_TITLES,
+		SERIES_NAMES,
 		BREAKDOWN_TITLES,
 		parseSearch,
 		hasSearch,

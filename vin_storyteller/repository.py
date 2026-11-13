@@ -323,6 +323,8 @@ class ProductionRecords:
 				partial=True,
 				classification=self.classification(car),
 				model_code=car.model_code,
+				line_code=car.model,
+				series=chassis,
 			)
 
 		return Story(
@@ -361,6 +363,9 @@ class ProductionRecords:
 			),
 			classification=self.classification(car),
 			model_code=car.model_code,
+			line_code=car.model,
+			built_code=car.built,
+			series=chassis,
 			equipment_items=(items := self.equipment_items(car)),
 			features=self.features(car, items),
 			breakdowns=self.breakdowns(car),
@@ -708,7 +713,7 @@ class ProductionRecords:
 			where.append("p.ModelYear IN (" + ", ".join(["%s"] * len(years)) + ")")
 			params += list(years)
 		if query.paint:
-			family = self.paint_family(query.paint)
+			family = (query.paint,) if query.exact_paint else self.paint_family(query.paint)
 			where.append("p.Exterior IN (" + ", ".join(["%s"] * len(family)) + ")")
 			params += list(family)
 		if query.interior:
@@ -717,12 +722,22 @@ class ProductionRecords:
 		if query.option:
 			where.append("p.Equipment = %s")
 			params.append(query.option)
+		if query.series:
+			where.append(f"p.{MARKETS[query.series]}")  # MARKETS conditions start with the Model column
 		if query.lines:
 			where.append("p.Model IN (" + ", ".join(["%s"] * len(query.lines)) + ")")
 			params += list(query.lines)
-		if query.built_from and query.built_from == query.built_to and len(query.built_from) == 5:
-			where.append("p.DateOfManufacture = %s")  # one production period: an indexed equality
-			params.append(query.built_from)
+		if query.built_from and query.built_from == query.built_to:
+			# One production period or month: an indexed equality or prefix.
+			where.append(
+				"p.DateOfManufacture = %s" if len(query.built_from) == 5 else "p.DateOfManufacture LIKE %s"
+			)
+			params.append(query.built_from if len(query.built_from) == 5 else f"{query.built_from}%")
+		elif query.built_from and query.built_to and (query.built_from < "50") == (query.built_to < "50"):
+			# A range within one century: narrowed in SQL so the scan limit isn't spent on other years (the exact
+			# bounds are applied below, as for a range running across 2000).
+			where.append("p.DateOfManufacture BETWEEN %s AND %s")
+			params += [query.built_from, f"{query.built_to}9"]
 		rows = self._rows(
 			"SELECT p.VIN, p.ModelYear, p.Model, m.Manufacturer, m.Model, m.Trim, p.ModelCode, p.Classification, "
 			"p.Equipment, p.Exterior, p.Interior, p.DateOfManufacture, p.Provenance FROM Production p "

@@ -876,6 +876,7 @@
 			for (const name of core.SEARCH_FIELDS) form.elements[name].value = fields[name] || "";
 			form.elements.missing.checked = Boolean(fields.missing);
 			form.elements.desc.checked = Boolean(fields.desc);
+			this.search.exact = Boolean(fields.exact);
 			this.showNarrowed(fields);
 		}
 
@@ -884,6 +885,7 @@
 			const fields = Object.fromEntries(core.SEARCH_FIELDS.map((n) => [n, form.elements[n].value.trim()]));
 			fields.missing = form.elements.missing.checked;
 			fields.desc = form.elements.desc.checked;
+			fields.exact = Boolean(this.search.exact && fields.paint);
 			return fields;
 		}
 
@@ -891,7 +893,7 @@
 		showNarrowed(fields) {
 			const holder = this.search.section.querySelector(".vst-stats-search-narrowed");
 			const chips = [];
-			const chip = (text, clear) => {
+			const chip = (text, clear, also = () => {}) => {
 				const button = element("button", "vst-stats-chip vst-stats-narrowed-chip", `${text}\u00a0✕`);
 				button.type = "button";
 				button.setAttribute("aria-label", `Remove: ${text}`);
@@ -900,11 +902,16 @@
 					clear.forEach((name) => {
 						form.elements[name].value = "";
 					});
+					also();
 					this.runSearch(1);
 				});
 				chips.push(button);
 			};
 			if (fields.line) chip(`Model line ${this.lineName(fields.line)}`, ["line"]);
+			if (fields.series) chip(core.SERIES_NAMES[fields.series] || fields.series, ["series"]);
+			if (fields.exact && fields.paint) chip(`Paint code ${fields.paint} only, not its other codes`, [], () => {
+				this.search.exact = false;
+			});
 			if (fields.built_from || fields.built_to) {
 				const from = core.builtLabel(fields.built_from.padEnd(5, "0"));
 				const to = core.builtLabel(fields.built_to.padEnd(5, "0"));

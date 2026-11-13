@@ -202,3 +202,36 @@ def test_a_search_downloads_as_csv(records):
 	lines = text.strip().split("\n")
 	assert filename.endswith(".csv") and lines[0].split(",") == list(CSV_COLUMNS) and len(lines) == 4
 	assert search_csv({}, session, (sqlite3.Error,))["status"] == "invalid"
+
+
+def test_a_storys_spec_twins_and_build_period_are_searches_that_agree_with_its_counts(records):
+	"""The story links to these searches (card 391): their totals must be the story's own counts."""
+	for vin in ("JA3AM84J3NY000001", "JA3AM84J3NY000004"):
+		story = records.story(vin)
+		year = story.model_year
+		twins = run(
+			records,
+			line=story.line_code,
+			paint=story.exterior.code,
+			exact="1",
+			interior=story.interior.code,
+			option=story.equipment.code,
+			**{"from": year, "to": year},
+		)
+		assert twins["total"] == story.among_identical.total
+		assert vin in {c["vin"] for c in twins["cars"]}
+		period = run(records, built=story.built_code, series=story.series)
+		assert period["total"] == story.built_in_period
+		assert all(c["built"] == story.built_code for c in period["cars"]) and vin in {
+			c["vin"] for c in period["cars"]
+		}
+		month = run(records, built=story.built_code[:4], series=story.series)
+		assert month["total"] == story.built_in_month
+
+
+def test_an_exact_paint_search_leaves_out_the_paints_other_codes(records):
+	assert parse_query({"paint": "W75", "exact": "1"}).exact_paint
+	assert parse_query({"series": "JDM"}).series == "jdm"
+	with pytest.raises(InvalidSearch):
+		parse_query({"series": "mars"})
+	assert run(records, paint="R25", exact="1")["total"] <= run(records, paint="R25")["total"]

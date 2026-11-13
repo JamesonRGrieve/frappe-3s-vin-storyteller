@@ -166,6 +166,38 @@
 
 	// The address of a code's page, or null when it has none (no code, a not-recorded placeholder, an option with no
 	// model code).
+	// Links from a story to the stats page's search (card 391): the cars built exactly like it (its identical-car
+	// count: same model year, model line, paint code, interior and option), and the cars built in the same production
+	// period or month. null when the story lacks what the search needs (a partial record).
+	const STATS_PATH = "/storyteller/stats";
+	const STORY_CODE = /^[A-Z0-9-]{1,8}$/;
+	const BUILT = /^[0-9]{4}[0-3]$/;
+
+	function exploreHref(story, kind) {
+		const params = new URLSearchParams();
+		if (!story || story.partial || !STORY_CODE.test(story.line_code || "")) return null;
+		if (kind === "twins") {
+			const codes = [story.exterior?.code, story.interior?.code, story.equipment?.code];
+			if (!codes.every((c) => STORY_CODE.test(c || "")) || !/^[0-9]{4}$/.test(story.model_year || "")) return null;
+			params.set("from", story.model_year);
+			params.set("to", story.model_year);
+			params.set("find_line", story.line_code);
+			params.set("find_paint", codes[0]);
+			params.set("find_interior", codes[1]);
+			params.set("find_option", codes[2]);
+			params.set("find_exact", "1");
+			params.set("find_sort", "vin");
+		} else if (kind === "period" || kind === "month") {
+			if (!BUILT.test(story.built_code || "")) return null;
+			const built = kind === "period" ? story.built_code : story.built_code.slice(0, 4);
+			params.set("find_built_from", built);
+			params.set("find_built_to", built);
+			if (/^[a-z]{2,6}$/.test(story.series || "")) params.set("find_series", story.series);
+			params.set("find_sort", "built");
+		} else return null;
+		return `${STATS_PATH}?${params.toString()}#find`;
+	}
+
 	function codeHref(kind, rawCode, rawModel, style = "query") {
 		const code = canonical(rawCode);
 		const model = canonical(rawModel);
@@ -262,6 +294,7 @@
 		KIND_PLURALS,
 		indexHref,
 		codeHref,
+		exploreHref,
 		parseCodeRoute,
 		codeTitle,
 		codeNamesText,

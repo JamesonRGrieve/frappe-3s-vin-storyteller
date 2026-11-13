@@ -365,20 +365,21 @@ test("missing ranges read as red rows with a mailto asking for the VIN tag", () 
 
 test("a search round-trips through the address without clashing with the page filters", () => {
 	const filter = { ...core.emptyFilter(), model: ["3000GT"], from: "1992" };
-	const fields = { q: "", paint: "T87", interior: "12A", option: "", line: "VR", built_from: "92031", built_to: "92031", sort: "built", desc: true, missing: false };
+	const fields = { q: "", paint: "T87", interior: "12A", option: "", line: "VR", built_from: "92031", built_to: "92031", series: "us", sort: "built", desc: true, missing: false, exact: true };
 	const address = core.addressQuery(filter, fields);
-	assert.equal(address, "?model=3000GT&from=1992&find_paint=T87&find_interior=12A&find_line=VR&find_built_from=92031&find_built_to=92031&find_sort=built&find_desc=1");
+	assert.equal(address, "?model=3000GT&from=1992&find_paint=T87&find_interior=12A&find_line=VR&find_built_from=92031&find_built_to=92031&find_series=us&find_sort=built&find_desc=1&find_exact=1");
 	const back = plain(core.parseSearch(address));
 	assert.deepEqual(back, { ...fields });
 	assert.ok(core.hasSearch(back));
-	assert.equal(core.addressQuery(filter, { ...fields, paint: "", interior: "", line: "", built_from: "", built_to: "" }), "?model=3000GT&from=1992");
+	assert.equal(core.addressQuery(filter, { ...fields, paint: "", interior: "", line: "", built_from: "", built_to: "", series: "" }), "?model=3000GT&from=1992");
 	assert.equal(core.parseSearch("?find_paint=<b>&find_sort=price").paint, "");
 	assert.equal(core.parseSearch("?find_sort=price").sort, "");
+	assert.equal(core.parseSearch("?find_series=mars").series, "");
 });
 
 test("the request carries sort, order, model line and build period", () => {
-	const params = core.searchParams(core.emptyFilter(), { line: "TT", built_from: "9203", built_to: "9205", sort: "vin", desc: true }, 1);
-	assert.equal(params, "line=TT&built_from=9203&built_to=9205&sort=vin&desc=1");
+	const params = core.searchParams(core.emptyFilter(), { paint: "T87", line: "TT", built_from: "9203", built_to: "9205", series: "us", sort: "vin", desc: true, exact: true }, 1);
+	assert.equal(params, "paint=T87&line=TT&built_from=9203&built_to=9205&series=us&sort=vin&desc=1&exact=1");
 	assert.equal(
 		core.exportHref("/api/method/x", core.emptyFilter(), { paint: "R25", sort: "built" }),
 		"/api/method/x?paint=R25&sort=built",

@@ -214,3 +214,31 @@ test("a VIN handed in the address is taken only when it is a VIN, chassis or fra
 	assert.equal(core.vinFromAddress("?vin=JA3AM84J3NY00000I"), "");
 	assert.equal(core.vinFromAddress(""), "");
 });
+
+// Card 391: a story's counts open the stats page's search for exactly those cars.
+test("a story links to its spec twins and to the cars built in its period and month", () => {
+	const story = {
+		model_year: "1992",
+		line_code: "VR",
+		series: "us",
+		built_code: "92031",
+		exterior: { code: "T87" },
+		interior: { code: "12A" },
+		equipment: { code: "A07" },
+	};
+	assert.equal(
+		core.exploreHref(story, "twins"),
+		"/storyteller/stats?from=1992&to=1992&find_line=VR&find_paint=T87&find_interior=12A&find_option=A07&find_exact=1&find_sort=vin#find",
+	);
+	assert.equal(
+		core.exploreHref(story, "period"),
+		"/storyteller/stats?find_built_from=92031&find_built_to=92031&find_series=us&find_sort=built#find",
+	);
+	assert.equal(
+		core.exploreHref(story, "month"),
+		"/storyteller/stats?find_built_from=9203&find_built_to=9203&find_series=us&find_sort=built#find",
+	);
+	assert.equal(core.exploreHref({ ...story, partial: true }, "twins"), null);
+	assert.equal(core.exploreHref({ ...story, built_code: "" }, "period"), null);
+	assert.equal(core.exploreHref({ ...story, interior: { code: "<x>" } }, "twins"), null);
+});

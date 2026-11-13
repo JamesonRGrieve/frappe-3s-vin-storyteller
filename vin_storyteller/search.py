@@ -23,6 +23,7 @@ LIST_MAX = 20  # values of one repeated filter
 LINE_PATTERN = re.compile(r"^[A-Z0-9]{2}$")  # a Model key: 'VR', 'TT', 'G6', 'AU'
 # A build month 'YYMM' or production period 'YYMMP'.
 BUILT_PATTERN = re.compile(r"^[0-9]{2}(0[1-9]|1[0-2])[1-3]?$")
+SERIES = ("us", "jdm", "export", "au")  # story.MARKET_MODELS's numbering series, plus North America ('us')
 SORTS = ("", "vin", "built", "paint", "interior", "option", "grade")  # '' = model year, then VIN
 BREAKDOWN_TOP = 12  # values a breakdown names; the rest are summed as 'other'
 
@@ -49,6 +50,8 @@ class SearchQuery:
 	built_to: str = ""
 	sort: str = ""
 	descending: bool = False
+	exact_paint: bool = False  # the paint code itself, not its whole family (the story's identical-car count)
+	series: str = ""  # a numbering series ('us', 'jdm', 'export', 'au'): the scope a story's counts run in
 
 	@property
 	def narrowed(self) -> bool:
@@ -66,6 +69,7 @@ class SearchQuery:
 			or self.lines
 			or self.built_from
 			or self.built_to
+			or self.series
 		)
 
 	def model_years(self) -> tuple[str, ...]:
@@ -104,7 +108,7 @@ def _built(params: dict, name: str) -> str:
 
 def parse_query(params: dict) -> SearchQuery:
 	"""A search from request parameters (q, model, market, region, from, to, paint, interior, option, page; line,
-	built or built_from/built_to, sort, desc)."""
+	built or built_from/built_to, sort, desc, exact, series)."""
 	text = re.sub(r"\s+", "", str(params.get("q") or "")).upper()
 	if text and not TEXT_PATTERN.match(text):
 		raise InvalidSearch(
@@ -129,6 +133,9 @@ def parse_query(params: dict) -> SearchQuery:
 	built_from, built_to = _built(params, "built_from"), _built(params, "built_to")
 	if params.get("built"):
 		built_from = built_to = _built(params, "built")
+	series = str(params.get("series") or "").strip().lower()
+	if series and series not in SERIES:
+		raise InvalidSearch("series must be one of " + ", ".join(SERIES))
 	sort = str(params.get("sort") or "").strip().lower()
 	if sort not in SORTS:
 		raise InvalidSearch("sort must be one of " + ", ".join(s for s in SORTS if s))
@@ -149,6 +156,8 @@ def parse_query(params: dict) -> SearchQuery:
 		built_to=built_to,
 		sort=sort,
 		descending=str(params.get("desc") or "").strip().lower() in ("1", "true", "yes"),
+		exact_paint=str(params.get("exact") or "").strip().lower() in ("1", "true", "yes"),
+		series=series,
 	)
 
 

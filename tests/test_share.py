@@ -145,3 +145,23 @@ def test_the_card_lists_the_factory_options_and_keeps_the_rarity_to_one_line(rec
 	)
 	png = render_card(many, "#4F8EBF", "Red leather", ("#7E1F24", "leather"))  # overflow: '+N more', no error
 	assert Image.open(io.BytesIO(png)).size == (WIDTH, HEIGHT)
+
+
+def test_the_card_gives_the_cars_place_in_its_paint_interior_both_and_exact_spec(records):
+	story = records.story("JA3AM84J3NY000001")
+	text = card_text(story)
+	assert text.positions[-3:] == (
+		f"{story.in_colour.position:,} of {story.in_colour.total:,} in this paint",
+		f"{story.in_interior.position:,} of {story.in_interior.total:,} in this interior",
+		f"{story.in_colours.position:,} of {story.in_colours.total:,} in this paint + interior",
+	)
+	spec = (
+		f"{story.among_identical.position:,} of {story.among_identical.total:,} in this exact specification"
+	)
+	assert text.rarity.endswith(spec)
+	# The runs nest: exact spec within paint + interior within each of paint and interior.
+	assert (
+		story.among_identical.total
+		<= story.in_colours.total
+		<= min(story.in_colour.total, story.in_interior.total)
+	)

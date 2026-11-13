@@ -284,6 +284,10 @@ class ProductionRecords:
 		spec = (*line, car.interior, car.exterior, car.equipment)
 		same_colour = f"{same_line} AND Exterior = %s"
 		colour = (*line, car.exterior)
+		same_trim = f"{same_line} AND Interior = %s"
+		trim_run = (*line, car.interior)
+		same_colours = f"{same_line} AND Exterior = %s AND Interior = %s"
+		colours_run = (*line, car.exterior, car.interior)
 		earlier = " AND SerialNumber < %s"
 
 		chassis = market_of(car.model)  # the car's market: positions and totals count within it
@@ -357,6 +361,14 @@ class ProductionRecords:
 			among_identical=Position(
 				self._count(identical + earlier, (*spec, car.serial), chassis) + 1,
 				self._count(identical, spec, chassis),
+			),
+			in_interior=Position(
+				self._count(same_trim + earlier, (*trim_run, car.serial), chassis) + 1,
+				self._count(same_trim, trim_run, chassis),
+			),
+			in_colours=Position(
+				self._count(same_colours + earlier, (*colours_run, car.serial), chassis) + 1,
+				self._count(same_colours, colours_run, chassis),
 			),
 			classification=self.classification(car),
 			model_code=car.model_code,

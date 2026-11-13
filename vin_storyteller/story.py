@@ -385,6 +385,8 @@ class Story:
 	model_code: str = (
 		""  # the chassis model code (Z11A, Z15A, Z16A): an option code means something per model code
 	)
+	in_interior: Position = Position(0, 0)  # its place among its year and model line's cars in its interior
+	in_colours: Position = Position(0, 0)  # ... in its paint and interior together
 	line_code: str = ""  # the Model key ('VR'): with the year and codes, what the identical-car count matches
 	built_code: str = ""  # the build date as stored, 'YYMMP' ('' when not on record)
 	series: str = (

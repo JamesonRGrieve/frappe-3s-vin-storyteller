@@ -2,8 +2,9 @@
 """A story's share card (card 391): the 1200x630 image link previews show when a story is posted to Facebook,
 Messenger or a forum, and the text of its preview. Pure apart from Pillow; the API serves it.
 
-The card shows the car's name, paint, interior, build date, its place in the model year and its rarest run, beside a
-panel in its paint colour (card 390 will put a factory render of the car there). Fonts are the site's own Barlow
+The card shows the car's name, build date and its places: in the model year, its model line, its paint, its interior,
+its paint + interior and its exact specification (in a tier badge when that run is rare), then its factory options;
+beside them its paint over its interior (card 390 will add a factory render of the car). Fonts are the site's own Barlow
 (public/fonts, SIL OFL 1.1)."""
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from vin_storyteller.story import MISSING, Story
+from vin_storyteller.story import MISSING, Story, rarity_tier
 
 WIDTH, HEIGHT = 1200, 630
 NAVY, NAVY_2 = (10, 17, 50), (17, 26, 68)
@@ -56,14 +57,6 @@ class CardText:
 	option: str  # 'A07' (the option code the list is from)
 	options: tuple[str, ...]  # what the option code fits, then factory features from the parts catalogue
 	description: str  # the preview's one-paragraph text
-
-
-# The card's rarity scopes, short enough for one line (the story page and preview text give the full wording).
-CARD_SCOPES = {
-	"spec": "in this exact specification",
-	"colour": "in this colour for this model and year",
-	"model": "of this model for the year",
-}
 
 
 def _named(coded, what: str, hint: str = "") -> str:
@@ -133,24 +126,31 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 		if not story.partial and story.in_year.total
 		else ""
 	)
-	positions = ()
+
+	def place(p, scope: str) -> str:
+		return f"{p.position:,} of {p.total:,} {scope}" if p.total else ""
+
+	positions, spec_line, tier = (), "", None
 	if not story.partial and story.in_model.total:
-		paint_name = story.exterior.description if story.exterior.description not in ("", MISSING) else ""
-		positions = (
-			f"No. {story.in_model.position:,} of {story.in_model.total:,} {story.vehicle_name}s",
-			*(
-				(f"No. {story.in_colour.position:,} of {story.in_colour.total:,} in {paint_name}",)
-				if paint_name and story.in_colour.total
-				else ()
-			),
+		positions = tuple(
+			line
+			for line in (
+				# Left out where it repeats the year line (a JDM year is all GTOs of one line).
+				f"No. {story.in_model.position:,} of {story.in_model.total:,} {story.vehicle_name}s"
+				if story.in_model != story.in_year
+				else "",
+				place(story.in_colour, "in this paint"),
+				place(story.in_interior, "in this interior"),
+				place(story.in_colours, "in this paint + interior"),
+			)
+			if line
 		)
-	rarities = story.rarities
-	rarest = rarities[0] if rarities else None
-	rarity, long_rarity = "", ""
-	if rarest:
-		count = "the only one" if rarest.total == 1 else f"1 of {rarest.total:,}"
-		rarity = f"{TIER_NAMES[rarest.tier]}: {count} {CARD_SCOPES[rarest.scope]}"
-		long_rarity = f"{TIER_NAMES[rarest.tier]}: {count} {rarest.description}"
+		spec_line = place(story.among_identical, "in this exact specification")
+		tier = rarity_tier(
+			story.among_identical.total
+		)  # the exact spec is always the smallest, so rarest, run
+	rarity = f"{TIER_NAMES[tier]}: {spec_line}" if tier else spec_line
+	long_rarity = rarity
 	items = tuple(
 		item.description if item.description and item.description != MISSING else f"Item {item.code}"
 		for item in story.equipment_items
@@ -177,7 +177,7 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 		position=position,
 		positions=positions,
 		rarity=rarity,
-		tier=rarest.tier if rarest else None,
+		tier=tier,
 		option=equipment,
 		options=options,
 		description=description,
@@ -411,6 +411,10 @@ def render_card(
 		y += 4
 	if text.rarity and text.tier:
 		y = _badge(draw, text, y + 8) + 24
+	elif text.rarity:  # not a rare run: the exact-spec place as a plain line, like the places above it
+		small = _font("Barlow-Medium.ttf", 21)
+		draw.text((LEFT, y), text.rarity, font=small, fill=SOFT)
+		y += 30 + 20
 	else:
 		y += 8
 	_options(draw, text, y)

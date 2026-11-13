@@ -3,7 +3,7 @@
 Messenger or a forum, and the text of its preview. Pure apart from Pillow; the API serves it.
 
 The card shows the car's name, build date and its places: in the model year, its model line, its paint, its interior,
-its paint + interior and its exact specification (in a tier badge when that run is rare), then its factory options;
+its combination of paint and interior, its exact specification (in a tier badge when that run is rare), then its factory options;
 beside them its paint over its interior (card 390 will add a factory render of the car). Fonts are the site's own Barlow
 (public/fonts, SIL OFL 1.1)."""
 
@@ -141,7 +141,7 @@ def card_text(story: Story, interior_hint: str = "") -> CardText:
 				else "",
 				place(story.in_colour, "in this paint"),
 				place(story.in_interior, "in this interior"),
-				place(story.in_colours, "in this paint + interior"),
+				place(story.in_colours, "in this combination of paint and interior"),
 			)
 			if line
 		)

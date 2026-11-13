@@ -153,13 +153,13 @@ def test_the_card_gives_the_cars_place_in_its_paint_interior_both_and_exact_spec
 	assert text.positions[-3:] == (
 		f"{story.in_colour.position:,} of {story.in_colour.total:,} in this paint",
 		f"{story.in_interior.position:,} of {story.in_interior.total:,} in this interior",
-		f"{story.in_colours.position:,} of {story.in_colours.total:,} in this paint + interior",
+		f"{story.in_colours.position:,} of {story.in_colours.total:,} in this combination of paint and interior",
 	)
 	spec = (
 		f"{story.among_identical.position:,} of {story.among_identical.total:,} in this exact specification"
 	)
 	assert text.rarity.endswith(spec)
-	# The runs nest: exact spec within paint + interior within each of paint and interior.
+	# The runs nest: exact spec within paint and interior together, within each of paint and interior.
 	assert (
 		story.among_identical.total
 		<= story.in_colours.total

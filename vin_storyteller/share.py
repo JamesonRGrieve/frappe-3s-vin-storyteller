@@ -246,19 +246,27 @@ def render_card(
 		badge_font = _font("Barlow-SemiBold.ttf", 20)
 		body_text = text.rarity.split(": ", 1)[-1]
 		body_text = body_text[:1].upper() + body_text[1:]
-		lines = _wrap(draw, body_text, _font("Barlow-Medium.ttf", 22), text_width - 36)[:2]
-		height = 40 + 30 * len(lines)
+		body_font = _font("Barlow-Medium.ttf", 22)
+		pad, gap = 20, 10  # the same padding on every side; the gap between the tier name and the text
+		lines = _wrap(draw, body_text, body_font, text_width - 2 * pad)[:2]
+		# Laid out from the ink boxes, so the padding is what it says: label caps from the top, descenders at the bottom.
+		label_box = draw.textbbox((0, 0), label, font=badge_font)
+		line_box = draw.textbbox((0, 0), "Hg", font=body_font)  # one line's ink height, with a descender
+		line_height = line_box[3] - line_box[1]
+		pitch = line_height + 8
+		body_top = y + pad + (label_box[3] - label_box[1]) + gap
+		height = body_top - y + pitch * (len(lines) - 1) + line_height + pad
 		if y + height < HEIGHT - 70:
 			draw.rounded_rectangle(
 				(left, y, left + text_width, y + height),
 				radius=14,
 				outline=tier,
 				width=2,
-				fill=tuple(int(c * 0.22 + n * 0.78) for c, n in zip(tier, NAVY, strict=True)),
+				fill=tuple(int(c * 0.12 + n * 0.88) for c, n in zip(tier, NAVY, strict=True)),
 			)
-			draw.text((left + 18, y + 12), label, font=badge_font, fill=tier)
+			draw.text((left + pad, y + pad - label_box[1]), label, font=badge_font, fill=tier)
 			for i, chunk in enumerate(lines):
-				draw.text((left + 18, y + 40 + 30 * i), chunk, font=_font("Barlow-Medium.ttf", 22), fill=TEXT)
+				draw.text((left + pad, body_top + pitch * i - line_box[1]), chunk, font=body_font, fill=TEXT)
 	draw.text((left, HEIGHT - 52), "3shub.ca/storyteller", font=_font("Barlow-SemiBold.ttf", 22), fill=SOFT)
 
 	panel = _paint_panel(_hex(paint_hex), (440, 470))

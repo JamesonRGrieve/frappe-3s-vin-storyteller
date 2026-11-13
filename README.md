@@ -278,6 +278,12 @@ stories and count in positions and totals:
   no ISO check digit) or, for 1992–94 cars, a 14-character frame number such as `DMNZ16APY00001`; the model year
   is the year letter in either.
 
+**JDM GTOs take a US model year** (migration 0011, operator 2026-11-13): Japanese-market cars have no model year
+of their own, so a GTO takes the US model year whose production window its build date falls in. `ModelYearStart`
+holds each US model year's first build (1992: June 1991, 1995: May 1994, ...). A GTO takes the latest year that had
+started by its build date, the newer one where windows overlap. After US production ended (last build August 1999)
+the yearly June changeover continues, so GTOs built from June 1999 are 2000s.
+
 The **model year** position counts the whole plant's output for that year (operator 2026-11-13): every 3000GT,
 Stealth and GTO of every market, ordered by build date (2000 after 1999) and then by VIN or chassis number within a
 production period, since the markets' numbering schemes don't interleave. Every other position and total (model

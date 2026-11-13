@@ -143,3 +143,52 @@ def test_existing_stories_told_is_kept(caps_connection):
 	)
 	migrate(caps_connection, "sqlite")
 	assert caps_connection.execute("SELECT Name FROM StoriesTold").fetchall() == [("Jay Kim",)]
+
+
+def test_jdm_gtos_take_the_us_model_year_of_their_build_date(connection):
+	"""Operator 2026-11-13: a JDM GTO has no model year of its own, so it takes the US model year whose production
+	window its build date falls in (the newer one where windows overlap, June changeovers continued past 1999)."""
+	starts = dict(connection.execute("SELECT ModelYear, FirstBuilt FROM ModelYearStart").fetchall())
+	us = {y: s for y, s in starts.items() if y != "00"}
+	assert us and starts["00"] == "99061"
+	year, first = sorted(us.items(), key=lambda kv: kv[1])[
+		-1
+	]  # the latest US model year on record and its start
+	before = f"{first[:4]}{int(first[4]) - 1}" if first[4] > "1" else None
+	gtos = [
+		("Z16A-0090001", first),
+		("Z16A-0090002", "99061"),
+		("Z16A-0090003", "00081"),
+		("Z16A-0090004", "99053"),
+	]
+	if before:
+		gtos.append(("Z16A-0090005", before))
+	for chassis, built in gtos:
+		connection.execute(
+			"INSERT INTO Production (SerialNumber, VIN, Model, ModelCode, Classification, Equipment, Exterior, Interior, "
+			"DateOfManufacture, ModelYear, Provenance) VALUES (?, ?, 'G6', 'Z16A', 'MNGF', '', '', '', ?, ?, "
+			"'ASA Japan 2008')",
+			(chassis[-7:], chassis, built, built[:2]),  # loaded with the calendar year, as ASA's year was
+		)
+	sql = (MIGRATIONS_DIR / "0011_new_records.sql").read_text()
+	update = [s for s in statements(sql, "sqlite") if s.startswith("UPDATE Production SET ModelYear")]
+	assert len(update) == 1
+	connection.execute(update[0])
+	got = dict(
+		connection.execute("SELECT VIN, ModelYear FROM Production WHERE VIN LIKE 'Z16A-009%'").fetchall()
+	)
+	assert got["Z16A-0090001"] == year  # built on its year's first build: that year
+	assert got["Z16A-0090002"] == "00" and got["Z16A-0090003"] == "00"  # June 1999 on: 2000
+	latest_before = max((y for y, s in us.items() if s <= "99053"), key=lambda y: us[y])
+	assert got["Z16A-0090004"] == latest_before  # May 1999: the US model year then running
+	if before:
+		assert got["Z16A-0090005"] == max((y for y, s in us.items() if s <= before), key=lambda y: us[y])
+	# US cars keep their own model years.
+	assert (
+		connection.execute(
+			"SELECT COUNT(*) FROM Production WHERE Provenance = 'CAPS 1999' AND ModelYear NOT IN ("
+			+ ", ".join(f"'{y}'" for y in us)
+			+ ")"
+		).fetchone()[0]
+		== 0
+	)

@@ -1,6 +1,7 @@
 -- SPDX-License-Identifier: AGPL-3.0-or-later
 -- The 2026-11 release's new records, in one migration (operator, 2026-11-12). Never applied anywhere before this
--- release; regenerated from ~/3shub-docs (epc_harvest_2026-11, web_harvest_2026-11) until it ships.
+-- release. The MissingRange inserts are generated from ~/3shub-docs (epc_harvest_2026-11, web_harvest_2026-11) and
+-- spliced in until it ships. The Model row and the JDM model-year block at the end are written by hand.
 
 -- The Australian-delivered 3000GTs (VINs JMF..., Mitsubishi Australia): their own Model key and market, so they never
 -- shift a North American, Japanese or export count. None is in a Mitsubishi factory record we hold or in the online
@@ -3230,3 +3231,33 @@ INSERT INTO MissingRange (Market, ModelYear, VinPattern, FirstSerial, LastSerial
 ('au', '', 'JMFJF5S24*J', '000098', '000098', 'Australian-delivered 3000GT (117 cars), year letter N, P, R or S'),
 ('au', '', 'JMFJF5S24*J', '000101', '000108', 'Australian-delivered 3000GT (117 cars), year letter N, P, R or S'),
 ('au', '', 'JMFJF5S24*J', '000110', '000110', 'Australian-delivered 3000GT (117 cars), year letter N, P, R or S');
+
+-- JDM GTOs take the US model year of their build date (operator 2026-11-13: JDM cars have no model year, so a "1992"
+-- GTO is one built in the production window of the 1992 Stealths and 3000GTs). ModelYearStart holds each US model
+-- year's first build, and a GTO takes the latest model year that had started by its build date (where two windows
+-- overlap, the newer one). US production ended with model year 1999 (last build 1999-08), so the June changeover the
+-- record shows every year is continued: GTOs built from 1999-06 are 2000s.
+CREATE TABLE ModelYearStart (
+	ModelYear CHAR(2) PRIMARY KEY,
+	FirstBuilt CHAR(5) NOT NULL,
+	Basis VARCHAR(80) NOT NULL
+);
+INSERT INTO ModelYearStart (ModelYear, FirstBuilt, Basis)
+SELECT ModelYear, MIN(DateOfManufacture), 'first build of a US car of this model year'
+FROM Production
+WHERE Provenance IN ('CAPS 1999', 'CAPS 2004', 'ASA USA 2007') AND Model NOT IN ('G5', 'G6', 'EL', 'ER', 'AU')
+	AND DateOfManufacture <> '' AND ModelYear <> ''
+GROUP BY ModelYear;
+INSERT INTO ModelYearStart (ModelYear, FirstBuilt, Basis)
+VALUES ('00', '99061', 'after US production ended: the yearly June changeover continued');
+UPDATE Production SET ModelYear = (
+	SELECT s.ModelYear FROM ModelYearStart s
+	WHERE (CASE WHEN s.FirstBuilt < '50' THEN 1 ELSE 0 END) < (CASE WHEN Production.DateOfManufacture < '50' THEN 1 ELSE 0 END)
+		OR ((CASE WHEN s.FirstBuilt < '50' THEN 1 ELSE 0 END) = (CASE WHEN Production.DateOfManufacture < '50' THEN 1 ELSE 0 END)
+			AND s.FirstBuilt <= Production.DateOfManufacture)
+	ORDER BY (CASE WHEN s.FirstBuilt < '50' THEN 1 ELSE 0 END) DESC, s.FirstBuilt DESC
+	LIMIT 1
+)
+WHERE Provenance = 'ASA Japan 2008' AND DateOfManufacture <> ''
+	AND EXISTS (SELECT 1 FROM ModelYearStart s2 WHERE s2.FirstBuilt <= Production.DateOfManufacture
+		OR Production.DateOfManufacture < '50');
